@@ -1,0 +1,8 @@
+id: channel_slug
+niche: ""
+aspect: "16:9"          # or 9:16
+language: en
+accent_color: "#E8B923"
+vo_mode: SILENT         # BAKED | SILENT
+character_lock: ""
+voice_lock: ""

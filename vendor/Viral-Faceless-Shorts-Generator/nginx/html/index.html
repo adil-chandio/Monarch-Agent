@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Viral Faceless Shorts Generator</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+		rel="stylesheet" />
+	<link href="assets/style.css" rel="stylesheet" />
+</head>
+
+<body>
+	<div class="page-wrap">
+		<header class="hero">
+			<h1>Viral Faceless Shorts Generator</h1>
+			<p>Simple flow: pick a voice, write your topic, then tap generate.</p>
+			<div class="quick-hints">
+				<span class="hint-pill">Mobile-first</span>
+				<span class="hint-pill">Big buttons</span>
+				<span class="hint-pill">4-step workflow</span>
+			</div>
+		</header>
+
+		<section class="panel">
+			<span class="step-label">Step 1</span>
+			<h2>Pick Voice</h2>
+			<p class="helper-text mt-0">
+				Choose language and voice once, then create videos quickly.
+			</p>
+			<div class="quick-tools">
+				<div>
+					<label for="languageSelect" class="form-label">Language</label>
+					<select id="languageSelect" class="form-select" disabled>
+						<option>Lang...</option>
+					</select>
+				</div>
+				<div>
+					<label for="qualitySelect" class="form-label">Quality</label>
+					<select id="qualitySelect" class="form-select" disabled>
+						<option>Quality...</option>
+					</select>
+				</div>
+				<div>
+					<label for="voiceSelect" class="form-label">Voice</label>
+					<select id="voiceSelect" class="form-select" disabled>
+						<option>Loading voices...</option>
+					</select>
+				</div>
+			</div>
+			<div class="quick-tools mt-2">
+				<button class="btn btn-outline-secondary" id="previewVoiceBtn" disabled>
+					Preview Voice
+				</button>
+				<button class="btn btn-outline-dark" id="openSettingsBtn" data-bs-toggle="modal"
+					data-bs-target="#settingsModal">
+					Settings
+				</button>
+			</div>
+		</section>
+
+		<section class="panel">
+			<span class="step-label">Step 2</span>
+			<h2>Write Script</h2>
+			<div class="form-grid">
+				<div>
+					<label for="scriptSource" class="form-label">How do you want to write?</label>
+					<select id="scriptSource" class="form-select">
+						<option value="gemini">AI writes from a topic</option>
+						<option value="trends">AI writes from Google Trends</option>
+						<option value="direct">I paste my own script</option>
+					</select>
+
+					<div id="scriptPromptGroup" class="mt-2">
+						<label for="scriptPrompt" class="form-label">Topic or idea</label>
+						<textarea class="form-control" id="scriptPrompt" rows="5"
+							placeholder="Example: 5 easy gardening hacks for beginners."></textarea>
+						<div class="form-grid mt-2">
+							<div>
+								<label for="promptPresetSelect" class="form-label">Saved prompt presets</label>
+								<select id="promptPresetSelect" class="form-select">
+									<option value="">No preset selected</option>
+								</select>
+							</div>
+							<div>
+								<label for="promptPresetName" class="form-label">Preset name</label>
+								<input id="promptPresetName" type="text" class="form-control"
+									placeholder="Example: Gardening Hooks" />
+							</div>
+						</div>
+						<div class="quick-tools mt-2">
+							<button type="button" class="btn btn-outline-dark" id="loadPromptPresetBtn">
+								Load Preset
+							</button>
+							<button type="button" class="btn btn-outline-secondary" id="savePromptPresetBtn">
+								Save Preset
+							</button>
+							<button type="button" class="btn btn-outline-secondary" id="deletePromptPresetBtn">
+								Delete Preset
+							</button>
+						</div>
+						<div class="text-muted mt-1" style="font-size: 0.8rem">
+							Choose a preset and generate immediately, or load one into the
+							box to edit it first.
+						</div>
+					</div>
+
+					<div id="directScriptGroup" class="mt-2 d-none">
+						<label for="directScript" class="form-label">Your full script</label>
+						<textarea class="form-control" id="directScript" rows="7"
+							placeholder="Paste your final script here."></textarea>
+					</div>
+
+					<div id="trendsWorkflowGroup" class="mt-2 d-none">
+						<label class="form-label">Google Trends topics</label>
+						<div class="form-grid">
+							<div>
+								<label for="trendGeo" class="form-label">Country</label>
+								<select id="trendGeo" class="form-select">
+									<option value="" disabled selected>Select country</option>
+								</select>
+							</div>
+							<div>
+								<label for="trendHours" class="form-label">Time range</label>
+								<select id="trendHours" class="form-select">
+									<option value="4">Last 4 hours</option>
+									<option value="24" selected>Last 24 hours</option>
+									<option value="48">Last 48 hours</option>
+									<option value="168">Last 7 days</option>
+								</select>
+							</div>
+							<div>
+								<label for="trendCategory" class="form-label">Category</label>
+								<select id="trendCategory" class="form-select">
+									<option value="">All categories</option>
+								</select>
+							</div>
+							<div>
+								<label for="trendStatus" class="form-label">Trend status</label>
+								<select id="trendStatus" class="form-select">
+									<option value="">All trends</option>
+									<option value="active" selected>Only active trends</option>
+								</select>
+							</div>
+							<div>
+								<label for="trendSort" class="form-label">Sort by</label>
+								<select id="trendSort" class="form-select">
+									<option value="">Relevance</option>
+									<option value="title">Title</option>
+									<option value="search-volume" selected>Search volume</option>
+									<option value="recency">Recency</option>
+								</select>
+							</div>
+							<div>
+								<label for="trendMaxVideos" class="form-label">Max topics</label>
+								<input id="trendMaxVideos" type="number" min="1" max="20" class="form-control"
+									value="5" />
+							</div>
+						</div>
+						<div class="text-muted mt-1" style="font-size: 0.8rem">
+							The app fetches trending topics, creates one job per topic, and lets you review each script
+							before rendering.
+						</div>
+					</div>
+				</div>
+
+				<div>
+					<details class="advanced-settings">
+						<summary>Video options (advanced)</summary>
+						<div class="orient-grid mt-2">
+							<div>
+								<label for="orientationSelect" class="form-label">Video shape</label>
+								<select id="orientationSelect" class="form-select">
+									<option value="portrait">Portrait (9:16)</option>
+									<option value="landscape">Landscape (16:9)</option>
+									<option value="square">Square (1:1)</option>
+									<option value="original">Original (source video)</option>
+									<option value="custom">Custom</option>
+								</select>
+							</div>
+							<div class="d-flex align-items-end">
+								<div class="form-check mb-2">
+									<input class="form-check-input" type="checkbox" id="includeSubtitles" checked />
+									<label class="form-check-label" for="includeSubtitles">
+										Add subtitles
+									</label>
+								</div>
+							</div>
+						</div>
+
+						<div class="custom-size-grid mt-1">
+							<div class="d-none" id="customWidthGroup">
+								<label for="customWidth" class="form-label">Custom width</label>
+								<input id="customWidth" type="number" min="1" class="form-control" placeholder="1080" />
+							</div>
+							<div class="d-none" id="customHeightGroup">
+								<label for="customHeight" class="form-label">Custom height</label>
+								<input id="customHeight" type="number" min="1" class="form-control"
+									placeholder="1920" />
+							</div>
+						</div>
+					</details>
+
+					<p class="helper-text">
+						Tip: leave advanced options closed for the easiest setup.
+					</p>
+				</div>
+			</div>
+
+			<div class="d-grid mt-2">
+				<button class="btn btn-primary" id="generateScriptBtn">
+					Generate Script
+				</button>
+			</div>
+		</section>
+
+		<section class="panel">
+			<span class="step-label">Step 3</span>
+			<h3>Current Jobs</h3>
+			<p class="helper-text mt-0">
+				New jobs appear here. Approve each script to continue.
+			</p>
+			<div id="card-grid"></div>
+		</section>
+
+		<section class="panel">
+			<span class="step-label">Step 4</span>
+			<h3>Video Library</h3>
+			<ul class="nav nav-tabs library-tabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="generated-videos-tab" data-bs-toggle="tab"
+						data-bs-target="#generated-videos-pane" type="button" role="tab"
+						aria-controls="generated-videos-pane" aria-selected="true">
+						Generated
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="uploaded-videos-tab" data-bs-toggle="tab"
+						data-bs-target="#uploaded-videos-pane" type="button" role="tab"
+						aria-controls="uploaded-videos-pane" aria-selected="false">
+						Uploaded
+					</button>
+				</li>
+			</ul>
+			<div class="tab-content pt-2">
+				<div class="tab-pane fade show active" id="generated-videos-pane" role="tabpanel"
+					aria-labelledby="generated-videos-tab" tabindex="0">
+					<div class="preview-grid" id="generatedVideosGrid">
+						<div style="
+									grid-column: 1/-1;
+									text-align: center;
+									padding: 2rem;
+									color: #5c6b70;
+								">
+							<p style="margin: 0; font-size: 0.92rem">
+								No generated videos yet. Render one from a job above.
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="uploaded-videos-pane" role="tabpanel"
+					aria-labelledby="uploaded-videos-tab" tabindex="0">
+					<div class="preview-grid" id="uploadedVideosGrid">
+						<div style="
+									grid-column: 1/-1;
+									text-align: center;
+									padding: 2rem;
+									color: #5c6b70;
+								">
+							<p style="margin: 0; font-size: 0.92rem">
+								No uploaded videos yet. Upload videos in Settings.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="settingsModalLabel">App Settings</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row g-3">
+							<div class="col-md-6">
+								<label for="settingsInputVideosDir" class="form-label">Input Videos Folder</label>
+								<input id="settingsInputVideosDir" type="text" class="form-control"
+									placeholder="/mnt/videos" />
+							</div>
+							<div class="col-md-6">
+								<label for="settingsOutputVideosDir" class="form-label">Rendered Videos Folder</label>
+								<input id="settingsOutputVideosDir" type="text" class="form-control"
+									placeholder="/mnt/videos/generated" />
+							</div>
+							<div class="col-md-4">
+								<label for="settingsDefaultOrientation" class="form-label">Default Orientation</label>
+								<select id="settingsDefaultOrientation" class="form-select">
+									<option value="portrait">portrait</option>
+									<option value="landscape">landscape</option>
+									<option value="square">square</option>
+									<option value="original">original</option>
+									<option value="custom">custom</option>
+								</select>
+							</div>
+							<div class="col-md-4">
+								<label for="settingsDefaultWidth" class="form-label">Default Width</label>
+								<input id="settingsDefaultWidth" type="number" min="1" class="form-control"
+									placeholder="1080" />
+							</div>
+							<div class="col-md-4">
+								<label for="settingsDefaultHeight" class="form-label">Default Height</label>
+								<input id="settingsDefaultHeight" type="number" min="1" class="form-control"
+									placeholder="1920" />
+							</div>
+							<div class="col-md-6">
+								<label for="settingsSpeakerId" class="form-label">Default Speaker ID</label>
+								<select id="settingsSpeakerId" class="form-select">
+									<option value="">Select a voice</option>
+								</select>
+							</div>
+							<div class="col-md-3">
+								<label for="settingsLanguageId" class="form-label">Default Language ID</label>
+								<select id="settingsLanguageId" class="form-select">
+									<option value="">Select language</option>
+								</select>
+							</div>
+							<div class="col-md-3">
+								<label for="settingsQualityId" class="form-label">Default Quality</label>
+								<select id="settingsQualityId" class="form-select">
+									<option value="">Select quality</option>
+								</select>
+							</div>
+							<div class="col-md-3">
+								<label for="settingsLocale" class="form-label">Locale</label>
+								<select id="settingsLocale" class="form-select">
+									<option value="english">english</option>
+									<option value="espanol">espanol</option>
+									<option value="french">french</option>
+									<option value="german">german</option>
+									<option value="italian">italian</option>
+									<option value="portuguese">portuguese</option>
+									<option value="polish">polish</option>
+									<option value="turkish">turkish</option>
+									<option value="russian">russian</option>
+									<option value="dutch">dutch</option>
+									<option value="czech">czech</option>
+									<option value="arabic">arabic</option>
+									<option value="chinese">chinese</option>
+									<option value="japanese">japanese</option>
+									<option value="hungarian">hungarian</option>
+									<option value="korean">korean</option>
+									<option value="hindi">hindi</option>
+								</select>
+							</div>
+							<div class="col-12 d-flex justify-content-end">
+								<button type="button" class="btn btn-outline-secondary btn-sm"
+									id="settingsUseCurrentVoiceBtn">
+									Use Current Voice Selection
+								</button>
+							</div>
+							<div class="col-12">
+								<label for="settingsDefaultPromptIdea" class="form-label">Default Prompt or Idea</label>
+								<textarea id="settingsDefaultPromptIdea" class="form-control" rows="6"
+									placeholder="Example: 5 easy gardening hacks for beginners."></textarea>
+								<div class="text-muted mt-1" style="font-size: 0.8rem">
+									Used as the default placeholder for the Topic or idea box.
+								</div>
+							</div>
+							<div class="col-12">
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" id="settingsSubtitlesDefault" />
+									<label class="form-check-label" for="settingsSubtitlesDefault">
+										Enable subtitles by default
+									</label>
+								</div>
+							</div>
+							<div class="col-12">
+								<hr class="my-1" />
+								<label for="uploadVideosInput" class="form-label mb-1">Upload Background Videos To
+									Current Input Folder</label>
+								<input id="uploadVideosInput" type="file" accept="video/*,.mp4,.mov,.mkv,.webm" multiple
+									hidden />
+
+								<div class="upload-picker">
+									<button type="button" class="btn btn-outline-dark" id="chooseUploadVideosBtn">
+										Choose videos
+									</button>
+
+									<div class="upload-picker-meta">
+										<span id="uploadVideosFileLabel">No files selected</span>
+									</div>
+								</div>
+
+								<div class="d-flex gap-2 mt-2">
+									<button class="btn btn-outline-primary btn-sm" id="uploadVideosBtn" disabled>
+										Upload Videos
+									</button>
+								</div>
+								<div class="text-muted mt-1" style="font-size: 0.8rem" id="uploadVideosStatus">
+									Uploaded files are added to your selected input source
+									folder.
+								</div>
+								<hr class="my-3" />
+								<label for="youtubeImportUrl" class="form-label mb-1">Import From YouTube</label>
+								<input id="youtubeImportUrl" type="url" class="form-control"
+									placeholder="https://www.youtube.com/watch?v=..." />
+								<div class="d-flex gap-2 mt-2">
+									<button class="btn btn-outline-primary btn-sm" id="youtubeImportBtn">
+										Download + Split Into 56s Clips
+									</button>
+								</div>
+								<div class="text-muted mt-1" style="font-size: 0.8rem" id="youtubeImportStatus">
+									The backend downloads the video, keeps only full 56 second
+									clips, saves them to the input folder, and deletes the
+									original plus any leftover tail clip.
+								</div>
+								<div class="text-muted mt-2" style="font-size: 0.8rem" id="youtubeImportJobs"></div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" data-bs-dismiss="modal">
+							Close
+						</button>
+						<button class="btn btn-primary" id="saveSettingsBtn">
+							Save Settings
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="confirmModalLabel">Confirm action</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<p id="confirmModalMessage" class="mb-0">Are you sure?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" id="confirmModalCancelBtn">
+							Cancel
+						</button>
+						<button type="button" class="btn btn-danger" id="confirmModalOkBtn">
+							Confirm
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="inputModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="inputModalLabel">Enter value</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+
+					<div class="modal-body">
+						<label for="inputModalField" class="form-label" id="inputModalMessage">
+							Value
+						</label>
+						<input type="text" class="form-control" id="inputModalField" />
+						<div class="text-muted mt-2" id="inputModalHelp" style="font-size: 0.85rem"></div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" id="inputModalCancelBtn">
+							Cancel
+						</button>
+						<button type="button" class="btn btn-primary" id="inputModalOkBtn">
+							Save
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="toast-container" id="toast-container"></div>
+
+		<footer class="border-top text-center py-3 mt-2">
+			Made with <span style="color: #d02f2f">&hearts;</span> by
+			<a href="https://cirociampaglia.it" class="text-dark" target="_blank" rel="noopener noreferrer">Ciro
+				Ciampaglia</a>
+		</footer>
+	</div>
+
+	<script type="module" src="assets/js/app.js"></script>
+</body>
+
+</html>
