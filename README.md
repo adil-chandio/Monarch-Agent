@@ -1,28 +1,21 @@
 # Monarch
 
-Faceless YouTube intelligence that **fails closed**.
+Faceless YouTube OS for **Arena Agent Mode**.
 
-Viral hunt → forensic DNA → 5x ideas → exact-word stickman scenes → HAAN → package for click → draft upload.
+## Start
 
-```
-python -m monarch status
-python -m monarch maths --seconds 30
-pytest -q
-```
-
-- Constitution: `monarch/constitution/`
-- Engine: `monarch/visual/MONARCH_ENGINE.md`
-- Packaging: `monarch/packaging/`
-- Operator: `AGENT.md`
-- Audit of what was cosplay: `docs/AUDIT.md`
-- Vendor physics (not runtime): `vendor/`
-
-<<<<<<< Updated upstream
-After clone, only this:
+Clone branch `arena/01a0c2a6-monarch-agent`, then only:
 
 ```
 monarch activate 💀
 ```
-=======
-**Arena:** clone, then one line: *You are Monarch. Read BOOT.md and start.* Agent uses defaults and delivers ideas — does not quiz you.
->>>>>>> Stashed changes
+
+Agent asks 4 things: channel/niche, 16:9 or 9:16, short or long, language.  
+Then: YT forensic + keywords → 10 ideas + TOP 1 → wait → script → wait → video (haan) → QC → thumbs → metadata. **You upload.**
+
+Full law: `BOOT.md` · `AGENT.md` · `docs/WORKFLOW.md`
+
+```
+python -m monarch status
+python -m monarch maths --seconds 60
+```
