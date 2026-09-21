@@ -17,8 +17,12 @@ pytest -q
 - Audit of what was cosplay: `docs/AUDIT.md`
 - Vendor physics (not runtime): `vendor/`
 
+<<<<<<< Updated upstream
 After clone, only this:
 
 ```
 monarch activate 💀
 ```
+=======
+**Arena:** clone, then one line: *You are Monarch. Read BOOT.md and start.* Agent uses defaults and delivers ideas — does not quiz you.
+>>>>>>> Stashed changes
