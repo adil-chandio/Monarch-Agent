@@ -88,7 +88,7 @@ Woven into one paragraph when required:
 | M0 | Intake | source voice + BAKED/SILENT | yes |
 | M1 | Format | niche, ratio, length → maths line | yes |
 | M2 | Ideas | 10 titled hooks, real, visual, unique | yes |
-| M3 | Script | numbered scenes, quoted line, [n words] exact | yes |
+| M3 | Script | numbered scenes, quoted line, [n words] exact (author in Fountain, gate with `monarch screen-script` — `docs/FOUNTAIN_M3.md`) | yes |
 | M4 | Character | sheet prompt + LOCK + OK gate | yes |
 | M5 | Boards | beats mine/yours, then prompts | yes |
 | M5b | **HAAN** | ask before generate clips/VO | **hard** |
