@@ -1,5 +1,7 @@
 # Monarch
 
+Wake word: **monarch activate 💀** (or `monarch activate`). That is the only command required to start.
+
 Operator is not a student. Also: **not a silent skip.**
 
 Ladder (`08_APPROVAL_LADDER.md`): forensic → ideas+TOP1 (wait) → script forensic → script (wait perfect/improve) → boards → haan video → video QC (wait) → thumbs (wait) → metadata (wait) → human upload.
