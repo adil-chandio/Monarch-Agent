@@ -1,0 +1,41 @@
+Title: <working title — the promise, not a label>
+Credit: Written by
+Author: <operator>
+Draft date: <YYYY-MM-DD>
+Contact: <operator contact>
+
+/* M3_script template.
+
+   Run:  monarch screen-script this.fountain --length short --board-out board.json
+
+   The maths line decides everything: at 60s that is 18 beats x 7 words exact.
+   One spoken beat = one clip = one scene board row.
+
+   Law:
+   - never pad to reach the count; write the words or pick a longer --length
+   - duration is words / speaking_wps — never invent clip timing by hand
+   - every scene needs a visual and a retention job (the gate fails closed)
+   - dialogue and action are separated by blank lines (Fountain law)
+*/
+
+
+EXT. <PLACE> - <TIME> #1#
+
+VOICEOVER (V.O.)
+::<visual: what the stickman is doing>:: <exactly n words that force the watch>
+
+
+EXT. <PLACE> - CONTINUOUS #2#
+
+VOICEOVER (V.O.)
+::<visual: the next picture, match-cut friendly>:: <exactly n words of new information>
+
+
+/* ... one block per scene — the count comes from:
+   monarch maths --seconds 60  */
+
+
+EXT. <PLACE> - DAWN #18#
+
+VOICEOVER (V.O.)
+::<visual: the callback that pays the open loop>:: <exactly n words of payoff>

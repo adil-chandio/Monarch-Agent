@@ -16,11 +16,19 @@
 
 See `monarch/visual/`.
 
+## Implemented (structure phase)
+
+- Gates, maths, state machine, HAAN stop: `monarch/core/`, `monarch/schemas.py`.
+- Packaging OS: `monarch/packaging/`.
+- **M3_script on Fountain**: `.fountain` screenplay → gated numbered scene board.
+  Parser: `monarch/core/fountain.py` · integration: `monarch/pipelines/fountain.py` ·
+  law + commands: `docs/FOUNTAIN_M3.md`.
+
 ## Non-goals (this phase)
 
-- No live YouTube API calls yet.
+- No live YouTube API calls yet (search is key-gated, cache-ready).
 - No LLM orchestration yet.
-- No sample scripts yet.
+- No sample scripts yet (test fixtures under `tests/fixtures/` only).
 - No fake competitor data.
 
 ## Hard rules (constitution)

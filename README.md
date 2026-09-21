@@ -19,3 +19,16 @@ Full law: `BOOT.md` · `AGENT.md` · `docs/WORKFLOW.md`
 python -m monarch status
 python -m monarch maths --seconds 60
 ```
+
+## M3 script in Fountain
+
+Write the script as a `.fountain` screenplay, gate it into numbered scenes:
+
+```
+monarch m3
+monarch screen-script script.fountain --length short --board-out board.json
+monarch script-fountain board.json --out approved.fountain
+```
+
+Words per clip come from the maths line, never from taste — no padding, no fake counts.
+Full law: `docs/FOUNTAIN_M3.md`.
