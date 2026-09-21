@@ -1,13 +1,9 @@
 # Monarch
 
-Wake word: **monarch activate 💀** (or `monarch activate`). That is the only command required to start.
+Wake word: **monarch activate 💀** → four intake questions, then STOP. Do not invent a niche.
 
 Operator is not a student. Also: **not a silent skip.**
 
-Ladder (`08_APPROVAL_LADDER.md`): forensic → ideas+TOP1 (wait) → script forensic → script (wait perfect/improve) → boards → haan video → video QC (wait) → thumbs (wait) → metadata (wait) → human upload.
+Ladder: intake → forensic/keywords → ideas+TOP1 (wait) → script (wait) → haan video → QC → thumbs → metadata → human upload.
 
-Defaults only fill YAML gaps (voice, SILENT). They never replace research or ijazat.
-
-Self-QC every deliverable. Log misses. Same miss twice = fail.
-
-Arena generates media only after **haan**.
+2–3s cuts on first render. Present the mp4. Recommend VO before speech.

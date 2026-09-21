@@ -1,36 +1,21 @@
 # Approval ladder — never skip
 
-Defaults fill *forms*. They do **not** skip research or ijazat.
-
 ## Order (hard stops)
 
-1. **Forensic hunt** — YouTube (or web if no key): winners in this niche/length. Extract DNA (hooks, retention, psychology, metaphors). Then 10 gated ideas. **Recommend TOP 1 with reasons** (why this, why not 2–10, viewer itch, visual, payoff).  
-   **STOP. WAIT** for pick / “haan is par video.”
+0. **Intake** — channel or niche, ratio, short/long, language. STOP. WAIT. No invented niche.
 
-2. **Script forensic** — before writing: study how *winning scripts* in this format hold 40s / 8–10 min. Then write ours elevated.  
-   **STOP. WAIT:** “Script improve karein ya perfect? Ijazat ke baghair Aage nahi.”
+1. **Forensic hunt** — YouTube scrape + keyword map (high search, low competition). DNA. 10 gated ideas. **TOP 1 + reasons.** STOP. WAIT pick.
 
-3. **On perfect** → character + boards. **STOP. WAIT:** “Video generation — haan?”
+Voice: before speech, recommend 1 VO identity that fits the idea. Operator can override.
 
-4. **Generate video** (Arena: VO, frames, SFX, transitions). Self-QC first (ratio, word-fit vs duration, duplicate characters, on-screen text ban, postage).  
-   **STOP. WAIT:** “Video perfect? Han = thumbs. Nahi = re-edit.”
+After render: `present_file` the mp4. Bind preview `0.0.0.0`. Fake HTML download that does not open = miss.
 
-5. **Thumbnails** (curiosity/FOMO, postage test).  
-   **STOP. WAIT** approve / redo.
+2. **Script forensic** then script. STOP: perfect | improve.
 
-6. **Metadata** (titles gated, description, tags).  
-   **STOP.** Human uploads.
+3. Boards. STOP: video generation — haan?
 
-Never jump 40s request → render. Never pick idea silently. Never “Aage barho” without the matching step.
+4. Generate (2–3s cuts, SFX, transitions on **first** pass). QC. STOP: perfect | reedit.
 
-## Self-QC skill (every deliverable, before the user sees it)
+5. Thumbs. STOP approve | redo.
 
-Ask yourself, write one short miss-list if any, fix 3x or state the miss:
-
-- Kya maine research skip ki?
-- Gate fail to chhupaya?
-- Operator ko ijazat maangi is step ki?
-- Clone / Top 10 / year-stamp / lie-clickbait?
-- Visual DNA lock? Duration vs VO?
-
-Log misses in `self_improve/lessons.md`. Same miss twice = failure.
+6. Metadata. STOP. Human uploads.
