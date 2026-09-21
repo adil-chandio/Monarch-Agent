@@ -17,4 +17,4 @@ pytest -q
 - Audit of what was cosplay: `docs/AUDIT.md`
 - Vendor physics (not runtime): `vendor/`
 
-Hands: **Arena Agent Mode** clones this repo and generates the video there. This tree is the OS (gates, hunt, stickman prompts, packaging). Human uploads. See `docs/ARENA_CONTROL.md`.
+**Arena:** clone is not boot. After clone, paste `BOOT.md` (or type: *You are Monarch. Read BOOT.md and run M0.*).
