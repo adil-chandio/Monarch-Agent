@@ -84,8 +84,9 @@ def test_package():
 
 
 def test_missing_and_lessons(tmp_path: Path):
-    assert "character_lock" in missing("character_lock")
-    assert require_fields({}, ["niche"])
+    assert "default" in missing("niche").lower()
+    assert require_fields({}, ["niche"]) == []
+    assert require_fields({}, ["transcript_dir"])
     p = tmp_path / "lessons.md"
     record("generic title", "ban top 10", p)
     assert "3x rule" in p.read_text()
