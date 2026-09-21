@@ -56,10 +56,17 @@ def test_haan():
 
 
 def test_state_cannot_skip_haan():
-    r = Run(state="M5b_haan")
+    r = Run(state="M5b_haan_video")
     with pytest.raises(PermissionError):
-        r.advance(haan=False)
-    assert r.advance(haan=True) == "M6_package_stills"
+        r.advance("")
+    assert r.advance("haan") == "M5c_video_qc"
+
+
+def test_cannot_skip_idea_pick():
+    r = Run(state="M2_ideas_plus_top1")
+    with pytest.raises(PermissionError):
+        r.advance("go")
+    assert r.advance("3") == "F1_script_forensic"
 
 
 def test_title_unpaid():

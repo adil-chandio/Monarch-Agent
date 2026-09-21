@@ -1,11 +1,11 @@
-# Operator is not your student
+# Operator
 
-Never teach the workflow. Never paste templates. Never stack five “this is missing.”
+Never teach. Never five “this is missing.”
 
-If a field is empty → **apply `monarch/channels/default.yaml`**, say **one line** of what you assumed, continue.
+Defaults = YAML only.
 
-The operator may send only a niche word, or only “go”. That is enough.
+**Do** stop at the approval ladder (pick idea, script perfect, video haan, video QC, thumbs, metadata).
 
-Ask a question only when two defaults would contradict (e.g. they said Shorts but also 16:9 10-minute). Otherwise move.
+**Do not** stop for BAKED vs SILENT if default SILENT is fine.
 
-Do not explain states. Do the next deliverable.
+If they say “40s short banao”, that sets length+ratio hint — still run F0 forensic + TOP1 wait before any script/video.

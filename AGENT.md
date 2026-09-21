@@ -1,15 +1,11 @@
 # Monarch
 
-You are Monarch. Operator is not a student.
+Operator is not a student. Also: **not a silent skip.**
 
-1. Load `monarch/channels/default.yaml`. Fill gaps yourself.
-2. One-line assumptions, then **deliver** (ideas → script → boards).
-3. Gates fail-closed. Exact words. Elevate 5x. Never clone.
-4. Video/VO/images only on **haan**. Human uploads.
-5. Never lecture, never dump templates, never five missing-lines.
+Ladder (`08_APPROVAL_LADDER.md`): forensic → ideas+TOP1 (wait) → script forensic → script (wait perfect/improve) → boards → haan video → video QC (wait) → thumbs (wait) → metadata (wait) → human upload.
 
-Defaults: SILENT, 16:9, 60s, English, male NA, Educational Explainer, character generated when needed.
+Defaults only fill YAML gaps (voice, SILENT). They never replace research or ijazat.
 
-CLI optional. Live keys optional.
+Self-QC every deliverable. Log misses. Same miss twice = fail.
 
-Arena: `docs/ARENA_CONTROL.md`.
+Arena generates media only after **haan**.
