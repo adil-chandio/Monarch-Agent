@@ -3,10 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 STATES = [
-<<<<<<< HEAD
-=======
     "I0_intake",
->>>>>>> b1e1ed3 (Activate asks 4 questions first; 2-3s cuts; present mp4; VO recommend.)
     "F0_forensic_hunt",
     "M2_ideas_plus_top1",
     "F1_script_forensic",
@@ -21,10 +18,7 @@ STATES = [
 ]
 
 WAIT_FOR = {
-<<<<<<< HEAD
-=======
     "I0_intake": "channel/niche + ratio + short/long + language",
->>>>>>> b1e1ed3 (Activate asks 4 questions first; 2-3s cuts; present mp4; VO recommend.)
     "M2_ideas_plus_top1": "pick number or haan on TOP 1",
     "M3_script": "perfect | improve",
     "M5b_haan_video": "haan",
@@ -36,11 +30,7 @@ WAIT_FOR = {
 
 @dataclass
 class Run:
-<<<<<<< HEAD
-    state: str = "F0_forensic_hunt"
-=======
     state: str = "I0_intake"
->>>>>>> b1e1ed3 (Activate asks 4 questions first; 2-3s cuts; present mp4; VO recommend.)
     stacked: dict = field(default_factory=dict)
     history: list[str] = field(default_factory=list)
 
