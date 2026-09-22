@@ -5,6 +5,14 @@ import json
 import sys
 
 from monarch import __version__
+from monarch.core.access import (
+    AccessDeniedError,
+    activate as activate_monarch,
+    deactivate as deactivate_monarch,
+    get_lock_banner,
+    is_activated,
+    require_access,
+)
 from monarch.core.gates import GateFail, gate_idea, gate_title
 from monarch.core.haan import require_haan
 from monarch.core.scene_math import compute_math, maths_line
@@ -43,7 +51,13 @@ def _resolve_length(value: str) -> float:
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="monarch")
+    p.add_argument("--key", default=None, help="Monarch access activation key")
     sub = p.add_subparsers(dest="cmd", required=True)
+
+    act = sub.add_parser("activate", help="Activate Monarch Agent with access key")
+    act.add_argument("key", nargs="?", default=None, help="Activation key (e.g. DoitMon@rch)")
+
+    sub.add_parser("lock", help="Lock/deactivate Monarch Agent on this machine")
 
     sub.add_parser("status")
     m = sub.add_parser("maths")
@@ -138,7 +152,79 @@ def main(argv: list[str] | None = None) -> int:
     qs.add_argument("--stage", choices=["research", "script", "render", "edit", "packaging"],
                      default="packaging")
 
-    args = p.parse_args(argv)
+    # Extract --key anywhere in argv
+    extracted_key = None
+    cleaned_argv = list(argv) if argv is not None else list(sys.argv[1:])
+    for i, a in enumerate(list(cleaned_argv)):
+        if a == "--key" and i + 1 < len(cleaned_argv):
+            extracted_key = cleaned_argv[i + 1]
+        elif a.startswith("--key="):
+            extracted_key = a.split("=", 1)[1]
+
+    # Remove --key / --key=val from cleaned_argv so subparsers don't complain
+    filtered_argv: list[str] = []
+    skip_next = False
+    for a in cleaned_argv:
+        if skip_next:
+            skip_next = False
+            continue
+        if a == "--key":
+            skip_next = True
+            continue
+        if a.startswith("--key="):
+            continue
+        filtered_argv.append(a)
+
+    if not filtered_argv:
+        if is_activated():
+            p.print_help()
+            return 0
+        else:
+            if sys.stdin and hasattr(sys.stdin, "isatty") and sys.stdin.isatty():
+                try:
+                    require_access(interactive=True)
+                    p.print_help()
+                    return 0
+                except AccessDeniedError:
+                    return 1
+            else:
+                print(get_lock_banner(), file=sys.stderr)
+                return 1
+
+    args = p.parse_args(filtered_argv)
+    if extracted_key and not getattr(args, "key", None):
+        args.key = extracted_key
+
+    if args.cmd == "activate":
+        key = args.key
+        if not key:
+            if sys.stdin and hasattr(sys.stdin, "isatty") and sys.stdin.isatty():
+                print(get_lock_banner(), file=sys.stderr)
+                try:
+                    key = input("🔑 Enter Monarch Access Key: ").strip()
+                except (EOFError, KeyboardInterrupt):
+                    print("\nActivation cancelled.", file=sys.stderr)
+                    return 1
+            else:
+                print(get_lock_banner(), file=sys.stderr)
+                return 1
+        ok, msg = activate_monarch(key, persistent=True)
+        if ok:
+            print(msg)
+            return 0
+        else:
+            print(msg, file=sys.stderr)
+            return 1
+
+    if args.cmd == "lock":
+        deactivate_monarch()
+        print("🔒 Monarch Agent is now locked.")
+        return 0
+
+    try:
+        require_access(key_candidate=args.key)
+    except AccessDeniedError:
+        return 1
 
     if args.cmd == "status":
         print(json.dumps({"agent": "monarch", "version": __version__, "states": STATES}))

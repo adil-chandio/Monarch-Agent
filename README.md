@@ -1,13 +1,36 @@
 # Monarch
 
-Faceless YouTube OS for **Arena Agent Mode**.
+Faceless YouTube OS for **Arena Agent Mode**.  
+**Created by Adil Chandio** | Contact: [workadilchandio@gmail.com](mailto:workadilchandio@gmail.com)
+
+---
+
+## 🔒 Security & Access Activation
+
+Monarch Agent is protected with a private activation key. If anyone clones or runs Monarch without activation, access is denied with:
+
+> *"Me Monarch Agent muje Adil chandio ne banaya ha to apko mujhe access run Karne ke Liye key chaiye Yahan chat me key dalen Aage key NAHI ha to apko mere boss se milegi unka contact Gmail: workadilchandio@gmail.com"*
+
+### How to Unlock / Activate:
+```bash
+# 1. Via CLI activation command:
+monarch activate DoitMon@rch
+
+# 2. Or set environment variable:
+export MONARCH_ACCESS_KEY="DoitMon@rch"
+
+# 3. Or pass inline with any command:
+monarch --key DoitMon@rch status
+```
+
+---
 
 ## Start
 
-Clone branch `arena/01a0c2a6-monarch-agent`, then only:
+Clone branch `arena/01a0c8a4-monarch-agent`, activate with your key, then:
 
 ```
-monarch activate 💀
+monarch activate DoitMon@rch
 ```
 
 Agent asks 4 things: channel/niche, 16:9 or 9:16, short or long, language.  
