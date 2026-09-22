@@ -1,12 +1,20 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import os
 from pathlib import Path
 import sys
 
-#: The secret master activation key
-MASTER_ACCESS_KEY = "DoitMon@rch"
+#: SHA-256 of the *salted* master activation key.
+#:
+#: SECURITY LAW: the plaintext key is NEVER stored in this repository.
+#: Only this hash lives here, so cloning the repo reveals nothing usable.
+#: To rotate the key, set the MONARCH_KEY_HASH environment variable to the
+#: hash of the new key (or update this constant) — never commit plaintext.
+EXPECTED_KEY_HASH = (
+    "7f01e68aaab310504862f0c63872699e8743298ee162ab065c98297d59aafe3b"
+)
 
 #: Creator and Contact Info
 CREATOR_NAME = "Adil Chandio"
@@ -31,8 +39,13 @@ _LOCAL_KEY_FILE = Path(".monarch_key")
 
 
 def _key_hash(key: str) -> str:
-    """Generate SHA-256 hash for key storage."""
+    """Generate SHA-256 hash for key verification/storage."""
     return hashlib.sha256(f"monarch_salt_{key}".encode("utf-8")).hexdigest()
+
+
+def _expected_hash() -> str:
+    """Expected key hash — env override (MONARCH_KEY_HASH) wins for rotation."""
+    return os.environ.get("MONARCH_KEY_HASH", EXPECTED_KEY_HASH).strip().lower()
 
 
 def get_lock_banner() -> str:
@@ -54,10 +67,11 @@ def get_lock_banner() -> str:
 
 
 def verify_key(candidate: str | None) -> bool:
-    """Verify if a candidate key matches the master access key."""
+    """Verify a candidate key against the stored hash (constant-time compare)."""
     if not candidate:
         return False
-    return candidate.strip() == MASTER_ACCESS_KEY
+    candidate_hash = _key_hash(candidate.strip())
+    return hmac.compare_digest(candidate_hash, _expected_hash())
 
 
 def is_activated() -> bool:
@@ -72,22 +86,22 @@ def is_activated() -> bool:
     if env_key and verify_key(env_key):
         return True
 
-    expected_hash = _key_hash(MASTER_ACCESS_KEY)
+    expected = _expected_hash()
 
     # 2. Global activation file
     try:
         if _ACTIVATION_FILE.is_file():
-            content = _ACTIVATION_FILE.read_text(encoding="utf-8").strip()
-            if content == expected_hash:
+            content = _ACTIVATION_FILE.read_text(encoding="utf-8").strip().lower()
+            if hmac.compare_digest(content, expected):
                 return True
     except Exception:
         pass
 
-    # 3. Local project key file
+    # 3. Local project key file (plaintext key or stored hash)
     try:
         if _LOCAL_KEY_FILE.is_file():
             content = _LOCAL_KEY_FILE.read_text(encoding="utf-8").strip()
-            if verify_key(content) or content == expected_hash:
+            if verify_key(content) or hmac.compare_digest(content.lower(), expected):
                 return True
     except Exception:
         pass
@@ -98,19 +112,20 @@ def is_activated() -> bool:
 def activate(key: str, persistent: bool = True) -> tuple[bool, str]:
     """
     Attempt to activate Monarch Agent using the provided key.
-    If valid and persistent=True, saves the activation token.
+    If valid and persistent=True, saves only the key's *hash* as the token.
     """
     if not verify_key(key):
         return False, get_lock_banner()
 
     if persistent:
+        token = _key_hash(key.strip())
         try:
             _ACTIVATION_DIR.mkdir(parents=True, exist_ok=True)
-            _ACTIVATION_FILE.write_text(_key_hash(MASTER_ACCESS_KEY), encoding="utf-8")
+            _ACTIVATION_FILE.write_text(token, encoding="utf-8")
         except Exception:
             # Fallback to local file if home dir is not writable
             try:
-                _LOCAL_KEY_FILE.write_text(_key_hash(MASTER_ACCESS_KEY), encoding="utf-8")
+                _LOCAL_KEY_FILE.write_text(token, encoding="utf-8")
             except Exception:
                 pass
 

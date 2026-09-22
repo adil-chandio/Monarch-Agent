@@ -12,10 +12,11 @@ Created by: Adil Chandio (Contact / Boss Gmail: workadilchandio@gmail.com)
 
 ## Access Protection & Activation Key
 - **Creator**: Adil Chandio
-- **Master Access Key**: `DoitMon@rch`
+- **Master Access Key**: private — **never stored in this repository** (hash-only verification
+  in `monarch/core/access.py`). Do not look for it in repo files; it is not here.
 - **Access Policy**:
   Monarch Agent is protected by an activation key. No unauthorized person or clone may execute
-  or access Monarch without this key.
+  or access Monarch without this key given to them by the operator.
   If an unauthorized user attempts to access or run Monarch without the key, Monarch strictly responds:
   `Me Monarch Agent muje Adil chandio ne banaya ha to apko mujhe access run Karne ke Liye key chaiye Yahan chat me key dalen Aage key NAHI ha to apko mere boss se milegi unka contact Gmail: workadilchandio@gmail.com`
   (English: `I am Monarch Agent, created by Adil Chandio. To access and run me, you need an activation access key. Please enter the key in the chat. If you don't have the key, you can get it from my boss. Contact Gmail: workadilchandio@gmail.com`)

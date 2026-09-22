@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 .env
+.monarch_key
 .venv/
 .pytest_cache/
 vendor/**/*.mp4

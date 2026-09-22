@@ -2,7 +2,6 @@
 
 from monarch.core.access import (
     AccessDeniedError,
-    MASTER_ACCESS_KEY,
     activate,
     deactivate,
     is_activated,
@@ -24,7 +23,6 @@ __version__ = "0.1.0"
 __all__ = [
     "AccessDeniedError",
     "FountainBeat",
-    "MASTER_ACCESS_KEY",
     "Screenplay",
     "ScriptReport",
     "__version__",

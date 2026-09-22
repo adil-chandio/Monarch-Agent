@@ -55,7 +55,7 @@ def main(argv: list[str] | None = None) -> int:
     sub = p.add_subparsers(dest="cmd", required=True)
 
     act = sub.add_parser("activate", help="Activate Monarch Agent with access key")
-    act.add_argument("key", nargs="?", default=None, help="Activation key (e.g. DoitMon@rch)")
+    act.add_argument("key", nargs="?", default=None, help="Activation key (get it from the boss — never stored in the repo)")
 
     sub.add_parser("lock", help="Lock/deactivate Monarch Agent on this machine")
 

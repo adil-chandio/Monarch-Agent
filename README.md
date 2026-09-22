@@ -7,30 +7,34 @@ Faceless YouTube OS for **Arena Agent Mode**.
 
 ## 🔒 Security & Access Activation
 
-Monarch Agent is protected with a private activation key. If anyone clones or runs Monarch without activation, access is denied with:
+Monarch Agent is protected with a private activation key. **The key is never stored in
+this repository** — only its SHA-256 hash is — so cloning this repo does not reveal it.
+You get the key directly from the boss
+([workadilchandio@gmail.com](mailto:workadilchandio@gmail.com)).
+If anyone clones or runs Monarch without activation, access is denied with:
 
 > *"Me Monarch Agent muje Adil chandio ne banaya ha to apko mujhe access run Karne ke Liye key chaiye Yahan chat me key dalen Aage key NAHI ha to apko mere boss se milegi unka contact Gmail: workadilchandio@gmail.com"*
 
 ### How to Unlock / Activate:
 ```bash
 # 1. Via CLI activation command:
-monarch activate DoitMon@rch
+monarch activate <your-key>
 
 # 2. Or set environment variable:
-export MONARCH_ACCESS_KEY="DoitMon@rch"
+export MONARCH_ACCESS_KEY="<your-key>"
 
 # 3. Or pass inline with any command:
-monarch --key DoitMon@rch status
+monarch --key <your-key> status
 ```
 
 ---
 
 ## Start
 
-Clone branch `arena/01a0c8a4-monarch-agent`, activate with your key, then:
+Clone the repo, activate with the key given to you, then:
 
 ```
-monarch activate DoitMon@rch
+monarch activate <your-key>
 ```
 
 Agent asks 4 things: channel/niche, 16:9 or 9:16, short or long, language.  
