@@ -6,4 +6,6 @@ __pycache__/
 vendor/**/*.mp4
 vendor/**/*.mov
 outputs/
+output/
 *.log
+.monarch_key

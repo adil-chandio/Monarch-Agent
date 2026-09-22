@@ -55,3 +55,30 @@ monarch script-fountain board.json --out approved.fountain
 
 Words per clip come from the maths line, never from taste — no padding, no fake counts.
 Full law: `docs/FOUNTAIN_M3.md`.
+
+## Neuro Video — playbook → storyboard → previz
+
+The **Neuro-Psychology Playbook** (`monarch/playbook/neuro_psychology.md`, laws N1–N5)
+is now code. The director plans a gated storyboard, renders the Hollywood box card,
+writes the Fountain screenplay, synthesizes the psychoacoustic SFX bed, and cuts a
+Ken Burns previz animatic — all stdlib, all deterministic per `--seed`.
+
+| Law | Where it fires |
+| --- | --- |
+| N1 · 0.1s thumb-stop reflex | scene 1 = `hook` role, snap zoom-in, `hit` SFX, one focal visual |
+| N2 · demographic dopamine | `--cohort kids | genz | adults` drives palette + pace + payoff density |
+| N3 · Skinner variable-ratio | seeded tease/payoff schedule every 2–4 scenes, `sonar_ping` + `riser` |
+| N4 · Cialdini value-debt | free takeaway scene before the payoff peak, CUA after it |
+| N5 · 40Hz + 0.3s silence drop | `silence-sting` scene: riser → 0.3s dead air → `bass_drop` payoff |
+
+```
+monarch script --topic "the deep sea" --cohort genz --out screenplay.fountain --card
+monarch video-storyboard --topic "the deep sea"            # the ASCII box card
+monarch sfx --kind bass_drop --filter bass_boost --out drops.wav
+monarch make-video --topic "the deep sea" --out output/deep-sea
+```
+
+`make-video` writes `screenplay.fountain`, `board.json`, `storyboard.txt`,
+`sfx/*.wav`, `frames/frame_*.png`, `timeline.json` + `manifest.json`.
+It is the **previz layer**: no footage generation, no upload — the HAAN gate
+still owns the final render.

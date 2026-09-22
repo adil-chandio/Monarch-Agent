@@ -120,6 +120,61 @@ def main(argv: list[str] | None = None) -> int:
     hun = sub.add_parser("hunt")
     hun.add_argument("niche")
 
+    # Neuro Video — autonomous video production (playbook: neuro_psychology.md)
+    sc = sub.add_parser(
+        "script", help="Neuro Video: Neuro-Playbook storyboard -> Fountain screenplay"
+    )
+    sc.add_argument("--topic", required=True, help="video topic / working title")
+    sc.add_argument("--length", default="short", help="short | long | seconds")
+    sc.add_argument("--clip", type=float, default=3.5, help="clip seconds")
+    sc.add_argument("--wps", type=float, default=2.2, help="speaking words/second")
+    sc.add_argument("--first-clip", type=float, default=2.5, help="open clip seconds")
+    sc.add_argument("--cohort", default="genz", help="N2 dopamine cohort: kids | genz | adults")
+    sc.add_argument("--seed", type=int, default=0, help="deterministic variation seed")
+    sc.add_argument("--card", action="store_true", help="print the ASCII box card too")
+    sc.add_argument("--json", action="store_true", help="board JSON with neuro metadata")
+    sc.add_argument("--out", help="write the screenplay here (default stdout)")
+
+    vsb = sub.add_parser("video-storyboard",
+                         help="Neuro Video: the Hollywood ASCII box card")
+    vsb.add_argument("--topic", required=True)
+    vsb.add_argument("--length", default="short")
+    vsb.add_argument("--clip", type=float, default=3.5)
+    vsb.add_argument("--wps", type=float, default=2.2)
+    vsb.add_argument("--first-clip", type=float, default=2.5)
+    vsb.add_argument("--cohort", default="genz", help="kids | genz | adults")
+    vsb.add_argument("--seed", type=int, default=0)
+    vsb.add_argument("--json", action="store_true", help="board JSON instead of the card")
+
+    sx = sub.add_parser("sfx", help="Neuro Video: render a psychoacoustic SFX wav")
+    sx.add_argument("--kind", required=True,
+                    choices=["heartbeat", "hit", "bass_drop", "sonar_ping",
+                             "glitch", "riser"])
+    sx.add_argument("--out", default="", help="output wav path (default sfx_<kind>.wav)")
+    sx.add_argument("--seconds", type=float, default=None, help="clamp/pad length")
+    sx.add_argument("--sr", type=int, default=44100, help="sample rate (default 44100)")
+    sx.add_argument("--seed", type=int, default=0)
+    sx.add_argument("--filter", action="append", default=[],
+                    choices=["bass_boost", "tension_echo", "cyber_glitch",
+                             "forensic_tape", "limiter"],
+                    help="DSP filter, repeatable (limiter always runs last)")
+
+    mv = sub.add_parser("make-video",
+                        help="Neuro Video: topic -> previz animatic (frames+sfx+timeline)")
+    mv.add_argument("--topic", required=True)
+    mv.add_argument("--out", default="", help="output dir (default output/<slug>)")
+    mv.add_argument("--length", default="short")
+    mv.add_argument("--clip", type=float, default=3.5)
+    mv.add_argument("--wps", type=float, default=2.2)
+    mv.add_argument("--first-clip", type=float, default=2.5)
+    mv.add_argument("--cohort", default="genz", help="kids | genz | adults")
+    mv.add_argument("--seed", type=int, default=0)
+    mv.add_argument("--fps", type=int, default=2, help="animatic frames/second (default 2)")
+    mv.add_argument("--width", type=int, default=1080)
+    mv.add_argument("--height", type=int, default=1920)
+    mv.add_argument("--sr", type=int, default=22050)
+    mv.add_argument("--json", action="store_true", help="manifest JSON to stdout")
+
     # Agent-Reach integration — doctor + multi-platform search
     sub.add_parser("doctor", help="Check which upstream tools (yt-dlp, twitter, reddit, etc.) are available")
 
@@ -526,6 +581,103 @@ def main(argv: list[str] | None = None) -> int:
         result = qc(notes, stage=stage)
         print(result.summary)
         return 0 if result.passed else 2
+
+    # ── Neuro Video commands ──
+
+    if args.cmd in ("script", "video-storyboard"):
+        from monarch.video.director import plan_storyboard
+
+        try:
+            sb = plan_storyboard(
+                args.topic,
+                length=_resolve_length(args.length),
+                clip_s=args.clip,
+                speaking_wps=args.wps,
+                first_clip_s=args.first_clip,
+                cohort=args.cohort,
+                seed=args.seed,
+            )
+        except GateFail as e:
+            print("FAIL", "; ".join(e.misses))
+            print("answer: improve — the playbook refused this board. Never ship.")
+            return 2
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.cmd == "video-storyboard":
+            if args.json:
+                print(json.dumps(sb.to_dict(), indent=2))
+            else:
+                print(sb.card, end="")
+            return 0
+        # `script` — the Fountain screenplay is the deliverable
+        if args.json:
+            print(json.dumps(sb.to_dict(), indent=2))
+        elif args.out:
+            from pathlib import Path
+
+            Path(args.out).write_text(sb.fountain, encoding="utf-8")
+            print(f"wrote {args.out} — {len(sb.scenes)} scenes, gated")
+        else:
+            print(sb.fountain, end="")
+        if args.card:
+            print(sb.card, end="")
+        return 0
+
+    if args.cmd == "sfx":
+        from monarch.video import audio as sfx_audio
+
+        out = args.out or f"sfx_{args.kind}.wav"
+        try:
+            samples = sfx_audio.render_sfx(
+                args.kind, sr=args.sr, seed=args.seed,
+                seconds=args.seconds, filters=args.filter or None,
+            )
+            sfx_audio.write_wav(out, samples, args.sr)
+        except (ValueError, OSError) as e:
+            print("FAIL", e)
+            return 2
+        print(f"wrote {out} — {args.kind} @ {args.sr}Hz, "
+              f"{sfx_audio.duration_s(samples, args.sr):.2f}s")
+        return 0
+
+    if args.cmd == "make-video":
+        from monarch.video.pipeline import make_video
+
+        out = args.out
+        if not out:
+            slug = "".join(c if c.isalnum() else "-" for c in args.topic.lower())
+            slug = "-".join(p for p in slug.split("-") if p)[:48] or "video"
+            out = f"output/{slug}"
+        try:
+            manifest = make_video(
+                args.topic, out,
+                length=_resolve_length(args.length),
+                clip_s=args.clip,
+                speaking_wps=args.wps,
+                first_clip_s=args.first_clip,
+                cohort=args.cohort,
+                seed=args.seed,
+                width=args.width,
+                height=args.height,
+                fps=args.fps,
+                sr=args.sr,
+            )
+        except GateFail as e:
+            print("FAIL", "; ".join(e.misses))
+            return 2
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(manifest, indent=2))
+        else:
+            print(f"PREVIZ READY — {manifest['scene_count']} scenes, "
+                  f"{manifest['frame_count']} frames @ {manifest['fps']}fps, "
+                  f"{manifest['total_s']:.0f}s -> {out}")
+            print(f"maths: {manifest['maths']}")
+            print("HAAN still gates the final render. You upload.")
+        return 0
 
     # ── Agent-Reach commands ──
 
