@@ -1,1 +1,1 @@
-"""Live intel: Gemini + YouTube Data. Upload is operator-owned."""
+"""Live intel: Agent-Reach bridge + YouTube + Twitter + Reddit + Web + Gemini. Upload is operator-owned."""

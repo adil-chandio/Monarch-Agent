@@ -106,6 +106,26 @@ def main(argv: list[str] | None = None) -> int:
     hun = sub.add_parser("hunt")
     hun.add_argument("niche")
 
+    # Agent-Reach integration — doctor + multi-platform search
+    sub.add_parser("doctor", help="Check which upstream tools (yt-dlp, twitter, reddit, etc.) are available")
+
+    sw = sub.add_parser("scrape", help="Scrape a URL via Agent-Reach (yt-dlp for YouTube, Jina for web)")
+    sw.add_argument("url", help="YouTube URL or any web URL")
+    sw.add_argument("--transcript", action="store_true", help="Extract transcript (YouTube only)")
+    sw.add_argument("--lang", default="en", help="Subtitle language (default en)")
+
+    tw = sub.add_parser("xsearch", help="Search Twitter/X for niche analysis")
+    tw.add_argument("query")
+    tw.add_argument("-n", type=int, default=10)
+
+    rd = sub.add_parser("rsearch", help="Search Reddit for audience language")
+    rd.add_argument("query")
+    rd.add_argument("-n", type=int, default=10)
+
+    ws = sub.add_parser("wsearch", help="Semantic web search via Exa")
+    ws.add_argument("query")
+    ws.add_argument("-n", type=int, default=5)
+
     # QC render — L15: end-to-end render chain verification
     qr = sub.add_parser("qc-render", help="L15: verify rendered video against scene board")
     qr.add_argument("video", help="path to rendered mp4")
@@ -420,6 +440,63 @@ def main(argv: list[str] | None = None) -> int:
         result = qc(notes, stage=stage)
         print(result.summary)
         return 0 if result.passed else 2
+
+    # ── Agent-Reach commands ──
+
+    if args.cmd == "doctor":
+        from monarch.intel.reach import doctor as reach_doctor
+
+        statuses = reach_doctor()
+        for s in statuses:
+            icon = "ok" if s.available else "MISSING"
+            print(f"  [{icon}] {s.name}: {s.message}")
+        ok = sum(1 for s in statuses if s.available)
+        print(f"\n{ok}/{len(statuses)} tools available")
+        return 0
+
+    if args.cmd == "scrape":
+        from monarch.pipelines.forensic import dissect_url
+
+        try:
+            result = dissect_url(args.url)
+        except (RuntimeError, FileNotFoundError) as e:
+            print("FAIL", e)
+            return 2
+        if args.transcript and "youtube" in str(result.get("source", "")):
+            print(result.get("transcript", "(no transcript)"))
+        else:
+            print(json.dumps(result, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.cmd == "xsearch":
+        try:
+            from monarch.intel.twitter import search_niche
+            results = search_niche(args.query, args.n)
+            print(json.dumps(results, indent=2, ensure_ascii=False))
+        except RuntimeError as e:
+            print("FAIL", e)
+            return 2
+        return 0
+
+    if args.cmd == "rsearch":
+        try:
+            from monarch.intel.reddit import search_niche
+            results = search_niche(args.query, args.n)
+            print(json.dumps(results, indent=2, ensure_ascii=False))
+        except RuntimeError as e:
+            print("FAIL", e)
+            return 2
+        return 0
+
+    if args.cmd == "wsearch":
+        try:
+            from monarch.intel.web import search_web
+            results = search_web(args.query, args.n)
+            print(json.dumps(results, indent=2, ensure_ascii=False))
+        except RuntimeError as e:
+            print("FAIL", e)
+            return 2
+        return 0
 
     return 1
 

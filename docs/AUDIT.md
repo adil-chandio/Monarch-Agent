@@ -15,4 +15,15 @@ Not vibes. Failures.
 | No tests | Ego, not proof | `tests/` on words/maths/gates/haan |
 | Name “Monarch” with empty brain | Cosplay | This pass |
 
-Still waiting (honest): live YT scrape, LLM idea hunt, Flow/Veo render, OAuth upload, channel list from operator.
+Still waiting (honest): LLM idea hunt, Flow/Veo render, OAuth upload, channel list from operator.
+
+## Agent-Reach integration (done)
+
+Live internet access via upstream CLI tools:
+- YouTube: yt-dlp (zero-config, no API key)
+- Twitter/X: twitter-cli
+- Reddit: rdt-cli / OpenCLI
+- Web: Jina Reader (zero-config)
+- Semantic search: Exa / mcporter
+- GitHub: gh CLI (zero-config)
+- Doctor: `python -m monarch doctor`
