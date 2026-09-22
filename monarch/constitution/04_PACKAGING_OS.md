@@ -61,3 +61,11 @@ Fail if a stranger would not stop mid-scroll.
 - [ ] Not a clone of a current winner
 - [ ] Postage-stamp readable
 - [ ] WTF/FOMO without a lie
+
+## Playbook references
+
+- Title formulas T1–T8: `monarch/playbook/growth_formulas.md`
+- Thumbnail formulas H1–H8: `monarch/playbook/growth_formulas.md`
+- Contract formulas K1–K5: `monarch/playbook/growth_formulas.md`
+- Production laws L1–L16: `monarch/playbook/laws.md`
+- QC selftest (17 checks): `monarch/core/self_qc.py`

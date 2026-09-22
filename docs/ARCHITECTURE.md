@@ -23,6 +23,9 @@ See `monarch/visual/`.
 - **M3_script on Fountain**: `.fountain` screenplay → gated numbered scene board.
   Parser: `monarch/core/fountain.py` · integration: `monarch/pipelines/fountain.py` ·
   law + commands: `docs/FOUNTAIN_M3.md`.
+- **Playbook** (`monarch/playbook/`): growth formulas (T1–T8, H1–H8, S1–S6, K1–K5) + production laws (L1–L16).
+- **QC selftest** (`monarch/core/self_qc.py`): 17-check system (L14), render chain verification (L15), self-improvement loop (L16).
+- **Agent-Reach integration** (`monarch/intel/reach.py`): live internet access for forensic hunt.
 
 ## Non-goals (this phase)
 

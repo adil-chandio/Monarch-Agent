@@ -27,3 +27,9 @@ Arena / agent MUST ask:
 > Structure + boards ready. Full video generation (VO → scenes → edit → SFX) — **haan**?
 
 Only on explicit **haan** proceed to render pipeline.
+
+## Playbook references
+
+- Growth formulas: `monarch/playbook/growth_formulas.md` (T1–T8, H1–H8, S1–S6, K1–K5)
+- Production laws: `monarch/playbook/laws.md` (L1–L16)
+- QC selftest: `monarch/core/self_qc.py` (17-check system)

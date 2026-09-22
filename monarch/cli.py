@@ -5,6 +5,14 @@ import json
 import sys
 
 from monarch import __version__
+from monarch.core.access import (
+    AccessDeniedError,
+    activate as activate_monarch,
+    deactivate as deactivate_monarch,
+    get_lock_banner,
+    is_activated,
+    require_access,
+)
 from monarch.core.gates import GateFail, gate_idea, gate_title
 from monarch.core.haan import require_haan
 from monarch.core.scene_math import compute_math, maths_line
@@ -43,7 +51,13 @@ def _resolve_length(value: str) -> float:
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="monarch")
+    p.add_argument("--key", default=None, help="Monarch access activation key")
     sub = p.add_subparsers(dest="cmd", required=True)
+
+    act = sub.add_parser("activate", help="Activate Monarch Agent with access key")
+    act.add_argument("key", nargs="?", default=None, help="Activation key (e.g. DoitMon@rch)")
+
+    sub.add_parser("lock", help="Lock/deactivate Monarch Agent on this machine")
 
     sub.add_parser("status")
     m = sub.add_parser("maths")
@@ -106,7 +120,111 @@ def main(argv: list[str] | None = None) -> int:
     hun = sub.add_parser("hunt")
     hun.add_argument("niche")
 
-    args = p.parse_args(argv)
+    # Agent-Reach integration — doctor + multi-platform search
+    sub.add_parser("doctor", help="Check which upstream tools (yt-dlp, twitter, reddit, etc.) are available")
+
+    sw = sub.add_parser("scrape", help="Scrape a URL via Agent-Reach (yt-dlp for YouTube, Jina for web)")
+    sw.add_argument("url", help="YouTube URL or any web URL")
+    sw.add_argument("--transcript", action="store_true", help="Extract transcript (YouTube only)")
+    sw.add_argument("--lang", default="en", help="Subtitle language (default en)")
+
+    tw = sub.add_parser("xsearch", help="Search Twitter/X for niche analysis")
+    tw.add_argument("query")
+    tw.add_argument("-n", type=int, default=10)
+
+    rd = sub.add_parser("rsearch", help="Search Reddit for audience language")
+    rd.add_argument("query")
+    rd.add_argument("-n", type=int, default=10)
+
+    ws = sub.add_parser("wsearch", help="Semantic web search via Exa")
+    ws.add_argument("query")
+    ws.add_argument("-n", type=int, default=5)
+
+    # QC render — L15: end-to-end render chain verification
+    qr = sub.add_parser("qc-render", help="L15: verify rendered video against scene board")
+    qr.add_argument("video", help="path to rendered mp4")
+    qr.add_argument("board", help="scene board JSON file")
+    qr.add_argument("--max-clip", type=float, default=3.5, help="max clip hold in seconds")
+
+    # QC selftest — L14: 17-check QC
+    qs = sub.add_parser("qc", help="L14: run 17-check QC on a notes JSON")
+    qs.add_argument("notes", help="JSON file with check-name → bool mapping")
+    qs.add_argument("--stage", choices=["research", "script", "render", "edit", "packaging"],
+                     default="packaging")
+
+    # Extract --key anywhere in argv
+    extracted_key = None
+    cleaned_argv = list(argv) if argv is not None else list(sys.argv[1:])
+    for i, a in enumerate(list(cleaned_argv)):
+        if a == "--key" and i + 1 < len(cleaned_argv):
+            extracted_key = cleaned_argv[i + 1]
+        elif a.startswith("--key="):
+            extracted_key = a.split("=", 1)[1]
+
+    # Remove --key / --key=val from cleaned_argv so subparsers don't complain
+    filtered_argv: list[str] = []
+    skip_next = False
+    for a in cleaned_argv:
+        if skip_next:
+            skip_next = False
+            continue
+        if a == "--key":
+            skip_next = True
+            continue
+        if a.startswith("--key="):
+            continue
+        filtered_argv.append(a)
+
+    if not filtered_argv:
+        if is_activated():
+            p.print_help()
+            return 0
+        else:
+            if sys.stdin and hasattr(sys.stdin, "isatty") and sys.stdin.isatty():
+                try:
+                    require_access(interactive=True)
+                    p.print_help()
+                    return 0
+                except AccessDeniedError:
+                    return 1
+            else:
+                print(get_lock_banner(), file=sys.stderr)
+                return 1
+
+    args = p.parse_args(filtered_argv)
+    if extracted_key and not getattr(args, "key", None):
+        args.key = extracted_key
+
+    if args.cmd == "activate":
+        key = args.key
+        if not key:
+            if sys.stdin and hasattr(sys.stdin, "isatty") and sys.stdin.isatty():
+                print(get_lock_banner(), file=sys.stderr)
+                try:
+                    key = input("🔑 Enter Monarch Access Key: ").strip()
+                except (EOFError, KeyboardInterrupt):
+                    print("\nActivation cancelled.", file=sys.stderr)
+                    return 1
+            else:
+                print(get_lock_banner(), file=sys.stderr)
+                return 1
+        ok, msg = activate_monarch(key, persistent=True)
+        if ok:
+            print(msg)
+            return 0
+        else:
+            print(msg, file=sys.stderr)
+            return 1
+
+    if args.cmd == "lock":
+        deactivate_monarch()
+        print("🔒 Monarch Agent is now locked.")
+        return 0
+
+    try:
+        require_access(key_candidate=args.key)
+    except AccessDeniedError:
+        return 1
 
     if args.cmd == "status":
         print(json.dumps({"agent": "monarch", "version": __version__, "states": STATES}))
@@ -355,6 +473,117 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(text, end="")
         return 0
+    if args.cmd == "qc-render":
+        import json as _json
+        from pathlib import Path
+
+        from monarch.core.self_qc import qc_render
+        from monarch.schemas import Scene
+
+        board_path = Path(args.board)
+        if not board_path.exists():
+            print(f"FAIL board not found: {args.board}")
+            return 2
+        board_data = _json.loads(board_path.read_text(encoding="utf-8"))
+        scenes_raw = board_data.get("scenes", board_data) if isinstance(board_data, dict) else board_data
+        if not isinstance(scenes_raw, list) or not scenes_raw:
+            print("FAIL board JSON must contain a non-empty list of scenes")
+            return 2
+        expected_scenes = len(scenes_raw)
+        total_s = float(scenes_raw[0].get("total_s", 60)) if isinstance(scenes_raw[0], dict) else 60.0
+        durations = [
+            float(s.get("t_end", 0)) - float(s.get("t_start", 0))
+            for s in scenes_raw
+            if isinstance(s, dict) and "t_start" in s and "t_end" in s
+        ]
+        # video duration check is deferred to Arena session (no ffprobe here)
+        misses = qc_render(
+            scene_count=expected_scenes,
+            expected_scenes=expected_scenes,
+            total_s=total_s,
+            expected_total=total_s,
+            max_clip_hold=args.max_clip,
+            scene_durations=durations or None,
+        )
+        if misses:
+            print("FAIL", "; ".join(misses))
+            return 2
+        print(f"QC RENDER PASS — {expected_scenes} scenes, {total_s:.0f}s total")
+        return 0
+
+    if args.cmd == "qc":
+        import json as _json
+        from pathlib import Path
+
+        from monarch.core.self_qc import Stage, qc
+
+        notes_path = Path(args.notes)
+        if not notes_path.exists():
+            print(f"FAIL notes file not found: {args.notes}")
+            return 2
+        notes = _json.loads(notes_path.read_text(encoding="utf-8"))
+        stage = Stage(args.stage)
+        result = qc(notes, stage=stage)
+        print(result.summary)
+        return 0 if result.passed else 2
+
+    # ── Agent-Reach commands ──
+
+    if args.cmd == "doctor":
+        from monarch.intel.reach import doctor as reach_doctor
+
+        statuses = reach_doctor()
+        for s in statuses:
+            icon = "ok" if s.available else "MISSING"
+            print(f"  [{icon}] {s.name}: {s.message}")
+        ok = sum(1 for s in statuses if s.available)
+        print(f"\n{ok}/{len(statuses)} tools available")
+        return 0
+
+    if args.cmd == "scrape":
+        from monarch.pipelines.forensic import dissect_url
+
+        try:
+            result = dissect_url(args.url)
+        except (RuntimeError, FileNotFoundError) as e:
+            print("FAIL", e)
+            return 2
+        if args.transcript and "youtube" in str(result.get("source", "")):
+            print(result.get("transcript", "(no transcript)"))
+        else:
+            print(json.dumps(result, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.cmd == "xsearch":
+        try:
+            from monarch.intel.twitter import search_niche
+            results = search_niche(args.query, args.n)
+            print(json.dumps(results, indent=2, ensure_ascii=False))
+        except RuntimeError as e:
+            print("FAIL", e)
+            return 2
+        return 0
+
+    if args.cmd == "rsearch":
+        try:
+            from monarch.intel.reddit import search_niche
+            results = search_niche(args.query, args.n)
+            print(json.dumps(results, indent=2, ensure_ascii=False))
+        except RuntimeError as e:
+            print("FAIL", e)
+            return 2
+        return 0
+
+    if args.cmd == "wsearch":
+        try:
+            from monarch.intel.web import search_web
+            results = search_web(args.query, args.n)
+            print(json.dumps(results, indent=2, ensure_ascii=False))
+        except RuntimeError as e:
+            print("FAIL", e)
+            return 2
+        return 0
+
     return 1
 
 
