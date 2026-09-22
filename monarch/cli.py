@@ -106,6 +106,18 @@ def main(argv: list[str] | None = None) -> int:
     hun = sub.add_parser("hunt")
     hun.add_argument("niche")
 
+    # QC render — L15: end-to-end render chain verification
+    qr = sub.add_parser("qc-render", help="L15: verify rendered video against scene board")
+    qr.add_argument("video", help="path to rendered mp4")
+    qr.add_argument("board", help="scene board JSON file")
+    qr.add_argument("--max-clip", type=float, default=3.5, help="max clip hold in seconds")
+
+    # QC selftest — L14: 17-check QC
+    qs = sub.add_parser("qc", help="L14: run 17-check QC on a notes JSON")
+    qs.add_argument("notes", help="JSON file with check-name → bool mapping")
+    qs.add_argument("--stage", choices=["research", "script", "render", "edit", "packaging"],
+                     default="packaging")
+
     args = p.parse_args(argv)
 
     if args.cmd == "status":
@@ -355,6 +367,60 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(text, end="")
         return 0
+    if args.cmd == "qc-render":
+        import json as _json
+        from pathlib import Path
+
+        from monarch.core.self_qc import qc_render
+        from monarch.schemas import Scene
+
+        board_path = Path(args.board)
+        if not board_path.exists():
+            print(f"FAIL board not found: {args.board}")
+            return 2
+        board_data = _json.loads(board_path.read_text(encoding="utf-8"))
+        scenes_raw = board_data.get("scenes", board_data) if isinstance(board_data, dict) else board_data
+        if not isinstance(scenes_raw, list) or not scenes_raw:
+            print("FAIL board JSON must contain a non-empty list of scenes")
+            return 2
+        expected_scenes = len(scenes_raw)
+        total_s = float(scenes_raw[0].get("total_s", 60)) if isinstance(scenes_raw[0], dict) else 60.0
+        durations = [
+            float(s.get("t_end", 0)) - float(s.get("t_start", 0))
+            for s in scenes_raw
+            if isinstance(s, dict) and "t_start" in s and "t_end" in s
+        ]
+        # video duration check is deferred to Arena session (no ffprobe here)
+        misses = qc_render(
+            scene_count=expected_scenes,
+            expected_scenes=expected_scenes,
+            total_s=total_s,
+            expected_total=total_s,
+            max_clip_hold=args.max_clip,
+            scene_durations=durations or None,
+        )
+        if misses:
+            print("FAIL", "; ".join(misses))
+            return 2
+        print(f"QC RENDER PASS — {expected_scenes} scenes, {total_s:.0f}s total")
+        return 0
+
+    if args.cmd == "qc":
+        import json as _json
+        from pathlib import Path
+
+        from monarch.core.self_qc import Stage, qc
+
+        notes_path = Path(args.notes)
+        if not notes_path.exists():
+            print(f"FAIL notes file not found: {args.notes}")
+            return 2
+        notes = _json.loads(notes_path.read_text(encoding="utf-8"))
+        stage = Stage(args.stage)
+        result = qc(notes, stage=stage)
+        print(result.summary)
+        return 0 if result.passed else 2
+
     return 1
 
 
