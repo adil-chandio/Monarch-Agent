@@ -74,6 +74,23 @@ monarch doctor                                                  # health, incl. 
 `monarch scrape <yt-url> --transcript` now auto-falls back to the hosted API
 when yt-dlp is missing. Rate limit (5 req / 10s) is honored via `Retry-After`.
 
+## Deep forensic — niche → 15-20 viral videos → DNA → ideas → video 💀
+
+The full competitor takedown (`skills/deep-forensic/SKILL.md`):
+
+1. **Agent hunts** — 5-8 channels ke 2-4 biggest outliers (15-20 videos), page
+   tools se. Har video: `transcript-ingest` se pipeline me.
+2. **`monarch deep-forensic dossier.json`** — Monarch computes:
+   - **script DNA**: words/30s (Zack band 65-95), hook OPEN/closed (N1),
+     second-person density, proof density, sentence rhythm, CTA placement (N4),
+     title formula T1-T8
+   - **production DNA**: runtime, engagement (likes/views), outlier multiplier
+   - **patterns**: top-vs-bottom median split, har claim pe N
+   - **10 idea drafts** winning patterns se (gate zaroori)
+3. **Gate → M2 → make-short** — jitna analysis bhi ho, bina gate pass kiye
+   kuch ship nahi hota.
+
+
 ### Zero-token path — agent fetch + ingest
 
 Network-restricted sandbox me bhi transcripts: **agent apne page-fetch tool

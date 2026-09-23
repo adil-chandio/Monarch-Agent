@@ -25,6 +25,7 @@ EXPECTED_SKILLS = {
     "thumbnail-pack",
     "metadata-seo",
     "upload-day",
+    "deep-forensic",
 }
 
 
@@ -96,6 +97,7 @@ def test_skills_mention_their_gates():
         "thumbnail-pack": ["L4"],
         "metadata-seo": ["gate-title"],
         "upload-day": ["monarch memory save"],
+        "deep-forensic": ["transcript-ingest", "gate-idea"],
     }
     for skill, needles in checks.items():
         text = (SKILLS_DIR / skill / "SKILL.md").read_text(encoding="utf-8")

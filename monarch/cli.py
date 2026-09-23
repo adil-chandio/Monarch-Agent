@@ -259,6 +259,12 @@ def main(argv: list[str] | None = None) -> int:
     ti.add_argument("--json", action="store_true", help="full forensic record as JSON")
     ti.add_argument("--save", default="", help="write transcripts/<id>.txt into this dir")
 
+    # deep-forensic — competitor dossier -> viral DNA -> ranked ideas
+    df = sub.add_parser("deep-forensic",
+                        help="Analyze a 15-20 video competitor dossier into patterns + ideas")
+    df.add_argument("dossier", help="dossier.json (see skills/deep-forensic)")
+    df.add_argument("--out", default="", help="output dir (default output/forensic/<slug>)")
+
     # Extract --key anywhere in argv
     extracted_key = None
     cleaned_argv = list(argv) if argv is not None else list(sys.argv[1:])
@@ -885,6 +891,30 @@ def main(argv: list[str] | None = None) -> int:
             head = record["transcript"][:300]
             if head:
                 print(f"  head: {head}…")
+        return 0
+
+    if args.cmd == "deep-forensic":
+        from monarch.pipelines.deep_forensic import report_card, run_deep_forensic
+
+        out = args.out
+        if not out:
+            import json as _j
+
+            try:
+                _niche = str(_j.loads(open(args.dossier, encoding="utf-8-sig").read())
+                              .get("niche", "niche"))
+            except Exception:
+                _niche = "niche"
+            slug = "".join(c if c.isalnum() else "-" for c in _niche.lower())
+            slug = "-".join(x for x in slug.split("-") if x)[:40] or "niche"
+            out = f"output/forensic/{slug}"
+        try:
+            report = run_deep_forensic(args.dossier, out)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        print(report_card(report), end="")
+        print(f"wrote {out}/deep_forensic_report.txt · deep_forensic.json · ideas.json")
         return 0
 
     # ── Agent-Reach commands ──
