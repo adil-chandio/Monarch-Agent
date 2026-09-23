@@ -175,6 +175,40 @@ def main(argv: list[str] | None = None) -> int:
     mv.add_argument("--sr", type=int, default=22050)
     mv.add_argument("--json", action="store_true", help="manifest JSON to stdout")
 
+    # Session memory — the new-session handoff bridge (RVF-inspired)
+    mem = sub.add_parser("memory", help="Save/restore the cross-session handoff state")
+    mem_sub = mem.add_subparsers(dest="mem_cmd", required=True)
+    ms = mem_sub.add_parser("save")
+    ms.add_argument("--state", default=None, help="M-state to snapshot (default: current)")
+    ms.add_argument("--channel", default=None, help="channel yaml path to embed")
+    ms.add_argument("--topic", default="", help="current working topic")
+    ms.add_argument("--pending", default="", help="comma-separated pending approvals")
+    ms.add_argument("--notes", default="", help="comma-separated session notes")
+    ms.add_argument("--out", default="", help="memory path (default .monarch/memory.json)")
+    mr = mem_sub.add_parser("restore", help="Print the handoff card for this session")
+    mr.add_argument("path", nargs="?", default="", help="memory json (default .monarch/memory.json)")
+
+    # Learn — close the L16 loop with real-world performance data
+    lr = sub.add_parser("learn", help="Log uploaded-video metrics and distill lessons")
+    lr_sub = lr.add_subparsers(dest="learn_cmd", required=True)
+    lrec = lr_sub.add_parser("record")
+    lrec.add_argument("--topic", required=True)
+    lrec.add_argument("--views", type=float, required=True)
+    lrec.add_argument("--avg-pct", type=float, required=True, help="avg %% viewed (0-100)")
+    lrec.add_argument("--subs", type=int, default=0)
+    lrec.add_argument("--cohort", default="", help="N2 cohort tag: kids | genz | adults")
+    lrec.add_argument("--length", type=float, default=0.0, help="runtime seconds")
+    lrec.add_argument("--date", default="", help="upload date (default today, UTC)")
+    lrec.add_argument("--note", default="")
+    lrec.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+    ldis = lr_sub.add_parser("distill")
+    ldis.add_argument("--min", type=int, default=3, help="min videos for a split (default 3)")
+    ldis.add_argument("--apply", action="store_true", help="write signals into lessons.md (3x rule)")
+    ldis.add_argument("--lessons", default="", help="lessons.md path (default repo lessons)")
+    ldis.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+    llog = lr_sub.add_parser("log", help="Show every logged video")
+    llog.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+
     # Agent-Reach integration — doctor + multi-platform search
     sub.add_parser("doctor", help="Check which upstream tools (yt-dlp, twitter, reddit, etc.) are available")
 
@@ -677,6 +711,91 @@ def main(argv: list[str] | None = None) -> int:
                   f"{manifest['total_s']:.0f}s -> {out}")
             print(f"maths: {manifest['maths']}")
             print("HAAN still gates the final render. You upload.")
+        return 0
+
+    # ── Session memory + learning loop ──
+
+    if args.cmd == "memory":
+        from monarch.core import memory
+
+        if args.mem_cmd == "save":
+            try:
+                p, doc = memory.save_state(
+                    path=args.out or memory.MEMORY_FILE,
+                    m_state=args.state,
+                    channel_path=args.channel,
+                    pending=[s for s in args.pending.split(",") if s.strip()],
+                    notes=[s for s in args.notes.split(",") if s.strip()],
+                    topic=args.topic,
+                )
+            except (ValueError, FileNotFoundError) as e:
+                print("FAIL", e)
+                return 2
+            print(memory.format_state(doc))
+            print(f"wrote {p}")
+            return 0
+        # restore
+        try:
+            doc = memory.load_state(args.path or memory.MEMORY_FILE)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        print(memory.format_state(doc))
+        return 0
+
+    if args.cmd == "learn":
+        from monarch.core import learn
+
+        if args.learn_cmd == "record":
+            try:
+                rec = learn.PerformanceRecord(
+                    topic=args.topic,
+                    views=args.views,
+                    avg_pct=args.avg_pct,
+                    subs=args.subs,
+                    cohort=args.cohort,
+                    length_s=args.length,
+                    date=args.date,
+                    note=args.note,
+                )
+                p = learn.record_performance(rec, args.file or learn.PERFORMANCE_FILE)
+            except ValueError as e:
+                print("FAIL", e)
+                return 2
+            print(f"logged {rec.topic} — {rec.views:.0f} views, "
+                  f"{rec.avg_pct:.0f}% avg viewed -> {p}")
+            return 0
+        if args.learn_cmd == "log":
+            try:
+                recs = learn.load_performance(args.file or learn.PERFORMANCE_FILE)
+            except ValueError as e:
+                print("FAIL", e)
+                return 2
+            if not recs:
+                print("(no videos logged yet — monarch learn record --topic ...)")
+                return 0
+            for r in recs:
+                print(f"{r.date} | {r.topic[:36]:<36} | {r.views:>9.0f} views | "
+                      f"{r.avg_pct:>3.0f}% avg | {r.cohort or '-':<6} | "
+                      f"{r.length_s:.0f}s" + (f" | {r.note}" if r.note else ""))
+            return 0
+        # distill
+        try:
+            recs = learn.load_performance(args.file or learn.PERFORMANCE_FILE)
+            report = learn.distill(recs, min_videos=args.min)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        print(report.summary())
+        for line in report.lines:
+            print(f"  · {line}")
+        if args.apply:
+            target = args.lessons or learn.LESSONS_FILE
+            written = learn.consolidate(report, target)
+            if written:
+                print(f"wrote {written} signal(s) -> {target} (3x rule)")
+            else:
+                print("nothing applied — signals need 'learned' status")
         return 0
 
     # ── Agent-Reach commands ──

@@ -82,3 +82,30 @@ monarch make-video --topic "the deep sea" --out output/deep-sea
 `sfx/*.wav`, `frames/frame_*.png`, `timeline.json` + `manifest.json`.
 It is the **previz layer**: no footage generation, no upload — the HAAN gate
 still owns the final render.
+
+## Skills, memory & the learning loop
+
+Ruflo-inspired (ideas mined, never the harness — stdlib law holds):
+
+- **`monarch/skills/`** — six executable playbooks in the open `SKILL.md`
+  format (`make-short`, `forensic-hunt`, `sfx-design`, `thumbnail-pack`,
+  `metadata-seo`, `upload-day`). Every command they mention is tested to be
+  real. A fresh session reads these and works — no handoff essays.
+- **`monarch memory save / restore`** — the cross-session handoff bridge
+  (`.monarch/memory.json`): M-state, channel DNA, pending approvals, notes,
+  lessons digest, performance digest. Fail-closed on corrupt/foreign files.
+- **`monarch learn record / log / distill [--apply]`** — the L16 loop closed
+  with reality: log APV/views per upload, median-split top vs bottom, and
+  distill provisional retention signals into `self_improve/lessons.md`
+  under the 3x rule. One video never becomes a law.
+- **`monarch/agents/`** — five specialist role cards (Forensic Analyst,
+  Script Doctor, SFX Designer, Thumbnail Strategist, SEO Packer), each bound
+  to a real M-state with guardrails and handoffs.
+
+```
+monarch memory save --state M3_script --topic "the deep sea" --pending "approve board"
+monarch memory restore
+monarch learn record --topic "the deep sea" --views 42000 --avg-pct 71 --cohort genz
+monarch learn distill --apply
+```
+
