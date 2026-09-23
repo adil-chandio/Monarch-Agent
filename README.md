@@ -74,6 +74,19 @@ monarch doctor                                                  # health, incl. 
 `monarch scrape <yt-url> --transcript` now auto-falls back to the hosted API
 when yt-dlp is missing. Rate limit (5 req / 10s) is honored via `Retry-After`.
 
+### Zero-token path — agent fetch + ingest
+
+Network-restricted sandbox me bhi transcripts: **agent apne page-fetch tool
+se** `https://www.youtube.com/watch?v=<id>` **kholta hai** (platform network
+se metadata + `## Transcript` milta hai), text file save karta hai, aur:
+
+```
+monarch transcript-ingest fetch.txt --json --save transcripts/
+```
+
+fetch-page markdown / WebVTT / SRT / plain — sab auto-detect, same forensic
+record (`scrape`-compatible), pipeline seedha aage chalta hai.
+
 ## Neuro Video — playbook → storyboard → previz
 
 The **Neuro-Psychology Playbook** (`monarch/playbook/neuro_psychology.md`, laws N1–N5)

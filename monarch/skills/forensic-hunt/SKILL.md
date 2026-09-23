@@ -32,11 +32,20 @@ description: >
    monarch xsearch "$NICHE"
    monarch wsearch "least known $NICHE facts with evidence"
    ```
-3. Dissect the best outlier for structure + gap:
+3. Dissect the best outlier for structure + gap. Sandbox me yt-dlp/keys
+   missing? **Agent-fetch path** (zero tools, zero tokens):
+   a. Apne page-fetch tool se kholo: `https://www.youtube.com/watch?v=$VID`
+      — markdown me metadata + `## Transcript` section milta hai.
+   b. Us text ko file me save karo, phir pipeline me daalo:
+   ```
+   monarch transcript-ingest fetch.txt --json --save transcripts/
+   monarch scrape transcripts/$VID.txt --transcript   # ya seedha dissect
+   ```
+   yt-dlp available ho to direct:
    ```
    monarch scrape "$OUTLIER_URL" --transcript
    ```
-   yt-dlp missing? The hosted backend covers it (token in `.env`):
+   Hosted backend (token in `.env`) bhi hai:
    ```
    monarch transcript "$OUTLIER_URL"          # youtube-transcript.io
    ```

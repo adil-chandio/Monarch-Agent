@@ -250,6 +250,15 @@ def main(argv: list[str] | None = None) -> int:
     tch = sub.add_parser("tchan", help="Hosted channel info via youtube-transcript.io (Plus)")
     tch.add_argument("channels", nargs="+", help="channel ids without @ (max 50)")
 
+    # transcript-ingest — agent-fetched page/captions -> forensic record
+    ti = sub.add_parser(
+        "transcript-ingest",
+        help="Normalize an agent-fetched transcript (markdown/VTT/SRT/plain) into the pipeline",
+    )
+    ti.add_argument("path", nargs="?", default="-", help="file, or stdin when '-'")
+    ti.add_argument("--json", action="store_true", help="full forensic record as JSON")
+    ti.add_argument("--save", default="", help="write transcripts/<id>.txt into this dir")
+
     # Extract --key anywhere in argv
     extracted_key = None
     cleaned_argv = list(argv) if argv is not None else list(sys.argv[1:])
@@ -846,6 +855,36 @@ def main(argv: list[str] | None = None) -> int:
             print("FAIL", e)
             return 2
         print(json.dumps(chans, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.cmd == "transcript-ingest":
+        from monarch.intel import ingest as tng
+
+        try:
+            record = tng.ingest_file(args.path) if args.path != "-" \
+                else tng.ingest_text(sys.stdin.read(), source="ingest:stdin")
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.save:
+            try:
+                p = tng.save_transcript(record, args.save)
+            except ValueError as e:
+                print("FAIL", e)
+                return 2
+            print(f"saved {p}", file=sys.stderr)
+        if args.json:
+            print(json.dumps(record, indent=2, ensure_ascii=False))
+        else:
+            mark = "OK" if record["has_transcript"] else "NO-TRANSCRIPT"
+            print(f"{mark} [{record['kind']}] {record.get('title', '')}")
+            print(f"  {record.get('channel', '')} | views {record.get('view_count', '0')}"
+                  f" | {record.get('duration', '')}")
+            print(f"  transcript: {record['transcript_words']} words, "
+                  f"{record['transcript_chars']} chars")
+            head = record["transcript"][:300]
+            if head:
+                print(f"  head: {head}…")
         return 0
 
     # ── Agent-Reach commands ──
