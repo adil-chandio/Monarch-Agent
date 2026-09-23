@@ -56,6 +56,24 @@ monarch script-fountain board.json --out approved.fountain
 Words per clip come from the maths line, never from taste — no padding, no fake counts.
 Full law: `docs/FOUNTAIN_M3.md`.
 
+## Intel backends — YouTube transcripts, three paths
+
+| Path | Needs | Use |
+| --- | --- | --- |
+| `YOUTUBE_API_KEY` | Data API key | search + stats |
+| yt-dlp (Agent-Reach) | local tool | transcripts, zero-config |
+| **youtube-transcript.io** | `YOUTUBE_TRANSCRIPT_IO_TOKEN` in `.env` | hosted transcripts — no local tooling |
+
+```
+monarch transcript <video-id-or-url>... [--json] [--save DIR]   # up to 50/call
+monarch tchan <channel-id>...                                   # Plus plans
+monarch keys                                                    # shows all backends
+monarch doctor                                                  # health, incl. hosted API
+```
+
+`monarch scrape <yt-url> --transcript` now auto-falls back to the hosted API
+when yt-dlp is missing. Rate limit (5 req / 10s) is honored via `Retry-After`.
+
 ## Neuro Video — playbook → storyboard → previz
 
 The **Neuro-Psychology Playbook** (`monarch/playbook/neuro_psychology.md`, laws N1–N5)

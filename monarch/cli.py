@@ -241,6 +241,15 @@ def main(argv: list[str] | None = None) -> int:
     qs.add_argument("--stage", choices=["research", "script", "render", "edit", "packaging"],
                      default="packaging")
 
+    # youtube-transcript.io — hosted transcripts (third YouTube backend)
+    tp = sub.add_parser("transcript", help="Hosted transcripts via youtube-transcript.io")
+    tp.add_argument("videos", nargs="+", help="video ids or URLs (max 50 per call)")
+    tp.add_argument("--json", action="store_true", help="JSON records instead of text")
+    tp.add_argument("--save", default="", help="write each transcript to this dir as .txt")
+
+    tch = sub.add_parser("tchan", help="Hosted channel info via youtube-transcript.io (Plus)")
+    tch.add_argument("channels", nargs="+", help="channel ids without @ (max 50)")
+
     # Extract --key anywhere in argv
     extracted_key = None
     cleaned_argv = list(argv) if argv is not None else list(sys.argv[1:])
@@ -356,6 +365,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.cmd == "keys":
         from monarch.core.config import has_gemini, has_youtube_key, has_youtube_upload
+        from monarch.intel.ytt import has_token as ytt_has_token
 
         print(
             json.dumps(
@@ -363,6 +373,7 @@ def main(argv: list[str] | None = None) -> int:
                     "gemini": has_gemini(),
                     "youtube_data": has_youtube_key(),
                     "youtube_upload_oauth": has_youtube_upload(),
+                    "youtube_transcript_io": ytt_has_token(),
                     "hint": "true = key loaded from .env; values never printed",
                 }
             )
@@ -796,6 +807,45 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"wrote {written} signal(s) -> {target} (3x rule)")
             else:
                 print("nothing applied — signals need 'learned' status")
+        return 0
+
+    if args.cmd == "transcript":
+        from monarch.intel import ytt
+
+        try:
+            recs = ytt.fetch_transcripts(args.videos)
+        except (ValueError, RuntimeError) as e:
+            print("FAIL", e)
+            return 2
+        if args.save:
+            from pathlib import Path
+
+            d = Path(args.save)
+            d.mkdir(parents=True, exist_ok=True)
+            for r in recs:
+                (d / f"{r['id']}.txt").write_text(r["transcript"], encoding="utf-8")
+            print(f"saved {len(recs)} transcript(s) -> {d}", file=sys.stderr)
+        if args.json:
+            print(json.dumps(
+                [{"id": r["id"], "chars": len(r["transcript"]),
+                  "transcript": r["transcript"]} for r in recs], indent=2))
+        else:
+            for r in recs:
+                text = r["transcript"]
+                head = text[:400] + ("…" if len(text) > 400 else "")
+                print(f"=== {r['id']} — {len(text)} chars ===")
+                print(head if text else "(no transcript returned)")
+        return 0
+
+    if args.cmd == "tchan":
+        from monarch.intel import ytt
+
+        try:
+            chans = ytt.fetch_channels(args.channels)
+        except (ValueError, RuntimeError) as e:
+            print("FAIL", e)
+            return 2
+        print(json.dumps(chans, indent=2, ensure_ascii=False))
         return 0
 
     # ── Agent-Reach commands ──

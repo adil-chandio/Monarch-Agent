@@ -36,6 +36,10 @@ description: >
    ```
    monarch scrape "$OUTLIER_URL" --transcript
    ```
+   yt-dlp missing? The hosted backend covers it (token in `.env`):
+   ```
+   monarch transcript "$OUTLIER_URL"          # youtube-transcript.io
+   ```
 4. Draft **10 ideas** as Idea records (title / hook / itch / visual anchor).
    Gate each one — a FAIL idea is dead, fix it or drop it:
    ```
