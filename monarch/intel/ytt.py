@@ -54,7 +54,8 @@ class RateLimited(RuntimeError):
 
 
 def _get_token() -> str:
-    """Token from env (config.py already loaded .env). Fail-closed."""
+    """Token from env (core.config loads .env on first import). Fail-closed."""
+    from monarch.core import config  # noqa: F401 — ensures .env is loaded
     import os
 
     token = os.environ.get(TOKEN_ENV, "").strip()
