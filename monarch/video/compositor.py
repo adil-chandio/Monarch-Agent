@@ -23,9 +23,19 @@ from pathlib import Path
 
 from monarch.video.audio import SILENCE_DROP_S
 from monarch.video.director import Storyboard
-from monarch.video.engine import FRAME_H, FRAME_W, Frame, FrameSpec, render_frame
+from monarch.video.engine import (
+    FRAME_H,
+    FRAME_W,
+    Frame,
+    FrameSpec,
+    draw_fg,
+    render_frame,
+    scene_geometry,
+)
 
-MOTIONS = ("zoom_in", "zoom_out", "pan_left", "pan_right", "shake")
+MOTIONS = ("zoom_in", "zoom_out", "pan_left", "pan_right", "shake",
+           "parallax_orbit", "push_in_fg")
+ANIMATIONS = ("kenburns", "parallax")
 
 
 @dataclass
@@ -103,6 +113,27 @@ def _frames_for(duration_s: float, fps: int) -> int:
     return max(1, int(round(duration_s * fps)))
 
 
+def render_parallax(base_bg: Frame, geo: dict, motion: Motion, progress: float,
+                    seed: int = 0) -> Frame:
+    """2.5D: background crop-moves one way, foreground drifts the other.
+
+    The image-from-a-still finally BREATHES — focal block and dialogue pill
+    float over the plate with independent motion (DepthFlow idea, stdlib).
+    """
+    frame = ken_burns(base_bg, motion, progress, seed)
+    W = base_bg.w
+    p = min(1.0, max(0.0, progress))
+    amp = max(4, W // 90)
+    phase = progress * math.pi * 2
+    dx = int(amp * math.sin(phase)) * (-1 if motion.kind != "push_in_fg" else 1)
+    dy = int(amp * 0.35 * math.cos(phase * 0.5))
+    if motion.kind == "push_in_fg":
+        dx = int(-amp * 0.6 * p)
+        dy = int(-amp * 0.6 * p)
+    draw_fg(frame, geo, dx=dx, dy=dy)
+    return frame
+
+
 def stitch(
     sb: Storyboard,
     out_dir: str | Path,
@@ -112,8 +143,9 @@ def stitch(
     height: int = FRAME_H,
     accent: tuple[int, int, int] | None = None,
     seed: int = 0,
+    animation: str = "kenburns",
 ) -> dict:
-    """Storyboard -> base frames -> Ken Burns sub-frames + timeline.json."""
+    """Storyboard -> base frames -> animated sub-frames + timeline.json."""
     if fps <= 0:
         raise ValueError("fps must be > 0")
     d = Path(out_dir)
@@ -143,10 +175,40 @@ def stitch(
             seed=seed + scene.id,
         )
         motion = plan_camera(scene.id, meta["role"], seed)
+        if animation == "parallax" and scene.id % 2 == 0:
+            motion = Motion("parallax_orbit", 1.06, 1.06,
+                            (0.55, 0.5), (0.45, 0.5))
+        geo = scene_geometry(
+            FrameSpec(
+                scene_id=scene.id, headline=sb.title, vo_line=scene.vo_line,
+                badge=f"S{scene.id:02d}/{n:02d}", driver=meta["driver"],
+                role=meta["role"],
+                progress=(scene.t_start + scene.t_end) / 2 / max(0.001, scenes[-1].t_end),
+                cohort=sb.cohort, accent=accent,
+            ),
+            width=width, height=height, seed=seed + scene.id,
+        ) if animation == "parallax" else None
+        base_bg = None
+        if geo is not None:
+            base_bg = render_frame(
+                FrameSpec(
+                    scene_id=scene.id, headline=sb.title, vo_line=scene.vo_line,
+                    badge=f"S{scene.id:02d}/{n:02d}", driver=meta["driver"],
+                    role=meta["role"],
+                    progress=(scene.t_start + scene.t_end) / 2 / max(0.001, scenes[-1].t_end),
+                    cohort=sb.cohort, accent=accent,
+                ),
+                width=width, height=height, seed=seed + scene.id,
+                include_fg=False,
+            )
         count = _frames_for(scene.t_end - scene.t_start, fps)
         for k in range(count):
             progress = k / max(1, count - 1) if count > 1 else 0.0
-            frame = ken_burns(base, motion, progress, seed + scene.id * 10 + k)
+            if geo is not None:
+                frame = render_parallax(base_bg, geo, motion, progress,
+                                        seed + scene.id * 10 + k)
+            else:
+                frame = ken_burns(base, motion, progress, seed + scene.id * 10 + k)
             name = f"frame_{total_frames + 1:05d}.png"
             frame.write_png(frames_dir / name)
             entries.append({
@@ -169,6 +231,7 @@ def stitch(
         "cohort": sb.cohort,
         "seed": sb.seed,
         "fps": fps,
+        "animation": animation,
         "size": [width, height],
         "maths": sb.math_line,
         "frame_count": total_frames,

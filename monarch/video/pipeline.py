@@ -20,6 +20,8 @@ import json
 from pathlib import Path
 
 from monarch.video import audio
+from monarch.video import mix as mix_bus
+from monarch.video import voiceover
 from monarch.video.compositor import stitch
 from monarch.video.director import plan_storyboard, write_storyboard_files
 
@@ -41,8 +43,19 @@ def make_video(
     fps: int = 2,
     sr: int = DEFAULT_SR,
     accent: tuple[int, int, int] | None = None,
+    animation: str = "kenburns",
+    voice_backend: str = "none",
+    wavs_dir: str | Path | None = None,
+    do_mix: bool = False,
 ) -> dict:
-    """Topic in, previz animatic out. Returns the manifest dict."""
+    """Topic in, previz animatic out. Returns the manifest dict.
+
+    TABAAHI wave additions: ``animation="parallax"`` floats the foreground
+    against the plate (2.5D from stills); ``voice_backend`` in
+    {auto,edge,dir,mumble} adds the AUDIO-FIRST voice track (sentence
+    chunks, glue laws, envelope QC); ``do_mix`` renders the five-layer
+    master (music ducked under VO, SFX per scene, room tone, limiter).
+    """
     if width <= 0 or height <= 0:
         raise ValueError("width/height must be > 0")
     if sr <= 0:
@@ -74,7 +87,40 @@ def make_video(
         sfx_files[scene.id] = rel
 
     timeline = stitch(sb, d, fps=fps, width=width, height=height, accent=accent,
-                      seed=sb.seed)
+                      seed=sb.seed, animation=animation)
+
+    # P0: the VO track — audio-first, glued, QC'd (L1: VO is the skeleton)
+    voice_info: dict | None = None
+    mix_info: dict | None = None
+    if voice_backend != "none":
+        board_rows = sb.board()
+        vo = voiceover.build_voiceover(
+            board_rows, backend=voice_backend, wavs_dir=wavs_dir,
+            sr=sr, seed=sb.seed,
+        )
+        vp = d / "vo" / "vo_track.wav"
+        voiceover.write_track(vp, vo["track"], vo["sr"])
+        voice_info = {
+            "backends": vo["backends"],
+            "placeholder": vo["placeholder"],
+            "vo_end_s": vo["vo_end_s"],
+            "board_end_s": vo["board_end_s"],
+            "qc": vo["qc"],
+            "wav": "vo/vo_track.wav",
+        }
+        if do_mix:
+            sfx_rows = [
+                {"id": r["id"], "t_start": r["t_start"], "t_end": r["t_end"],
+                 "sfx": r["sfx"]}
+                for r in board_rows
+            ]
+            mixed, mrep = mix_bus.mix(
+                duration_s=max(timeline["total_s"], vo["vo_end_s"]) + 0.4,
+                vo=vo["track"], sr=sr, board=sfx_rows, seed=sb.seed,
+            )
+            mp = d / "master_mix.wav"
+            voiceover.write_track(mp, mixed, sr)
+            mix_info = {"wav": "master_mix.wav", "report": mrep.summary()}
 
     manifest = {
         "agent": "monarch.video",
@@ -90,6 +136,9 @@ def make_video(
         "frame_count": timeline["frame_count"],
         "frame_size": [width, height],
         "sample_rate": sr,
+        "animation": animation,
+        "voice": voice_info,
+        "mix": mix_info,
         "files": {
             "screenplay": str(doc_paths["fountain"]),
             "board": str(doc_paths["board"]),

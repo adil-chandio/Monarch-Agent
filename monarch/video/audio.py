@@ -309,5 +309,15 @@ def write_wav(path: str | Path, samples: list[float], sr: int = 44100) -> Path:
     return p
 
 
+def read_wav(path: str | Path) -> tuple[list[float], int]:
+    """16-bit mono PCM in -> (float samples -1..1, sr)."""
+    with wave.open(str(path), "rb") as w:
+        sr = w.getframerate()
+        if w.getnchannels() != 1 or w.getsampwidth() != 2:
+            raise ValueError(f"{path}: need 16-bit mono wav")
+        raw = w.readframes(w.getnframes())
+    return [v / 32768.0 for v in struct.unpack(f"<{len(raw)//2}h", raw)], sr
+
+
 def duration_s(samples: list[float], sr: int = 44100) -> float:
     return round(len(samples) / sr, 3) if sr else 0.0

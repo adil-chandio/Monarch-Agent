@@ -173,7 +173,50 @@ def main(argv: list[str] | None = None) -> int:
     mv.add_argument("--width", type=int, default=1080)
     mv.add_argument("--height", type=int, default=1920)
     mv.add_argument("--sr", type=int, default=22050)
+    mv.add_argument("--animation", default="kenburns",
+                    help="kenburns | parallax (2.5D foreground drift)")
+    mv.add_argument("--voice-backend", default="none",
+                    help="none | auto | edge | dir | mumble (audio-first VO)")
+    mv.add_argument("--wavs-dir", default=None,
+                    help="per-scene wavs for --voice-backend dir")
+    mv.add_argument("--with-mix", action="store_true",
+                    help="render master_mix.wav (music duck, SFX, room tone)")
     mv.add_argument("--json", action="store_true", help="manifest JSON to stdout")
+
+    # TABAAHI wave: voice + humanize + mix commands
+    hu = sub.add_parser("humanize",
+                        help="Strip AI-tone from a script; sign/strip/flag report")
+    hu.add_argument("text", nargs="?")
+    hu.add_argument("--file", default=None, help="read script text from file")
+    hu.add_argument("--gate", type=float, default=1.5,
+                    help="AI-signs per 100 words that fail (default 1.5)")
+    hu.add_argument("--json", action="store_true")
+
+    vo = sub.add_parser("voiceover",
+                        help="Audio-first VO: chunk -> synth -> glue -> QC")
+    vo.add_argument("--topic", default=None)
+    vo.add_argument("--script", default=None, help="script text (or --script-file)")
+    vo.add_argument("--script-file", default=None)
+    vo.add_argument("--backend", default="auto",
+                    help="auto | edge | dir | mumble")
+    vo.add_argument("--wavs-dir", default=None)
+    vo.add_argument("--out", default="output/vo")
+    vo.add_argument("--sr", type=int, default=24000)
+    vo.add_argument("--seed", type=int, default=0)
+    vo.add_argument("--json", action="store_true")
+
+    mb = sub.add_parser("mix",
+                        help="Five-layer mix bus over a VO track (duck+SFX+room+limiter)")
+    mb.add_argument("--vo", required=True, help="VO wav (16-bit mono)")
+    mb.add_argument("--duration", type=float, required=True)
+    mb.add_argument("--board", default=None,
+                    help="board.json (scenes[] with t_start/t_end/sfx)")
+    mb.add_argument("--out", default="output/master_mix.wav")
+    mb.add_argument("--sr", type=int, default=0,
+                    help="0 = use the VO wav's own sample rate")
+    mb.add_argument("--seed", type=int, default=0)
+    mb.add_argument("--no-music", action="store_true")
+    mb.add_argument("--json", action="store_true")
 
     # Session memory — the new-session handoff bridge (RVF-inspired)
     mem = sub.add_parser("memory", help="Save/restore the cross-session handoff state")
@@ -709,6 +752,12 @@ def main(argv: list[str] | None = None) -> int:
             slug = "".join(c if c.isalnum() else "-" for c in args.topic.lower())
             slug = "-".join(p for p in slug.split("-") if p)[:48] or "video"
             out = f"output/{slug}"
+        if args.animation not in ("kenburns", "parallax"):
+            print("FAIL animation must be kenburns|parallax")
+            return 2
+        if args.voice_backend not in ("none", "auto", "edge", "dir", "mumble"):
+            print("FAIL voice-backend must be none|auto|edge|dir|mumble")
+            return 2
         try:
             manifest = make_video(
                 args.topic, out,
@@ -722,6 +771,10 @@ def main(argv: list[str] | None = None) -> int:
                 height=args.height,
                 fps=args.fps,
                 sr=args.sr,
+                animation=args.animation,
+                voice_backend=args.voice_backend,
+                wavs_dir=args.wavs_dir,
+                do_mix=args.with_mix,
             )
         except GateFail as e:
             print("FAIL", "; ".join(e.misses))
@@ -736,7 +789,136 @@ def main(argv: list[str] | None = None) -> int:
                   f"{manifest['frame_count']} frames @ {manifest['fps']}fps, "
                   f"{manifest['total_s']:.0f}s -> {out}")
             print(f"maths: {manifest['maths']}")
+            print(f"animation: {manifest['animation']}")
+            if manifest.get("voice"):
+                v = manifest["voice"]
+                print(f"voice: {v['vo_end_s']}s via {v['backends']}"
+                      + (" (PLACEHOLDER mumble)" if v["placeholder"] else ""))
+                for c in v["qc"]:
+                    mark = "PASS" if c["pass"] else "FAIL"
+                    print(f"  vo qc {c['check']}: {mark} — {c['detail']}")
+            if manifest.get("mix"):
+                print(f"mix: {manifest['mix']['report']}")
             print("HAAN still gates the final render. You upload.")
+        return 0
+
+    # ── TABAAHI wave: humanize / voiceover / mix ──
+
+    if args.cmd == "humanize":
+        from pathlib import Path
+        from monarch.video.humanize import humanize
+
+        text = args.text or ""
+        if args.file:
+            text = Path(args.file).read_text(encoding="utf-8")
+        if not text.strip():
+            print("FAIL no text (pass TEXT or --file)")
+            return 2
+        clean, rep = humanize(text, gate=args.gate)
+        if args.json:
+            print(json.dumps(rep.as_dict(), indent=2))
+        else:
+            print(rep.summary())
+            for n in rep.notes:
+                print(f"  note: {n}")
+            for f in rep.flagged:
+                print(f"  flagged: {f}")
+            for st in rep.stripped:
+                print(f"  stripped: {st}")
+            print("--- CLEAN SCRIPT ---")
+            print(clean)
+        return 0
+
+    if args.cmd == "voiceover":
+        from pathlib import Path
+        from monarch.video import voiceover as vo_mod
+
+        text = args.script or ""
+        if args.script_file:
+            text = Path(args.script_file).read_text(encoding="utf-8")
+        if not text and not args.topic:
+            print("FAIL need --topic or --script/--script-file")
+            return 2
+        if not text:
+            from monarch.video.director import plan_storyboard
+
+            sb = plan_storyboard(args.topic)
+            text = "\n".join(s.vo_line for s in sb.scenes)
+        if args.backend not in ("auto", "edge", "dir", "mumble"):
+            print("FAIL backend must be auto|edge|dir|mumble")
+            return 2
+        scenes = [{"id": i, "vo_line": ln, "t_start": 0.0, "t_end": 0.0,
+                   "sfx": "", "role": "", "driver": "", "match_cut": ""}
+                  for i, ln in enumerate(
+                      [p for p in (x.strip() for x in text.split("\n")) if p], 1)]
+        try:
+            built = vo_mod.build_voiceover(
+                scenes, backend=args.backend, wavs_dir=args.wavs_dir,
+                sr=args.sr, seed=args.seed, audio_first=True,
+            )
+        except (ValueError, RuntimeError) as e:
+            print("FAIL", e)
+            return 2
+        wav = vo_mod.write_track(Path(args.out) / "vo_track.wav",
+                                 built["track"], built["sr"])
+        (Path(args.out) / "vo_scenes.json").write_text(
+            json.dumps({"sr": built["sr"], "vo_end_s": built["vo_end_s"],
+                        "backends": built["backends"],
+                        "placeholder": built["placeholder"],
+                        "scenes": built["scenes"], "qc": built["qc"]},
+                       indent=2), encoding="utf-8")
+        if args.json:
+            print(json.dumps({"wav": str(wav), "sr": built["sr"],
+                              "vo_end_s": built["vo_end_s"],
+                              "backends": built["backends"],
+                              "placeholder": built["placeholder"],
+                              "scenes": built["scenes"], "qc": built["qc"]},
+                             indent=2))
+        else:
+            print(f"VO READY — {built['vo_end_s']}s via {built['backends']}"
+                  + (" (PLACEHOLDER mumble)" if built["placeholder"] else "")
+                  + f" -> {wav}")
+            for row in built["scenes"]:
+                print(f"  scene {row['scene_id']:02d}: {row['speech_s']}s "
+                      f"({row['chunks']} chunks) @ {row['start']:.2f}s")
+            for c in built["qc"]:
+                mark = "PASS" if c["pass"] else "FAIL"
+                print(f"  qc {c['check']}: {mark} — {c['detail']}")
+        return 0
+
+    if args.cmd == "mix":
+        from pathlib import Path
+        from monarch.video import mix as mix_bus
+        from monarch.video import voiceover as vo_mod
+        from monarch.video.audio import read_wav
+
+        vo_samples, vo_sr = read_wav(args.vo)
+        sr = args.sr or vo_sr
+        board_rows: list[dict] = []
+        if args.board:
+            data = json.loads(Path(args.board).read_text(encoding="utf-8"))
+            rows = data.get("scenes", data) if isinstance(data, dict) else data
+            for r in rows:
+                if isinstance(r, dict) and r.get("sfx"):
+                    board_rows.append({"id": r.get("id", 0),
+                                       "t_start": float(r.get("t_start", 0.0)),
+                                       "t_end": float(r.get("t_end", 0.0)),
+                                       "sfx": str(r.get("sfx", ""))})
+        try:
+            mixed, mrep = mix_bus.mix(
+                duration_s=args.duration, vo=vo_samples, sr=sr,
+                board=board_rows, seed=args.seed, music=not args.no_music,
+            )
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        out = vo_mod.write_track(args.out, mixed, sr)
+        if args.json:
+            print(json.dumps({"wav": str(out), "report": mrep.summary()},
+                             indent=2))
+        else:
+            print(f"MIX READY -> {out}")
+            print(mrep.summary())
         return 0
 
     # ── Session memory + learning loop ──

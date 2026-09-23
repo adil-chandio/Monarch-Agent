@@ -131,6 +131,43 @@ monarch make-video --topic "the deep sea" --out output/deep-sea
 It is the **previz layer**: no footage generation, no upload — the HAAN gate
 still owns the final render.
 
+## TABAAHI wave — audio-first VO, humanizer, 2.5D parallax, mix bus 💀
+
+Why videos felt robotic (VO cut mid-word, dead-air gaps, abrupt starts, no
+SFX, still images) and the fix, as law: **L1 — the VO is the skeleton.**
+Timing now comes from *measured speech*, not the scene maths.
+
+- **`humanize`** — strips ~40 AI-tell patterns (delve/tapestry/game-changer,
+  essay connectives, "not just X but Y" shapes, em-dash overuse, uniform
+  rhythm), fixes inflated verbs *with grammar intact* (utilized→used,
+  tapestry→story), flags lines that need a human rewrite. Fail-closed:
+  reports signs/100w before → after.
+- **`voiceover`** — sentence-boundary chunks (never mid-clause), 100ms
+  lead-in, 250–500ms tail, 60ms crossfades, gap caps 0.5s/0.3s/0.15s, and
+  QC that measures speech end from the waveform envelope (the TTS
+  trailing-silence dead-air bug dies here). Backends: `edge` (real TTS on
+  your PC), `dir` (per-scene wavs from Chatterbox/any GPU engine — see
+  `docs/GPU_VOICE_UPGRADES.md`), `mumble` (offline placeholder), `auto`.
+- **`make-video --animation parallax`** — 2.5D from stills: background
+  plate crop-moves while the focal block + dialogue pill float the other
+  way (DepthFlow idea, stdlib implementation).
+- **`mix` / `--with-mix`** — the five-layer bus: VO on top, music bed
+  sidechain-ducked under speech, per-scene SFX from the board, room tone
+  killing digital silence, soft-limited master. Levels are measured and
+  reported, never vibes.
+
+```
+monarch humanize "In today's world, let's delve into the tapestry of lies."
+monarch voiceover --topic "the buried file" --backend auto --out output/vo
+monarch make-video --topic "the buried file" --animation parallax \
+                   --voice-backend auto --with-mix --seed 7
+monarch mix --vo output/vo/vo_track.wav --duration 62 --board output/the-buried-file/board.json
+```
+
+Every scene's Fountain now carries a `[[VO: [prosody] | beat: ...]]`
+direction line; payoff scenes land **partial** (info-tension) and the next
+question re-hooks **before** the answer completes — carousel law, in code.
+
 ## Skills, memory & the learning loop
 
 Ruflo-inspired (ideas mined, never the harness — stdlib law holds):

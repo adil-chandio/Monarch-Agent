@@ -24,6 +24,8 @@ from monarch.core.fit_line import fit_words
 from monarch.core.gates import GateFail
 from monarch.core.scene_math import SceneMath, compute_math, maths_line
 from monarch.core.words import count_words
+from monarch.video import story
+from monarch.video.humanize import humanize
 from monarch.pipelines.fountain import (
     ScriptReport,
     beats_from_screenplay,
@@ -283,6 +285,7 @@ def _fountain_text(sb_title: str, scenes: list[Scene], metas: list[dict],
             note += f" | silence_before_s: {meta['silence_before_s']}"
         note += "]]"
         out.append(note)
+        out.append(f"[[VO: {meta.get('prosody', '')} | beat: {meta.get('beat', '')}]]")
         out.append("")
     return "\n".join(out).rstrip() + "\n"
 
@@ -377,12 +380,21 @@ def plan_storyboard(
                          first_clip_s=first_clip_s)
     rng = random.Random(seed * 104729 + 17)
     roles = _plan_roles(maths.scenes, seed)
+    arc = story.plan_arc([r["role"] for r in roles])
 
     title = topic.upper()
     scenes: list[Scene] = []
     metas: list[dict] = []
     for i, plan in enumerate(roles, 1):
+        arc_i = arc[i - 1]
         draft = _compose_line(plan["role"], topic, maths.words_per_clip, rng)
+        # STORY layer: partial payoff + re-hook before the full answer (N3.5)
+        if arc_i.get("partial"):
+            draft = story.partialize(draft, rng)
+        if arc_i.get("rehook"):
+            draft = story.rehook_into(draft, arc_i["rehook"])
+        # HUMANIZE pass: AI-tell phrases die before the script exists
+        draft, hum = humanize(draft)
         visual = (
             f"one focal {plan['role']} visual on {topic}, high contrast, "
             f"single subject, motion snap"
@@ -400,7 +412,11 @@ def plan_storyboard(
             sfx=plan["sfx"],
         ))
         metas.append({**plan, "law": NEURO_DRIVERS[plan["driver"]]["law"],
-                      "match_cut": match})
+                      "match_cut": match,
+                      "beat": arc_i["beat"],
+                      "prosody": arc_i["prosody"],
+                      "partial": arc_i.get("partial", False),
+                      "rehook": arc_i.get("rehook", "")})
 
     # run the draft back through the real M3 gate — fail closed
     fountain = _fountain_text(title, scenes, metas, cohort, seed)

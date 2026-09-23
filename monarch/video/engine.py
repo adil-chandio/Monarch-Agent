@@ -163,9 +163,57 @@ def _cohort_palette(spec: FrameSpec):
     return pal
 
 
+def scene_geometry(spec: FrameSpec, *, width: int = FRAME_W, height: int = FRAME_H,
+                   seed: int = 0) -> dict:
+    """Foreground geometry of a scene frame — the parallax layer's cast.
+
+    Returns rects + text metadata so the compositor can move the focal
+    block and dialogue pill AGAINST the background (2.5D depth) without
+    re-rendering the whole frame.
+    """
+    bg, grid, ink, accent, pill = _cohort_palette(spec)
+    m = max(width, height) // 100 or 1
+    fw, fh = int(width * 0.52), int(height * 0.34)
+    fx = int(width * (0.24 if spec.scene_id % 2 else 0.30))
+    fy = int(height * 0.38)
+    es = max(2, m)
+    ey = fy + fh // 3
+    pscale = max(1, m // 4)
+    pw = int(width * 0.86)
+    lines = wrap_text(spec.vo_line, pw - m * 4, pscale)[:6]
+    ph = (GLYPH_H * pscale + pscale) * len(lines) + m * 3
+    px, py = int((width - pw) / 2), int(height * 0.78)
+    return {
+        "palette": {"bg": bg, "grid": grid, "ink": ink, "accent": accent,
+                    "pill": pill},
+        "m": m,
+        "focal": {
+            "rects": [
+                (fx + m, fy + m, fw, fh, grid),                       # shadow
+                (fx, fy, fw, fh, ink if spec.scene_id % 2 else pill),  # block
+                (fx + fw // 4, ey, es * 2, es * 2, bg),               # eye L
+                (fx + fw * 3 // 4 - es * 2, ey, es * 2, es * 2, bg),  # eye R
+            ],
+        },
+        "role_label": {
+            "text": spec.role, "x": fx + m,
+            "y": fy - GLYPH_H * max(1, m // 3) - m,
+            "scale": max(1, m // 3), "color": accent,
+        },
+        "pill": {
+            "x": px, "y": py, "w": pw, "h": ph, "fill": pill,
+            "border": accent, "lines": lines, "ink": ink if spec.scene_id % 2 else bg,
+            "scale": pscale, "m": m, "line_h": GLYPH_H * pscale + pscale,
+        },
+    }
+
+
 def render_frame(spec: FrameSpec, *, width: int = FRAME_W, height: int = FRAME_H,
-                 seed: int = 0) -> Frame:
-    """One storyboard scene -> one 9:16 frame (N1/N2/N3/N4 wired in)."""
+                 seed: int = 0, include_fg: bool = True) -> Frame:
+    """One storyboard scene -> one 9:16 frame (N1/N2/N3/N4 wired in).
+
+    ``include_fg=False`` renders the background plate only (parallax base).
+    """
     bg, grid, ink, accent, pill = _cohort_palette(spec)
     f = Frame(width, height, bg)
     m = max(width, height) // 100 or 1  # base margin unit
@@ -203,36 +251,10 @@ def render_frame(spec: FrameSpec, *, width: int = FRAME_W, height: int = FRAME_H
     # accent snap bar = frame-one motion (N1)
     f.rect(int(width * 0.5) - m * 6, hy, m * 12, max(2, m // 2), accent)
 
-    # N1 focal block: one silhouette mass, off-center, high contrast
-    fw, fh = int(width * 0.52), int(height * 0.34)
-    fx = int(width * (0.24 if spec.scene_id % 2 else 0.30))
-    fy = int(height * 0.38)
-    f.rect(fx + m, fy + m, fw, fh, grid)          # shadow
-    f.rect(fx, fy, fw, fh, ink if spec.scene_id % 2 else pill)
-    # eye-like contrast dots (N1 strongest primitive)
-    ey = fy + fh // 3
-    es = max(2, m)
-    f.rect(fx + fw // 4, ey, es * 2, es * 2, bg)
-    f.rect(fx + fw * 3 // 4 - es * 2, ey, es * 2, es * 2, bg)
-
-    # role flag on the focal block
-    if spec.role:
-        f.text(fx + m, fy - GLYPH_H * max(1, m // 3) - m, spec.role, accent,
-               scale=max(1, m // 3))
-
-    # N4 dialogue pill: the VO line, editor-rendered bottom third
-    pscale = max(1, m // 4)
-    pw = int(width * 0.86)
-    lines = wrap_text(spec.vo_line, pw - m * 4, pscale)[:6]
-    ph = (GLYPH_H * pscale + pscale) * len(lines) + m * 3
-    px, py = int((width - pw) / 2), int(height * 0.78)
-    f.rect(px + m, py + m, pw, ph, grid)          # drop shadow
-    f.rect(px, py, pw, ph, pill)
-    f.frame_rect(px, py, pw, ph, accent, t=max(1, m // 4))
-    ty = py + m
-    for line in lines:
-        f.text(px + m * 2, ty, line, ink if spec.scene_id % 2 else bg, pscale)
-        ty += GLYPH_H * pscale + pscale
+    # Foreground layers (focal block + role + dialogue pill) — parallax cast
+    if include_fg:
+        geo = scene_geometry(spec, width=width, height=height, seed=seed)
+        draw_fg(f, geo)
 
     # timeline progress bar
     bar_y = int(height * 0.955)
@@ -240,3 +262,23 @@ def render_frame(spec: FrameSpec, *, width: int = FRAME_W, height: int = FRAME_H
     prog = min(1.0, max(0.0, spec.progress))
     f.rect(m * 2, bar_y, int((width - m * 4) * prog), max(2, m // 3), accent)
     return f
+
+
+def draw_fg(f: Frame, geo: dict, *, dx: int = 0, dy: int = 0) -> None:
+    """Draw (or re-draw, offset) a scene's foreground layer onto a frame."""
+    for x, y, w, h, color in geo["focal"]["rects"]:
+        f.rect(x + dx, y + dy, w, h, color)
+    rl = geo["role_label"]
+    if rl["text"]:
+        f.text(rl["x"] + dx, rl["y"] + dy, rl["text"], rl["color"],
+               scale=rl["scale"])
+    p = geo["pill"]
+    m = p["m"]
+    f.rect(p["x"] + m + dx, p["y"] + m + dy, p["w"], p["h"], geo["palette"]["grid"])
+    f.rect(p["x"] + dx, p["y"] + dy, p["w"], p["h"], p["fill"])
+    f.frame_rect(p["x"] + dx, p["y"] + dy, p["w"], p["h"], p["border"],
+                 t=max(1, m // 4))
+    ty = p["y"] + m + dy
+    for line in p["lines"]:
+        f.text(p["x"] + m * 2 + dx, ty, line, p["ink"], p["scale"])
+        ty += p["line_h"]
