@@ -231,6 +231,15 @@ def main(argv: list[str] | None = None) -> int:
                     choices=["laws", "checklist", "failures"],
                     help="which part to print (default: iron laws)")
 
+    cp = sub.add_parser("concat-plan",
+                        help="Emit jub0t/Concat JSONL recipe from a make-video dir")
+    cp.add_argument("dir", help="make-video output dir (timeline.json truth)")
+    cp.add_argument("--out", default="", help="recipe path (default DIR/concat_recipe.jsonl)")
+    cp.add_argument("--codec", default="h264", choices=["h264", "hevc", "av1"])
+    cp.add_argument("--crf", type=int, default=20)
+    cp.add_argument("--preset", default="medium")
+    cp.add_argument("--json", action="store_true")
+
     bg = sub.add_parser("budget",
                         help="G3/L10: plan image/speech batches (10/turn)")
     bg.add_argument("--frames", type=int, required=True,
@@ -853,6 +862,28 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(rep.as_dict(), indent=2))
         else:
             print(rep.render())
+        return 0
+
+    if args.cmd == "concat-plan":
+        from pathlib import Path
+        from monarch.video.concat_bridge import emit_concat_plan
+
+        try:
+            plan = emit_concat_plan(
+                args.dir, out=(args.out or None), codec=args.codec,
+                crf=args.crf, preset=args.preset)
+        except (ValueError, OSError) as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(plan, indent=2))
+        else:
+            print(f"recipe: {plan['recipe']}")
+            print(f"commands: {plan['commands']} (clips {plan['clips']}, "
+                  f"text {plan['text_clips']})")
+            print(f"export: {plan['export']} @ {plan['resolution']}")
+            for step in plan["next_steps"]:
+                print(f"  {step}")
         return 0
 
     if args.cmd == "budget":

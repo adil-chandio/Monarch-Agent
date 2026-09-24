@@ -139,3 +139,11 @@ video with it."** Recipes JSONL lines me: `project.create` → `media.import`
 **Status: §4 EchoMimic (VO) + §6 Concat (render) = pura operator-PC
 production stack ka naqsha. In-repo Monarch ab bhi previz/QC/truth-layer
 hai — render parked hai jab tak aap khud order na karo.**
+
+**UPDATE (same day): bridge SHIPPED - `monarch concat-plan DIR` ab
+`concat_recipe.jsonl` emit karta hai (project.create -> media.import ->
+addClip at OUR timeline times -> addTextClip lower-thirds -> sfx
+import-once/place-many -> project.save -> export.run versioned 1080x1920).
+Har method/op real v0.2.4 API surface ke khilaf whitelisted hai.
+Concat khud in-repo NAHI chalta (GUI+GPU, beta, CI red) - operator PC
+par `concat-cli api < concat_recipe.jsonl`.
