@@ -168,6 +168,44 @@ Every scene's Fountain now carries a `[[VO: [prosody] | beat: ...]]`
 direction line; payoff scenes land **partial** (info-tension) and the next
 question re-hooks **before** the answer completes — carousel law, in code.
 
+## CHAOS MONARCH — the loop that learns from the real world 💀
+
+Four waves turned Monarch from a tool into an organism that measures itself:
+
+- **Learn loop** — export YouTube Studio Advanced Mode to CSV, then:
+
+  ```bash
+  monarch learn ingest studio_export.csv --cohort "money niche v1"
+  monarch learn distill        # records -> PerformanceRecord -> lessons
+  monarch learn hygiene        # corroborate/stale/conflict audit of lessons
+  ```
+
+- **Truth layer** — deep-forensic now scores *freshness* with a half-life
+  (default 105 days, `--half-life N`): `recency = 0.5^(age/HL)`, blended
+  `0.7·engagement + 0.3·recency` into `fresh_rank`. No date = recency 1.0
+  with an honest note — never a claim. Rows older than 2×HL land in
+  `linkrot_risk_ids`; a `freshness:` line joins the DNA patterns and every
+  idea carries its evidence note.
+
+- **The Eye** — audit any make-video output dir:
+
+  ```bash
+  monarch audit output/videos/<slug>            # human report
+  monarch audit output/videos/<slug> --csv studio.csv --json
+  ```
+
+  Anchored deterministic bands: hook 1–10, Zack pacing 65–95 words/30s,
+  CTR <3 / 4–6 / 7–10%, AI-signs gate, voice QC, mix presence, optional
+  dossier link-rot. Every finding = severity P0–P3 + evidence + the exact
+  fix command + expected impact. Parked gaps (MP4 render) are REPORTED,
+  never built — standing order #1.
+
+- **Skill standard** — every SKILL.md is agentskills.io-certified by test
+  (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
+  body ≤500 lines). The validator fails the suite before a bad card ships.
+
+Docs: `docs/RENDER_LAWS.md`, `docs/CONTENT_PLAYBOOK.md`, `docs/MASTER_PLAN.md`.
+
 ## Skills, memory & the learning loop
 
 Ruflo-inspired (ideas mined, never the harness — stdlib law holds):

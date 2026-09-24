@@ -104,3 +104,28 @@ def test_cli_deep_forensic_half_life_flag(tmp_path, capsys):
     assert rc == 0
     data = json.loads((out / "deep_forensic.json").read_text(encoding="utf-8"))
     assert data["freshness"]["half_life_days"] == 30.0
+
+
+def test_freshness_dict_carries_alpha(tmp_path):
+    p = _dossier(tmp_path, ["2026-08-01", "2026-09-01", "2026-06-01"])
+    niche, videos = load_dossier(p)
+    rep = analyze_dossier(niche, videos, today=TODAY)
+    assert rep.freshness["alpha_engagement"] == 0.7
+    assert rep.freshness["dated"] == "3/3"
+
+
+def test_patterns_and_ideas_always_grow_or_stay(tmp_path):
+    p = _dossier(tmp_path, ["2026-09-01", "2026-09-10", "2026-07-11"])
+    niche, videos = load_dossier(p)
+    rep = analyze_dossier(niche, videos, today=TODAY)
+    fresh_lines = [x for x in rep.patterns if x.startswith("freshness:")]
+    assert len(fresh_lines) == 1
+
+
+def test_cli_deep_forensic_default_half_life(tmp_path, capsys):
+    p = _dossier(tmp_path, ["2026-09-01", "2026-09-10", "2020-01-01"])
+    out = tmp_path / "rep"
+    rc = main(["deep-forensic", str(p), "--out", str(out)])
+    assert rc == 0
+    data = json.loads((out / "deep_forensic.json").read_text(encoding="utf-8"))
+    assert data["freshness"]["half_life_days"] == 105.0

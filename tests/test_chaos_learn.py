@@ -8,6 +8,8 @@ from datetime import datetime, timezone
 import pytest
 
 from monarch.cli import main
+from monarch.core.lesson_hygiene import hygiene, parse_lessons
+from monarch.core.learn import PerformanceRecord, load_performance
 from monarch.core import lesson_hygiene as lh
 from monarch.pipelines.performance import csv_records, ingest_csv
 
@@ -186,3 +188,59 @@ def test_cli_learn_hygiene_missing_file_fails_closed(capsys, tmp_path):
     rc = main(["learn", "hygiene", "--lessons", str(tmp_path / "nope.md")])
     out = capsys.readouterr().out
     assert rc == 2 and "FAIL" in out
+
+
+# ---------------------------------------------------------------------------
+# W1b hardening (CHAOS MONARCH DoD: >=315 green, fail-closed everywhere)
+# ---------------------------------------------------------------------------
+
+
+def test_ingest_rejects_negative_views(tmp_path):
+    p = tmp_path / "bad.csv"
+    p.write_text("Video title,Views,Comments,Avg percentage viewed,Subscribers\n"
+                 "weird\t-12\t1\t40%\t0\n", encoding="utf-8")
+    with pytest.raises(ValueError):
+        ingest_csv(p)
+
+
+def test_hygiene_rows_carry_day_deltas():
+    lines = ["- 2025-01-01T10:00:00Z | miss: x1 | 3x rule: y1",
+             "- 2025-01-02T10:00:00Z | miss: x1 | 3x rule: y1",
+             "- 2025-01-03T10:00:00Z | miss: x1 | 3x rule: y1",
+             "- 2026-08-01T10:00:00Z | miss: x1 | 3x rule: y2",
+             "- 2026-08-02T10:00:00Z | miss: x1 | 3x rule: y2",
+             "- 2026-08-03T10:00:00Z | miss: x1 | 3x rule: y2",
+             "- 2026-09-01T10:00:00Z | miss: x2 | 3x rule: y3"]
+    entries, skipped = parse_lessons("\n".join(lines))
+    assert skipped == 0
+    rep = hygiene(entries, today=datetime(2026, 9, 24, tzinfo=timezone.utc))
+    by_miss = {r["miss"]: r for r in rep.rows}
+    assert by_miss["x2"]["count"] == 1
+    assert by_miss["x2"]["status"] == "provisional"
+    # same miss + 2 CONFIRMED distinct rules -> operator arbitration (spec)
+    x1_rows = [r for r in rep.rows if r["miss"] == "x1"]
+    assert len(x1_rows) == 2
+    assert len(rep.conflicts) == 1
+    assert "x1" in rep.conflicts[0]
+
+
+def test_performance_record_roundtrip(tmp_path):
+    p = tmp_path / "p.jsonl"
+    recs = [PerformanceRecord(topic="t1", views=10, avg_pct=40.0, subs=1,
+                              cohort="c", length_s=60.0,
+                              date="2026-09-01", note="n"),
+            PerformanceRecord(topic="t2", views=20, avg_pct=50.0, subs=2,
+                              cohort="c", length_s=90.0,
+                              date="2026-09-02", note="")]
+    p.write_text("\n".join(json.dumps(r.__dict__) for r in recs) + "\n",
+                 encoding="utf-8")
+    out = load_performance(p)
+    assert len(out) == 2 and out[1].views == 20
+
+
+def test_learn_help_lists_subcommands(capsys):
+    with pytest.raises(SystemExit) as e:
+        main(["learn", "--help"])
+    assert e.value.code == 0
+    out = capsys.readouterr().out
+    assert "ingest" in out and "hygiene" in out

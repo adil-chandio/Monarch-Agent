@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timezone
 
 import pytest
@@ -132,3 +133,58 @@ def test_cli_audit_missing_dir_fails_closed(capsys, tmp_path):
     rc = main(["audit", str(tmp_path / "ghost")])
     out = capsys.readouterr().out
     assert rc == 2 and "FAIL" in out
+
+
+def test_audit_score_penalty_math(tmp_path):
+    from monarch.video.audit import AuditReport, Finding
+    rep = AuditReport(subject="t")
+    rep.findings = [Finding("P1", "a", "e", "f", "i"),
+                    Finding("P3", "b", "e", "f", "i")]
+    assert rep.score == 100 - 12 - 2
+    rep.findings.append(Finding("P0", "c", "e", "f", "i"))
+    rep.findings.append(Finding("P0", "d", "e", "f", "i"))
+    rep.findings.append(Finding("P0", "e", "e", "f", "i"))
+    rep.findings.append(Finding("P0", "f", "e", "f", "i"))
+    assert rep.score == 0          # never negative
+
+
+def test_audit_render_priority_order(tmp_path):
+    from monarch.video.audit import AuditReport, Finding
+    rep = AuditReport(subject="t")
+    rep.findings = [Finding("P3", "z-note", "e", "f", "i"),
+                    Finding("P1", "a-major", "e", "f", "i")]
+    text = rep.render()
+    assert text.index("a-major") < text.index("z-note")
+
+
+def test_hook_score_never_out_of_range():
+    from monarch.video.audit import hook_score as hs
+    for line in ("", "x" * 200, "1 2 3 why nobody you secret hidden", "!!!"):
+        assert 1 <= hs(line) <= 10
+
+
+def test_hook_band_on_real_board(video_dir):
+    board = json.loads((video_dir / "board.json").read_text(encoding="utf-8"))
+    hook_line = str(board["scenes"][0].get("vo_line", ""))
+    hs = hook_score(hook_line)
+    assert 1 <= hs <= 10                     # the eye scores the real cold open
+
+
+def test_rewrite_rules_are_idempotent():
+    from monarch.video.humanize import REWRITE_RULES
+    text = "It's not just a vault — it's a promise, and the silence held."
+    once = text
+    for pat, repl in REWRITE_RULES:
+        once = re.sub(pat, repl, once)
+    twice = once
+    for pat, repl in REWRITE_RULES:
+        twice = re.sub(pat, repl, twice)
+    assert once == twice                     # no infinite rewrite churn
+
+
+def test_audit_json_schema_stable(video_dir):
+    rep = audit_dir(video_dir)
+    d = rep.as_dict()
+    assert set(d) == {"subject", "score", "findings", "scores"}
+    for f in d["findings"]:
+        assert set(f) == {"severity", "title", "evidence", "fix", "impact"}
