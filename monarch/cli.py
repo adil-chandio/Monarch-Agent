@@ -120,8 +120,185 @@ def main(argv: list[str] | None = None) -> int:
     hun = sub.add_parser("hunt")
     hun.add_argument("niche")
 
+    # Neuro Video — autonomous video production (playbook: neuro_psychology.md)
+    sc = sub.add_parser(
+        "script", help="Neuro Video: Neuro-Playbook storyboard -> Fountain screenplay"
+    )
+    sc.add_argument("--topic", required=True, help="video topic / working title")
+    sc.add_argument("--length", default="short", help="short | long | seconds")
+    sc.add_argument("--clip", type=float, default=3.5, help="clip seconds")
+    sc.add_argument("--wps", type=float, default=2.2, help="speaking words/second")
+    sc.add_argument("--first-clip", type=float, default=2.5, help="open clip seconds")
+    sc.add_argument("--cohort", default="genz", help="N2 dopamine cohort: kids | genz | adults")
+    sc.add_argument("--seed", type=int, default=0, help="deterministic variation seed")
+    sc.add_argument("--card", action="store_true", help="print the ASCII box card too")
+    sc.add_argument("--json", action="store_true", help="board JSON with neuro metadata")
+    sc.add_argument("--out", help="write the screenplay here (default stdout)")
+
+    vsb = sub.add_parser("video-storyboard",
+                         help="Neuro Video: the Hollywood ASCII box card")
+    vsb.add_argument("--topic", required=True)
+    vsb.add_argument("--length", default="short")
+    vsb.add_argument("--clip", type=float, default=3.5)
+    vsb.add_argument("--wps", type=float, default=2.2)
+    vsb.add_argument("--first-clip", type=float, default=2.5)
+    vsb.add_argument("--cohort", default="genz", help="kids | genz | adults")
+    vsb.add_argument("--seed", type=int, default=0)
+    vsb.add_argument("--json", action="store_true", help="board JSON instead of the card")
+
+    sx = sub.add_parser("sfx", help="Neuro Video: render a psychoacoustic SFX wav")
+    sx.add_argument("--kind", required=True,
+                    choices=["heartbeat", "hit", "bass_drop", "sonar_ping",
+                             "glitch", "riser"])
+    sx.add_argument("--out", default="", help="output wav path (default sfx_<kind>.wav)")
+    sx.add_argument("--seconds", type=float, default=None, help="clamp/pad length")
+    sx.add_argument("--sr", type=int, default=44100, help="sample rate (default 44100)")
+    sx.add_argument("--seed", type=int, default=0)
+    sx.add_argument("--filter", action="append", default=[],
+                    choices=["bass_boost", "tension_echo", "cyber_glitch",
+                             "forensic_tape", "limiter"],
+                    help="DSP filter, repeatable (limiter always runs last)")
+
+    mv = sub.add_parser("make-video",
+                        help="Neuro Video: topic -> previz animatic (frames+sfx+timeline)")
+    mv.add_argument("--topic", required=True)
+    mv.add_argument("--out", default="", help="output dir (default output/<slug>)")
+    mv.add_argument("--length", default="short")
+    mv.add_argument("--clip", type=float, default=3.5)
+    mv.add_argument("--wps", type=float, default=2.2)
+    mv.add_argument("--first-clip", type=float, default=2.5)
+    mv.add_argument("--cohort", default="genz", help="kids | genz | adults")
+    mv.add_argument("--seed", type=int, default=0)
+    mv.add_argument("--fps", type=int, default=2, help="animatic frames/second (default 2)")
+    mv.add_argument("--width", type=int, default=1080)
+    mv.add_argument("--height", type=int, default=1920)
+    mv.add_argument("--sr", type=int, default=22050)
+    mv.add_argument("--animation", default="kenburns",
+                    help="kenburns | parallax (2.5D foreground drift)")
+    mv.add_argument("--voice-backend", default="none",
+                    help="none | auto | edge | dir | mumble (audio-first VO)")
+    mv.add_argument("--wavs-dir", default=None,
+                    help="per-scene wavs for --voice-backend dir")
+    mv.add_argument("--with-mix", action="store_true",
+                    help="render master_mix.wav (music duck, SFX, room tone)")
+    mv.add_argument("--json", action="store_true", help="manifest JSON to stdout")
+
+    # TABAAHI wave: voice + humanize + mix commands
+    hu = sub.add_parser("humanize",
+                        help="Strip AI-tone from a script; sign/strip/flag report")
+    hu.add_argument("text", nargs="?")
+    hu.add_argument("--file", default=None, help="read script text from file")
+    hu.add_argument("--gate", type=float, default=1.5,
+                    help="AI-signs per 100 words that fail (default 1.5)")
+    hu.add_argument("--json", action="store_true")
+
+    vo = sub.add_parser("voiceover",
+                        help="Audio-first VO: chunk -> synth -> glue -> QC")
+    vo.add_argument("--topic", default=None)
+    vo.add_argument("--script", default=None, help="script text (or --script-file)")
+    vo.add_argument("--script-file", default=None)
+    vo.add_argument("--backend", default="auto",
+                    help="auto | edge | dir | mumble")
+    vo.add_argument("--wavs-dir", default=None)
+    vo.add_argument("--out", default="output/vo")
+    vo.add_argument("--sr", type=int, default=24000)
+    vo.add_argument("--seed", type=int, default=0)
+    vo.add_argument("--json", action="store_true")
+
+    mb = sub.add_parser("mix",
+                        help="Five-layer mix bus over a VO track (duck+SFX+room+limiter)")
+    mb.add_argument("--vo", required=True, help="VO wav (16-bit mono)")
+    mb.add_argument("--duration", type=float, required=True)
+    mb.add_argument("--board", default=None,
+                    help="board.json (scenes[] with t_start/t_end/sfx)")
+    mb.add_argument("--out", default="output/master_mix.wav")
+    mb.add_argument("--sr", type=int, default=0,
+                    help="0 = use the VO wav's own sample rate")
+    mb.add_argument("--seed", type=int, default=0)
+    mb.add_argument("--no-music", action="store_true")
+    mb.add_argument("--json", action="store_true")
+
+    au = sub.add_parser("audit",
+                        help="The Eye: priority-ordered weakness -> fix report")
+    au.add_argument("dir", help="make-video output dir (manifest/board/voice/mix)")
+    au.add_argument("--csv", default=None, help="optional Studio CSV (CTR bands)")
+    au.add_argument("--dossier", default=None, help="optional dossier.json (link-rot)")
+    au.add_argument("--json", action="store_true")
+
+    lw = sub.add_parser("laws",
+                        help="production iron laws + checklist (PRODUCTION_LAW_V2)")
+    lw.add_argument("--part", default="laws",
+                    choices=["laws", "checklist", "failures"],
+                    help="which part to print (default: iron laws)")
+
+    cp = sub.add_parser("concat-plan",
+                        help="Emit jub0t/Concat JSONL recipe from a make-video dir")
+    cp.add_argument("dir", help="make-video output dir (timeline.json truth)")
+    cp.add_argument("--out", default="", help="recipe path (default DIR/concat_recipe.jsonl)")
+    cp.add_argument("--codec", default="h264", choices=["h264", "hevc", "av1"])
+    cp.add_argument("--crf", type=int, default=20)
+    cp.add_argument("--preset", default="medium")
+    cp.add_argument("--json", action="store_true")
+
+    bg = sub.add_parser("budget",
+                        help="G3/L10: plan image/speech batches (10/turn)")
+    bg.add_argument("--frames", type=int, required=True,
+                    help="total frames to generate")
+    bg.add_argument("--clips", type=int, default=0,
+                    help="total speech clips to generate")
+    bg.add_argument("--json", action="store_true")
+
+    # Session memory — the new-session handoff bridge (RVF-inspired)
+    mem = sub.add_parser("memory", help="Save/restore the cross-session handoff state")
+    mem_sub = mem.add_subparsers(dest="mem_cmd", required=True)
+    ms = mem_sub.add_parser("save")
+    ms.add_argument("--state", default=None, help="M-state to snapshot (default: current)")
+    ms.add_argument("--channel", default=None, help="channel yaml path to embed")
+    ms.add_argument("--topic", default="", help="current working topic")
+    ms.add_argument("--pending", default="", help="comma-separated pending approvals")
+    ms.add_argument("--notes", default="", help="comma-separated session notes")
+    ms.add_argument("--out", default="", help="memory path (default .monarch/memory.json)")
+    mr = mem_sub.add_parser("restore", help="Print the handoff card for this session")
+    mr.add_argument("path", nargs="?", default="", help="memory json (default .monarch/memory.json)")
+
+    # Learn — close the L16 loop with real-world performance data
+    lr = sub.add_parser("learn", help="Log uploaded-video metrics and distill lessons")
+    lr_sub = lr.add_subparsers(dest="learn_cmd", required=True)
+    lrec = lr_sub.add_parser("record")
+    lrec.add_argument("--topic", required=True)
+    lrec.add_argument("--views", type=float, required=True)
+    lrec.add_argument("--avg-pct", type=float, required=True, help="avg %% viewed (0-100)")
+    lrec.add_argument("--subs", type=int, default=0)
+    lrec.add_argument("--cohort", default="", help="N2 cohort tag: kids | genz | adults")
+    lrec.add_argument("--length", type=float, default=0.0, help="runtime seconds")
+    lrec.add_argument("--date", default="", help="upload date (default today, UTC)")
+    lrec.add_argument("--note", default="")
+    ling = lr_sub.add_parser("ingest",
+                             help="YouTube Studio CSV/TSV export -> performance log")
+    ling.add_argument("csv_file")
+    ling.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+    ling.add_argument("--cohort", default="", help="N2 cohort tag applied to all rows")
+    ling.add_argument("--note", default="", help="note applied to all rows")
+    lhy = lr_sub.add_parser("hygiene",
+                            help="Lesson hygiene: confirmed / provisional / stale / conflicts")
+    lhy.add_argument("--lessons", dest="lessons_file", default=None,
+                     help="lessons.md path (default repo self_improve/lessons.md)")
+    lhy.add_argument("--json", action="store_true")
+    ling.add_argument("--json", action="store_true")
+    lrec.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+    ldis = lr_sub.add_parser("distill")
+    ldis.add_argument("--min", type=int, default=3, help="min videos for a split (default 3)")
+    ldis.add_argument("--apply", action="store_true", help="write signals into lessons.md (3x rule)")
+    ldis.add_argument("--lessons", default="", help="lessons.md path (default repo lessons)")
+    ldis.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+    llog = lr_sub.add_parser("log", help="Show every logged video")
+    llog.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+
     # Agent-Reach integration — doctor + multi-platform search
-    sub.add_parser("doctor", help="Check which upstream tools (yt-dlp, twitter, reddit, etc.) are available")
+    dr = sub.add_parser("doctor", help="Environment + upstream-tool readiness (L1/G2, fail-closed)")
+    dr.add_argument("--repo-root", default="",
+                    help="repo root to check (default: this checkout)")
+    dr.add_argument("--json", action="store_true")
 
     sw = sub.add_parser("scrape", help="Scrape a URL via Agent-Reach (yt-dlp for YouTube, Jina for web)")
     sw.add_argument("url", help="YouTube URL or any web URL")
@@ -151,6 +328,32 @@ def main(argv: list[str] | None = None) -> int:
     qs.add_argument("notes", help="JSON file with check-name → bool mapping")
     qs.add_argument("--stage", choices=["research", "script", "render", "edit", "packaging"],
                      default="packaging")
+
+    # youtube-transcript.io — hosted transcripts (third YouTube backend)
+    tp = sub.add_parser("transcript", help="Hosted transcripts via youtube-transcript.io")
+    tp.add_argument("videos", nargs="+", help="video ids or URLs (max 50 per call)")
+    tp.add_argument("--json", action="store_true", help="JSON records instead of text")
+    tp.add_argument("--save", default="", help="write each transcript to this dir as .txt")
+
+    tch = sub.add_parser("tchan", help="Hosted channel info via youtube-transcript.io (Plus)")
+    tch.add_argument("channels", nargs="+", help="channel ids without @ (max 50)")
+
+    # transcript-ingest — agent-fetched page/captions -> forensic record
+    ti = sub.add_parser(
+        "transcript-ingest",
+        help="Normalize an agent-fetched transcript (markdown/VTT/SRT/plain) into the pipeline",
+    )
+    ti.add_argument("path", nargs="?", default="-", help="file, or stdin when '-'")
+    ti.add_argument("--json", action="store_true", help="full forensic record as JSON")
+    ti.add_argument("--save", default="", help="write transcripts/<id>.txt into this dir")
+
+    # deep-forensic — competitor dossier -> viral DNA -> ranked ideas
+    df = sub.add_parser("deep-forensic",
+                        help="Analyze a 15-20 video competitor dossier into patterns + ideas")
+    df.add_argument("dossier", help="dossier.json (see skills/deep-forensic)")
+    df.add_argument("--out", default="", help="output dir (default output/forensic/<slug>)")
+    df.add_argument("--half-life", type=float, default=105.0,
+                    help="freshness half-life in days (default 105)")
 
     # Extract --key anywhere in argv
     extracted_key = None
@@ -267,6 +470,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.cmd == "keys":
         from monarch.core.config import has_gemini, has_youtube_key, has_youtube_upload
+        from monarch.intel.ytt import has_token as ytt_has_token
 
         print(
             json.dumps(
@@ -274,6 +478,7 @@ def main(argv: list[str] | None = None) -> int:
                     "gemini": has_gemini(),
                     "youtube_data": has_youtube_key(),
                     "youtube_upload_oauth": has_youtube_upload(),
+                    "youtube_transcript_io": ytt_has_token(),
                     "hint": "true = key loaded from .env; values never printed",
                 }
             )
@@ -527,18 +732,564 @@ def main(argv: list[str] | None = None) -> int:
         print(result.summary)
         return 0 if result.passed else 2
 
+    # ── Neuro Video commands ──
+
+    if args.cmd in ("script", "video-storyboard"):
+        from monarch.video.director import plan_storyboard
+
+        try:
+            sb = plan_storyboard(
+                args.topic,
+                length=_resolve_length(args.length),
+                clip_s=args.clip,
+                speaking_wps=args.wps,
+                first_clip_s=args.first_clip,
+                cohort=args.cohort,
+                seed=args.seed,
+            )
+        except GateFail as e:
+            print("FAIL", "; ".join(e.misses))
+            print("answer: improve — the playbook refused this board. Never ship.")
+            return 2
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.cmd == "video-storyboard":
+            if args.json:
+                print(json.dumps(sb.to_dict(), indent=2))
+            else:
+                print(sb.card, end="")
+            return 0
+        # `script` — the Fountain screenplay is the deliverable
+        if args.json:
+            print(json.dumps(sb.to_dict(), indent=2))
+        elif args.out:
+            from pathlib import Path
+
+            Path(args.out).write_text(sb.fountain, encoding="utf-8")
+            print(f"wrote {args.out} — {len(sb.scenes)} scenes, gated")
+        else:
+            print(sb.fountain, end="")
+        if args.card:
+            print(sb.card, end="")
+        return 0
+
+    if args.cmd == "sfx":
+        from monarch.video import audio as sfx_audio
+
+        out = args.out or f"sfx_{args.kind}.wav"
+        try:
+            samples = sfx_audio.render_sfx(
+                args.kind, sr=args.sr, seed=args.seed,
+                seconds=args.seconds, filters=args.filter or None,
+            )
+            sfx_audio.write_wav(out, samples, args.sr)
+        except (ValueError, OSError) as e:
+            print("FAIL", e)
+            return 2
+        print(f"wrote {out} — {args.kind} @ {args.sr}Hz, "
+              f"{sfx_audio.duration_s(samples, args.sr):.2f}s")
+        return 0
+
+    if args.cmd == "make-video":
+        from monarch.video.pipeline import make_video
+
+        out = args.out
+        if not out:
+            slug = "".join(c if c.isalnum() else "-" for c in args.topic.lower())
+            slug = "-".join(p for p in slug.split("-") if p)[:48] or "video"
+            out = f"output/{slug}"
+        if args.animation not in ("kenburns", "parallax"):
+            print("FAIL animation must be kenburns|parallax")
+            return 2
+        if args.voice_backend not in ("none", "auto", "edge", "dir", "mumble"):
+            print("FAIL voice-backend must be none|auto|edge|dir|mumble")
+            return 2
+        try:
+            manifest = make_video(
+                args.topic, out,
+                length=_resolve_length(args.length),
+                clip_s=args.clip,
+                speaking_wps=args.wps,
+                first_clip_s=args.first_clip,
+                cohort=args.cohort,
+                seed=args.seed,
+                width=args.width,
+                height=args.height,
+                fps=args.fps,
+                sr=args.sr,
+                animation=args.animation,
+                voice_backend=args.voice_backend,
+                wavs_dir=args.wavs_dir,
+                do_mix=args.with_mix,
+            )
+        except GateFail as e:
+            print("FAIL", "; ".join(e.misses))
+            return 2
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(manifest, indent=2))
+        else:
+            print(f"PREVIZ READY — {manifest['scene_count']} scenes, "
+                  f"{manifest['frame_count']} frames @ {manifest['fps']}fps, "
+                  f"{manifest['total_s']:.0f}s -> {out}")
+            print(f"maths: {manifest['maths']}")
+            print(f"animation: {manifest['animation']}")
+            if manifest.get("voice"):
+                v = manifest["voice"]
+                print(f"voice: {v['vo_end_s']}s via {v['backends']}"
+                      + (" (PLACEHOLDER mumble)" if v["placeholder"] else ""))
+                for c in v["qc"]:
+                    mark = "PASS" if c["pass"] else "FAIL"
+                    print(f"  vo qc {c['check']}: {mark} — {c['detail']}")
+            if manifest.get("mix"):
+                print(f"mix: {manifest['mix']['report']}")
+            print("HAAN still gates the final render. You upload.")
+        return 0
+
+    if args.cmd == "audit":
+        from pathlib import Path
+        from monarch.video.audit import audit_dir
+
+        try:
+            rep = audit_dir(args.dir, csv_path=args.csv, dossier_path=args.dossier)
+        except (ValueError, OSError) as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(rep.as_dict(), indent=2))
+        else:
+            print(rep.render())
+        return 0
+
+    if args.cmd == "concat-plan":
+        from pathlib import Path
+        from monarch.video.concat_bridge import emit_concat_plan
+
+        try:
+            plan = emit_concat_plan(
+                args.dir, out=(args.out or None), codec=args.codec,
+                crf=args.crf, preset=args.preset)
+        except (ValueError, OSError) as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(plan, indent=2))
+        else:
+            print(f"recipe: {plan['recipe']}")
+            print(f"commands: {plan['commands']} (clips {plan['clips']}, "
+                  f"text {plan['text_clips']})")
+            print(f"export: {plan['export']} @ {plan['resolution']}")
+            for step in plan["next_steps"]:
+                print(f"  {step}")
+        return 0
+
+    if args.cmd == "budget":
+        from monarch.video.budgets import plan_batches
+
+        try:
+            turns = plan_batches(args.frames, args.clips)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(turns, indent=2))
+        else:
+            for t in turns:
+                print(f"turn {t['turn']}: images {t['images']}/10, "
+                      f"speech {t['speech']}/10")
+        return 0
+
+    if args.cmd == "laws":
+        from pathlib import Path
+        doc = Path(__file__).resolve().parents[1] / "docs" / "PRODUCTION_LAW_V2.md"
+        if not doc.is_file():
+            print("FAIL canon missing:", doc)
+            return 2
+        text = doc.read_text(encoding="utf-8")
+        want = ("## PART 3" if args.part == "laws"
+                else "## PART 4" if args.part == "checklist"
+                else "## PART 2")
+        nxt = {"## PART 2": "## PART 3", "## PART 3": "## PART 4",
+               "## PART 4": "## RECONCILIATION"}[want]
+        block = text.split(want, 1)[1].split(nxt, 1)[0]
+        print(want + block.rstrip())
+        return 0
+
+    # ── TABAAHI wave: humanize / voiceover / mix ──
+
+    if args.cmd == "humanize":
+        from pathlib import Path
+        from monarch.video.humanize import humanize
+
+        text = args.text or ""
+        if args.file:
+            text = Path(args.file).read_text(encoding="utf-8")
+        if not text.strip():
+            print("FAIL no text (pass TEXT or --file)")
+            return 2
+        clean, rep = humanize(text, gate=args.gate)
+        if args.json:
+            print(json.dumps(rep.as_dict(), indent=2))
+        else:
+            print(rep.summary())
+            for n in rep.notes:
+                print(f"  note: {n}")
+            for f in rep.flagged:
+                print(f"  flagged: {f}")
+            for st in rep.stripped:
+                print(f"  stripped: {st}")
+            print("--- CLEAN SCRIPT ---")
+            print(clean)
+        return 0
+
+    if args.cmd == "voiceover":
+        from pathlib import Path
+        from monarch.video import voiceover as vo_mod
+
+        text = args.script or ""
+        if args.script_file:
+            text = Path(args.script_file).read_text(encoding="utf-8")
+        if not text and not args.topic:
+            print("FAIL need --topic or --script/--script-file")
+            return 2
+        if not text:
+            from monarch.video.director import plan_storyboard
+
+            sb = plan_storyboard(args.topic)
+            text = "\n".join(s.vo_line for s in sb.scenes)
+        if args.backend not in ("auto", "edge", "dir", "mumble"):
+            print("FAIL backend must be auto|edge|dir|mumble")
+            return 2
+        scenes = [{"id": i, "vo_line": ln, "t_start": 0.0, "t_end": 0.0,
+                   "sfx": "", "role": "", "driver": "", "match_cut": ""}
+                  for i, ln in enumerate(
+                      [p for p in (x.strip() for x in text.split("\n")) if p], 1)]
+        try:
+            built = vo_mod.build_voiceover(
+                scenes, backend=args.backend, wavs_dir=args.wavs_dir,
+                sr=args.sr, seed=args.seed, audio_first=True,
+            )
+        except (ValueError, RuntimeError) as e:
+            print("FAIL", e)
+            return 2
+        wav = vo_mod.write_track(Path(args.out) / "vo_track.wav",
+                                 built["track"], built["sr"])
+        (Path(args.out) / "vo_scenes.json").write_text(
+            json.dumps({"sr": built["sr"], "vo_end_s": built["vo_end_s"],
+                        "backends": built["backends"],
+                        "placeholder": built["placeholder"],
+                        "scenes": built["scenes"], "qc": built["qc"]},
+                       indent=2), encoding="utf-8")
+        if args.json:
+            print(json.dumps({"wav": str(wav), "sr": built["sr"],
+                              "vo_end_s": built["vo_end_s"],
+                              "backends": built["backends"],
+                              "placeholder": built["placeholder"],
+                              "scenes": built["scenes"], "qc": built["qc"]},
+                             indent=2))
+        else:
+            print(f"VO READY — {built['vo_end_s']}s via {built['backends']}"
+                  + (" (PLACEHOLDER mumble)" if built["placeholder"] else "")
+                  + f" -> {wav}")
+            for row in built["scenes"]:
+                print(f"  scene {row['scene_id']:02d}: {row['speech_s']}s "
+                      f"({row['chunks']} chunks) @ {row['start']:.2f}s")
+            for c in built["qc"]:
+                mark = "PASS" if c["pass"] else "FAIL"
+                print(f"  qc {c['check']}: {mark} — {c['detail']}")
+        return 0
+
+    if args.cmd == "mix":
+        from pathlib import Path
+        from monarch.video import mix as mix_bus
+        from monarch.video import voiceover as vo_mod
+        from monarch.video.audio import read_wav
+
+        vo_samples, vo_sr = read_wav(args.vo)
+        sr = args.sr or vo_sr
+        board_rows: list[dict] = []
+        if args.board:
+            data = json.loads(Path(args.board).read_text(encoding="utf-8"))
+            rows = data.get("scenes", data) if isinstance(data, dict) else data
+            for r in rows:
+                if isinstance(r, dict) and r.get("sfx"):
+                    board_rows.append({"id": r.get("id", 0),
+                                       "t_start": float(r.get("t_start", 0.0)),
+                                       "t_end": float(r.get("t_end", 0.0)),
+                                       "sfx": str(r.get("sfx", ""))})
+        try:
+            mixed, mrep = mix_bus.mix(
+                duration_s=args.duration, vo=vo_samples, sr=sr,
+                board=board_rows, seed=args.seed, music=not args.no_music,
+            )
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        out = vo_mod.write_track(args.out, mixed, sr)
+        if args.json:
+            print(json.dumps({"wav": str(out), "report": mrep.summary()},
+                             indent=2))
+        else:
+            print(f"MIX READY -> {out}")
+            print(mrep.summary())
+        return 0
+
+    # ── Session memory + learning loop ──
+
+    if args.cmd == "memory":
+        from monarch.core import memory
+
+        if args.mem_cmd == "save":
+            try:
+                p, doc = memory.save_state(
+                    path=args.out or memory.MEMORY_FILE,
+                    m_state=args.state,
+                    channel_path=args.channel,
+                    pending=[s for s in args.pending.split(",") if s.strip()],
+                    notes=[s for s in args.notes.split(",") if s.strip()],
+                    topic=args.topic,
+                )
+            except (ValueError, FileNotFoundError) as e:
+                print("FAIL", e)
+                return 2
+            print(memory.format_state(doc))
+            print(f"wrote {p}")
+            return 0
+        # restore
+        try:
+            doc = memory.load_state(args.path or memory.MEMORY_FILE)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        print(memory.format_state(doc))
+        return 0
+
+    if args.cmd == "learn":
+        from monarch.core import learn
+
+        if args.learn_cmd == "record":
+            try:
+                rec = learn.PerformanceRecord(
+                    topic=args.topic,
+                    views=args.views,
+                    avg_pct=args.avg_pct,
+                    subs=args.subs,
+                    cohort=args.cohort,
+                    length_s=args.length,
+                    date=args.date,
+                    note=args.note,
+                )
+                p = learn.record_performance(rec, args.file or learn.PERFORMANCE_FILE)
+            except ValueError as e:
+                print("FAIL", e)
+                return 2
+            print(f"logged {rec.topic} — {rec.views:.0f} views, "
+                  f"{rec.avg_pct:.0f}% avg viewed -> {p}")
+            return 0
+        if args.learn_cmd == "log":
+            try:
+                recs = learn.load_performance(args.file or learn.PERFORMANCE_FILE)
+            except ValueError as e:
+                print("FAIL", e)
+                return 2
+            if not recs:
+                print("(no videos logged yet — monarch learn record --topic ...)")
+                return 0
+            for r in recs:
+                print(f"{r.date} | {r.topic[:36]:<36} | {r.views:>9.0f} views | "
+                      f"{r.avg_pct:>3.0f}% avg | {r.cohort or '-':<6} | "
+                      f"{r.length_s:.0f}s" + (f" | {r.note}" if r.note else ""))
+            return 0
+        if args.learn_cmd == "ingest":
+            from pathlib import Path
+            from monarch.pipelines.performance import ingest_csv
+
+            try:
+                recs = ingest_csv(args.csv_file, cohort=args.cohort,
+                                  note=args.note)
+            except (ValueError, OSError) as e:
+                print("FAIL", e)
+                return 2
+            path = args.file or learn.PERFORMANCE_FILE
+            for r in recs:
+                learn.record_performance(r, path)
+            if args.json:
+                print(json.dumps([r.to_dict() for r in recs], indent=2))
+            else:
+                print(f"INGESTED {len(recs)} record(s) -> {path}")
+                for r in recs:
+                    print(f"  {r.date} | {r.topic[:40]:<40} | "
+                          f"{r.views:>9.0f} views | {r.avg_pct:>4.1f}% avg | "
+                          f"{r.length_s:.0f}s" if r.length_s else
+                          f"  {r.date} | {r.topic[:40]:<40} | "
+                          f"{r.views:>9.0f} views | {r.avg_pct:>4.1f}% avg")
+            return 0
+
+        if args.learn_cmd == "hygiene":
+            from pathlib import Path
+            from monarch.core import lesson_hygiene as lh
+            from monarch.core.lessons import DEFAULT as LESSONS_DEFAULT
+
+            lp = Path(args.lessons_file) if args.lessons_file else LESSONS_DEFAULT
+            if not lp.is_file():
+                print(f"FAIL no lessons file at {lp} — nothing to audit yet")
+                return 2
+            rep, skipped = lh.hygiene_from_file(lp)
+            if args.json:
+                rep.skipped = skipped
+                print(json.dumps({k: v for k, v in rep.__dict__.items()}, indent=2))
+            else:
+                print(rep.summary() + (f" | skipped {skipped}" if skipped else ""))
+                for row in rep.rows:
+                    print(f"  [{row['status']:<11}] x{row['count']} "
+                          f"(last {row['last_seen_days_ago']}d ago) | "
+                          f"{row['miss'][:26]} :: {row['rule'][:56]}")
+            return 0
+
+        # distill
+        try:
+            recs = learn.load_performance(args.file or learn.PERFORMANCE_FILE)
+            report = learn.distill(recs, min_videos=args.min)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        print(report.summary())
+        for line in report.lines:
+            print(f"  · {line}")
+        if args.apply:
+            target = args.lessons or learn.LESSONS_FILE
+            written = learn.consolidate(report, target)
+            if written:
+                print(f"wrote {written} signal(s) -> {target} (3x rule)")
+            else:
+                print("nothing applied — signals need 'learned' status")
+        return 0
+
+    if args.cmd == "transcript":
+        from monarch.intel import ytt
+
+        try:
+            recs = ytt.fetch_transcripts(args.videos)
+        except (ValueError, RuntimeError) as e:
+            print("FAIL", e)
+            return 2
+        if args.save:
+            from pathlib import Path
+
+            d = Path(args.save)
+            d.mkdir(parents=True, exist_ok=True)
+            for r in recs:
+                (d / f"{r['id']}.txt").write_text(r["transcript"], encoding="utf-8")
+            print(f"saved {len(recs)} transcript(s) -> {d}", file=sys.stderr)
+        if args.json:
+            print(json.dumps(
+                [{"id": r["id"], "chars": len(r["transcript"]),
+                  "transcript": r["transcript"]} for r in recs], indent=2))
+        else:
+            for r in recs:
+                text = r["transcript"]
+                head = text[:400] + ("…" if len(text) > 400 else "")
+                print(f"=== {r['id']} — {len(text)} chars ===")
+                print(head if text else "(no transcript returned)")
+        return 0
+
+    if args.cmd == "tchan":
+        from monarch.intel import ytt
+
+        try:
+            chans = ytt.fetch_channels(args.channels)
+        except (ValueError, RuntimeError) as e:
+            print("FAIL", e)
+            return 2
+        print(json.dumps(chans, indent=2, ensure_ascii=False))
+        return 0
+
+    if args.cmd == "transcript-ingest":
+        from monarch.intel import ingest as tng
+
+        try:
+            record = tng.ingest_file(args.path) if args.path != "-" \
+                else tng.ingest_text(sys.stdin.read(), source="ingest:stdin")
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.save:
+            try:
+                p = tng.save_transcript(record, args.save)
+            except ValueError as e:
+                print("FAIL", e)
+                return 2
+            print(f"saved {p}", file=sys.stderr)
+        if args.json:
+            print(json.dumps(record, indent=2, ensure_ascii=False))
+        else:
+            mark = "OK" if record["has_transcript"] else "NO-TRANSCRIPT"
+            print(f"{mark} [{record['kind']}] {record.get('title', '')}")
+            print(f"  {record.get('channel', '')} | views {record.get('view_count', '0')}"
+                  f" | {record.get('duration', '')}")
+            print(f"  transcript: {record['transcript_words']} words, "
+                  f"{record['transcript_chars']} chars")
+            head = record["transcript"][:300]
+            if head:
+                print(f"  head: {head}…")
+        return 0
+
+    if args.cmd == "deep-forensic":
+        from monarch.pipelines.deep_forensic import report_card, run_deep_forensic
+
+        out = args.out
+        if not out:
+            import json as _j
+
+            try:
+                _niche = str(_j.loads(open(args.dossier, encoding="utf-8-sig").read())
+                              .get("niche", "niche"))
+            except Exception:
+                _niche = "niche"
+            slug = "".join(c if c.isalnum() else "-" for c in _niche.lower())
+            slug = "-".join(x for x in slug.split("-") if x)[:40] or "niche"
+            out = f"output/forensic/{slug}"
+        try:
+            report = run_deep_forensic(args.dossier, out, half_life=args.half_life)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        print(report_card(report), end="")
+        print(f"wrote {out}/deep_forensic_report.txt · deep_forensic.json · ideas.json")
+        return 0
+
     # ── Agent-Reach commands ──
 
     if args.cmd == "doctor":
+        from pathlib import Path
+        from monarch.core.doctor import exit_code as doc_exit, run_checks
         from monarch.intel.reach import doctor as reach_doctor
 
+        # L1/G2 environment readiness (fail-closed on FAIL rows)
+        root = (Path(args.repo_root).resolve() if args.repo_root
+                else Path(__file__).resolve().parents[1])
+        checks = run_checks(root)
+
+        # Agent-Reach upstream tools (existing behavior, preserved)
         statuses = reach_doctor()
-        for s in statuses:
-            icon = "ok" if s.available else "MISSING"
-            print(f"  [{icon}] {s.name}: {s.message}")
-        ok = sum(1 for s in statuses if s.available)
-        print(f"\n{ok}/{len(statuses)} tools available")
-        return 0
+
+        if args.json:
+            print(json.dumps({"env": checks,
+                              "tools": [s.__dict__ for s in statuses]},
+                             indent=2, default=str))
+        else:
+            for c in checks:
+                print(f"[{c['status']}] {c['check']}: {c['detail']}")
+            print()
+            for s2 in statuses:
+                icon = "ok" if s2.available else "MISSING"
+                print(f"  [{icon}] {s2.name}: {s2.message}")
+            ok = sum(1 for s2 in statuses if s2.available)
+            print(f"\n{ok}/{len(statuses)} tools available")
+        return doc_exit(checks)
 
     if args.cmd == "scrape":
         from monarch.pipelines.forensic import dissect_url
