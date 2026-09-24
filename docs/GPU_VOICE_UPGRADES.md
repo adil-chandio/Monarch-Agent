@@ -105,3 +105,37 @@ kaam aata hai jab operator FACE-channel test kare:
 - **License note:** MIT = Monarch ke zero-dependency + operator-ownership
   laws ke sath khara. Weights ka apna license HF par check ho (repo MIT,
   base-model weights alag terms ho sakte hain).
+
+## 6. Concat (jub0t/Concat) — parked render stage ka strongest candidate (2026-09-24)
+
+Live-check: OSS **CapCut replacement** — Rust engine + GPU compositor,
+100% local (no watermark/account/upload), AGPL-3.0 (+ LICENSE-EXCEPTIONS.md
+— operator-PC par alag tool ke tor par use ke liye theek; Monarch me
+kabhi link/merge NAHI), v0.2.4 **beta**, 3.5k stars, push aaj bhi.
+Auto-captions (local Whisper), TTS + voice cloning, bg removal, keyframes,
+170+ effects, multi-track, 4K H.264/HEVC/AV1 export.
+
+**Sab se bara point: JSON-RPC + gRPC + MCP API + CLI — "AI agents can cut
+video with it."** Recipes JSONL lines me: `project.create` → `media.import`
+→ `edit.apply {op: addClip, trackId, start}` → `project.get` → export.
+
+**Monarch mapping (operator-PC recipe — in-repo code NAHI banega):**
+- Monarch already emits: `board.json`, `timeline.json` (t_start/t_end),
+  `captions.srt`, `vo/vo_track.wav`, `sfx/*.wav`, previz frames.
+- Concat side: har scene ka frame/clip import → `addClip` at OUR
+  timeline.json times → srt/captions layer → VO track banao → export.
+- Yani Monarch ka "board = truth" contract waisa hi rehta hai; Concat sirf
+  CAMERA-OPERATOR hai jo us board ko MP4 me udelta hai.
+
+**Caveats (L12 honesty):**
+1. Beta software — export ke baad hamare L13 ffprobe checks
+   (duration ±0.5s, streams, resolution, codecs) phir bhi zaroori;
+   G14 ka sabak kisi engine par bhi lagoo hota hai.
+2. G7/L3 VO-gate laws engine-agnostic hain: final MP4 par speech-band +
+   multi-window proof phir bhi chalao — engine badlo, VERIFICATION nahi.
+3. AGPL: yeh Monarch ka dependency KABHI nahi (zero-dependency law #1) —
+   operator ke PC par alag program, API se baat.
+
+**Status: §4 EchoMimic (VO) + §6 Concat (render) = pura operator-PC
+production stack ka naqsha. In-repo Monarch ab bhi previz/QC/truth-layer
+hai — render parked hai jab tak aap khud order na karo.**
