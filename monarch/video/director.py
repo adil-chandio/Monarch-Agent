@@ -369,6 +369,7 @@ def plan_storyboard(
     first_clip_s: float = 2.5,
     cohort: str = "genz",
     seed: int = 0,
+    genre: str = "mystery",
 ) -> Storyboard:
     """Topic -> gated storyboard. Raises GateFail/ValueError — never ships broken."""
     topic = (topic or "").strip()
@@ -377,6 +378,9 @@ def plan_storyboard(
     cohort = cohort.strip().lower()
     if cohort not in COHORTS:
         raise ValueError(f"bad cohort {cohort!r}: use {' | '.join(COHORTS)}")
+    from monarch.video.genres import GENRES, logline as _logline
+    if genre not in GENRES:
+        raise ValueError(f"unknown genre {genre!r}: use {' | '.join(GENRES)}")
 
     maths = compute_math(length, clip_s=clip_s, speaking_wps=speaking_wps,
                          first_clip_s=first_clip_s)
@@ -385,6 +389,7 @@ def plan_storyboard(
     arc = story.plan_arc([r["role"] for r in roles])
 
     title = topic.upper()
+    sb_logline = _logline(topic.strip().lower(), genre)
     scenes: list[Scene] = []
     metas: list[dict] = []
     for i, plan in enumerate(roles, 1):
@@ -442,6 +447,9 @@ def plan_storyboard(
         topic=topic, title=title, cohort=cohort, seed=seed, maths=maths,
         report=report, drivers=metas, fountain=fountain,
     )
+    sb.genre = genre
+    sb.logline = sb_logline
+
     sb.card = render_box_card(sb)
     return sb
 
@@ -464,6 +472,9 @@ def write_storyboard_files(sb: Storyboard, out_dir: str | Path) -> dict[str, Pat
         encoding="utf-8",
     )
     paths["card"].write_text(sb.card, encoding="utf-8")
+    paths["av"] = d / "av_script.md"
+    from monarch.video.genres import av_script as _av
+    paths["av"].write_text(_av(sb.board(), sb.title), encoding="utf-8")
     validate_fountain(sb)
     return paths
 

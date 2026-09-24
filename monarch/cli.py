@@ -162,6 +162,8 @@ def main(argv: list[str] | None = None) -> int:
     mv = sub.add_parser("make-video",
                         help="Neuro Video: topic -> previz animatic (frames+sfx+timeline)")
     mv.add_argument("--topic", required=True)
+    mv.add_argument("--genre", default="mystery",
+                    help="mystery|tutorial|review|educational|entertainment|listicle|storytelling|product")
     mv.add_argument("--out", default="", help="output dir (default output/<slug>)")
     mv.add_argument("--length", default="short")
     mv.add_argument("--clip", type=float, default=3.5)
@@ -817,6 +819,7 @@ def main(argv: list[str] | None = None) -> int:
         try:
             manifest = make_video(
                 args.topic, out,
+                genre=args.genre,
                 length=_resolve_length(args.length),
                 clip_s=args.clip,
                 speaking_wps=args.wps,

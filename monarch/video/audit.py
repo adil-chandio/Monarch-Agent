@@ -295,7 +295,15 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
                     "add a number, an open loop, or direct address (you) — "
                     "N1 thumb-stop laws",
                     "first 3 seconds decide the scroll"))
-            if total_words:
+            # vidIQ 4-part law: part 3 = explicit CTA near the end
+        last_role = str(board[-1].get("retention_role", ""))
+        if "cua" not in last_role and "cta" not in last_role:
+            rep.findings.append(Finding(
+                "P3", "no CTA beat at the tail (vidIQ 4-part)",
+                f"last scene role = {last_role or 'unknown'}",
+                "end on payoff+cua (monarch genres engine pins it)",
+                "no ask = no subscribe; the video ends, the scroll continues"))
+        if total_words:
                 signs, hits, notes = score_text(
                     " ".join(str(s.get("vo_line", "")) for s in board))
                 rep.scores["ai_signs_per_100w"] = signs

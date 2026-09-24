@@ -47,6 +47,7 @@ def make_video(
     voice_backend: str = "none",
     wavs_dir: str | Path | None = None,
     do_mix: bool = False,
+    genre: str = "mystery",
 ) -> dict:
     """Topic in, previz animatic out. Returns the manifest dict.
 
@@ -63,6 +64,7 @@ def make_video(
 
     sb = plan_storyboard(
         topic,
+        genre=genre,
         length=length,
         clip_s=clip_s,
         speaking_wps=speaking_wps,
@@ -137,6 +139,8 @@ def make_video(
 
     manifest = {
         "agent": "monarch.video",
+        "logline": getattr(sb, "logline", ""),
+        "genre": getattr(sb, "genre", "mystery"),
         "kind": "previz animatic (no footage, no upload — HAAN still gates render)",
         "topic": sb.topic,
         "title": sb.title,
