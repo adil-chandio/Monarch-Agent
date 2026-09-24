@@ -394,7 +394,8 @@ def plan_storyboard(
         if arc_i.get("rehook"):
             draft = story.rehook_into(draft, arc_i["rehook"])
         # HUMANIZE pass: AI-tell phrases die before the script exists
-        draft, hum = humanize(draft)
+        # (cold open keeps its not-just shape — proven retention pattern)
+        draft, hum = humanize(draft, hook=(plan["role"] == "hook"))
         visual = (
             f"one focal {plan['role']} visual on {topic}, high contrast, "
             f"single subject, motion snap"

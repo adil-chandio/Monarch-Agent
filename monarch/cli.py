@@ -218,6 +218,13 @@ def main(argv: list[str] | None = None) -> int:
     mb.add_argument("--no-music", action="store_true")
     mb.add_argument("--json", action="store_true")
 
+    au = sub.add_parser("audit",
+                        help="The Eye: priority-ordered weakness -> fix report")
+    au.add_argument("dir", help="make-video output dir (manifest/board/voice/mix)")
+    au.add_argument("--csv", default=None, help="optional Studio CSV (CTR bands)")
+    au.add_argument("--dossier", default=None, help="optional dossier.json (link-rot)")
+    au.add_argument("--json", action="store_true")
+
     # Session memory — the new-session handoff bridge (RVF-inspired)
     mem = sub.add_parser("memory", help="Save/restore the cross-session handoff state")
     mem_sub = mem.add_subparsers(dest="mem_cmd", required=True)
@@ -814,6 +821,21 @@ def main(argv: list[str] | None = None) -> int:
             if manifest.get("mix"):
                 print(f"mix: {manifest['mix']['report']}")
             print("HAAN still gates the final render. You upload.")
+        return 0
+
+    if args.cmd == "audit":
+        from pathlib import Path
+        from monarch.video.audit import audit_dir
+
+        try:
+            rep = audit_dir(args.dir, csv_path=args.csv, dossier_path=args.dossier)
+        except (ValueError, OSError) as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(rep.as_dict(), indent=2))
+        else:
+            print(rep.render())
         return 0
 
     # ── TABAAHI wave: humanize / voiceover / mix ──

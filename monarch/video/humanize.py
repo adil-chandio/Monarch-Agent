@@ -123,6 +123,8 @@ class HumanizeReport:
     stripped: list[str] = field(default_factory=list)
     flagged: list[str] = field(default_factory=list)   # needs human rewrite
     notes: list[str] = field(default_factory=list)     # statistical tells
+    rewrites: list[str] = field(default_factory=list)  # mechanical suggestions
+    hook_exempt: list[str] = field(default_factory=list)  # cold-open allowances
 
     @property
     def clean(self) -> bool:
@@ -217,13 +219,62 @@ def _tidy(text: str) -> str:
     return out
 
 
-def humanize(text: str, *, gate: float = DEFAULT_GATE) -> tuple[str, HumanizeReport]:
-    """Full pass: strip mechanical tells, report what needs a human."""
+#: mechanical rewrites — meaning-preserving, operator-editable
+REWRITE_RULES: list[tuple[str, str]] = [
+    (r"\bnot just ([^—,;.]+?) — (?:it'?s |this is |that'?s )", r"\1, and "),
+    (r"\bnot just ([^—,;.]+?),? but ", r"\1, and "),
+    (r"\bit'?s not about ([^,;]+), (?:it'?s|this is) about ", r"\1, not "),
+]
+
+
+def _first_sentence_end(text: str) -> int:
+    m = re.search(r"[.!?]", text)
+    return (m.end() if m else len(text))
+
+
+def humanize(text: str, *, gate: float = DEFAULT_GATE,
+             hook: bool = False) -> tuple[str, HumanizeReport]:
+    """Full pass: strip mechanical tells, report what needs a human.
+
+    ``hook=True`` (cold open / scene 1): not-just-but SHAPE in the FIRST
+    sentence is a proven retention pattern (Jev/ARTEMIS forensics) — it is
+    exempted from the sign count and logged in ``hook_exempt`` instead.
+    Body shapes stay flagged. Every flagged shape also gets a mechanical
+    rewrite suggestion in ``rewrites`` — the operator decides.
+    """
     words0 = count_words(text)
     signs0, hits0, notes0 = score_text(text)
     clean, stripped = strip_hits(text)
     signs1, hits1, notes1 = score_text(clean)
-    flagged = [m for m, why, kind in hits1 if kind in ("strip", "shape")]
+
+    hook_exempt: list[str] = []
+    counted: list[tuple[str, str, str]] = []
+    if hook:
+        cut = _first_sentence_end(clean)
+        for m, why, kind in hits1:
+            start = clean.find(m)
+            if kind == "shape" and 0 <= start < cut:
+                hook_exempt.append(f"{why}: {m}")
+                continue
+            counted.append((m, why, kind))
+    else:
+        counted = hits1
+
+    flagged = [m for m, why, kind in counted if kind in ("strip", "shape")]
+
+    # mechanical rewrites for shapes that survived the strip pass
+    rewrites: list[str] = []
+    work = clean
+    for pat, repl in REWRITE_RULES:
+        new = re.sub(pat, repl, work)
+        if new != work:
+            rewrites.append(f"shape rewrite -> {repl!r} form")
+            work = new
+    if rewrites:
+        clean = work
+        signs1, hits1, notes1 = score_text(clean)
+        flagged = [m for m, why, kind in hits1 if kind in ("strip", "shape")]
+
     report = HumanizeReport(
         original_words=words0,
         final_words=count_words(clean),
@@ -232,6 +283,8 @@ def humanize(text: str, *, gate: float = DEFAULT_GATE) -> tuple[str, HumanizeRep
         stripped=stripped,
         flagged=flagged,
         notes=notes0 + [n for n in notes1 if n not in notes0],
+        rewrites=rewrites,
+        hook_exempt=hook_exempt,
     )
     if signs1 > gate:
         report.notes.append(
