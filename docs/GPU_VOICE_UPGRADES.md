@@ -76,3 +76,32 @@ ship*. Every hook above degrades to the stdlib path automatically.
 
 All items: knowledge + optional PC hooks. Never pip deps, never required
 (ruflo precedent, constitution 05/08).
+
+## 5. LivePortrait (KlingAIResearch/Kuaishou, MIT) — portrait animation hook (2026-09-24)
+
+Live-check kiya gaya: `KlingAIResearch/LivePortrait` (19.1k stars, active,
+**MIT license** — commercial OK). Static portrait + DRIVING VIDEO → animated
+talking head (lip-sync, stitching, eye retarget); animals mode bhi
+(`inference_animals.py`). Speed ~12.8ms/frame RTX 4090 par. Weights repo me
+NAHI hain (pretrained_weights khali — HuggingFace se download hota hai);
+stack = torch + onnxruntime-gpu + insightface + ffmpeg-python.
+
+**Monarch ke liye verdict: HAAN, lekin sirf avatar-upgrade hook ke tor par.**
+Faceless stickman pipeline (current product) ko iski zaroorat NAHI. Yeh tab
+kaam aata hai jab operator FACE-channel test kare:
+
+- **EchoMimic V3 (§4) vs LivePortrait:** EchoMimic AUDIO-driven hai —
+  Monarch ke wav-contract (per-scene WAVs / vo_track) se seedha jorta hai.
+  LivePortrait VIDEO-driven hai — bridge yeh hai ke operator apni ek
+  webcam/webcam-style driving take record kare, phir avatar usko puppet
+  karta hai (identity preservation better, speed real-time-class).
+- **Wav-contract mapping (agar kabhi use ho):** vo_track.wav wahi rehta hai;
+  LivePortrait ko chahiye ek source portrait + driving video. Driver ke
+  bagair audio→keypoint adapter (EchoMimic-class) pehle aayega.
+- **Standing order (#2) unchanged:** sandbox/GPU tools kabhi dependency
+  nahi — yeh entry sirf operator-PC recipe hai. In-repo Monarch previz/QC
+  par iska zero asar; audit iski report NAHI karta (yeh parked upgrade
+  path hai, gap nahi).
+- **License note:** MIT = Monarch ke zero-dependency + operator-ownership
+  laws ke sath khara. Weights ka apna license HF par check ho (repo MIT,
+  base-model weights alag terms ho sakte hain).
