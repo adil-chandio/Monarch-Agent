@@ -319,6 +319,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="Analyze a 15-20 video competitor dossier into patterns + ideas")
     df.add_argument("dossier", help="dossier.json (see skills/deep-forensic)")
     df.add_argument("--out", default="", help="output dir (default output/forensic/<slug>)")
+    df.add_argument("--half-life", type=float, default=105.0,
+                    help="freshness half-life in days (default 105)")
 
     # Extract --key anywhere in argv
     extracted_key = None
@@ -1149,7 +1151,7 @@ def main(argv: list[str] | None = None) -> int:
             slug = "-".join(x for x in slug.split("-") if x)[:40] or "niche"
             out = f"output/forensic/{slug}"
         try:
-            report = run_deep_forensic(args.dossier, out)
+            report = run_deep_forensic(args.dossier, out, half_life=args.half_life)
         except ValueError as e:
             print("FAIL", e)
             return 2

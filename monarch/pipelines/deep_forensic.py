@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime, timezone
 import statistics
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -169,6 +170,10 @@ class VideoAnalysis:
     engagement: float  # likes/views, 0 when likes unknown
     thumb_note: str
     date: str
+    # W2 truth layer (defaults AFTER non-defaults; recency=1.0 = NO DATE, honest)
+    age_days: float = -1.0
+    recency: float = 1.0
+    fresh_rank: float = 0.0
 
     @property
     def hook_label(self) -> str:
@@ -214,7 +219,36 @@ def _cta_positions(transcript: str, duration_s: float) -> list[float]:
     return sorted(set(round(p, 2) for p in out))
 
 
-def analyze_video(v: CompetitorVideo) -> VideoAnalysis:
+#: freshness laws (temporal-RAG backed: score = a*quality + (1-a)*0.5**(age/HL),
+#: sensitivity says keep a <= 0.7; HL=105d sits between fast news (14d) and
+#: slow taste drift (150d) — right for evergreen-leaning YouTube DNA)
+HALF_LIFE_DAYS = 105.0
+RECENCY_ALPHA = 0.7
+LINKROT_AT = 2.0  # age > 2x half-life = link-rot risk flag
+
+
+def _parse_date(date: str):
+    d = (date or "").strip()
+    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%Y-%m-%dT%H:%M:%SZ", "%d-%m-%Y"):
+        try:
+            return datetime.strptime(d, fmt).replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+    return None
+
+
+def recency_factor(date: str, *, today=None, half_life: float = HALF_LIFE_DAYS):
+    """0..1 recency weight via half-life decay; None when NO DATE (honest)."""
+    dt = _parse_date(date)
+    if dt is None:
+        return None
+    now = today or datetime.now(timezone.utc)
+    age = max(0.0, (now - dt).total_seconds() / 86400.0)
+    return 0.5 ** (age / max(1.0, half_life))
+
+
+def analyze_video(v: CompetitorVideo, *, today=None,
+                  half_life: float = HALF_LIFE_DAYS) -> VideoAnalysis:
     words = count_words(v.transcript)
     wps = words / max(1.0, v.duration_s)
     wp30 = wps * 30.0
@@ -232,9 +266,15 @@ def analyze_video(v: CompetitorVideo) -> VideoAnalysis:
     nums = sum(1 for t in tokenize(v.transcript) if any(c.isdigit() for c in t))
     sentences = [s for s in re.split(r"[.!?]+", v.transcript) if s.strip()]
     lens = [count_words(s) for s in sentences]
+    rec = recency_factor(v.date, today=today, half_life=half_life)
+    rec_val = 1.0 if rec is None else round(rec, 4)
+    dt = _parse_date(v.date)
+    now0 = today or datetime.now(timezone.utc)
+    age = round(max(0.0, (now0 - dt).total_seconds() / 86400.0), 1) if dt else -1.0
     return VideoAnalysis(
         id=v.id, title=v.title, channel=v.channel, views=v.views,
         duration_s=v.duration_s,
+        age_days=age, recency=rec_val,
         words=words, wps=round(wps, 2), words_per_30s=round(wp30, 1),
         in_zack_band=ZACK_MIN <= wp30 <= ZACK_MAX,
         hook_text=hook_text, hook_words=hook_words,
@@ -268,6 +308,7 @@ class DossierReport:
     median_views: float = 0.0
     outlier_x: float = 1.0
     zack_share: float = 0.0
+    freshness: dict = field(default_factory=dict)
 
     @property
     def status(self) -> str:
@@ -292,7 +333,8 @@ def _mean(vals: list[float]) -> float:
 
 
 def _build_ideas(niche: str, analyses: list[VideoAnalysis],
-                 clusters: list[tuple[str, int]]) -> list[dict]:
+                 clusters: list[tuple[str, int]],
+                 freshness_note: str = "") -> list[dict]:
     """10 idea drafts from the winning patterns — M2 feed, gates still apply."""
     ideas: list[dict] = []
     top_formula = _mode([a.title_formula for a in analyses if a.title_formula != "T0"]) or "T1"
@@ -315,7 +357,8 @@ def _build_ideas(niche: str, analyses: list[VideoAnalysis],
                     f"proof with {b} lands before scene 3",
             "itch": "unfinished loop + status secret",
             "evidence": f"'{a}' drives this niche (cluster rank {i % len(terms) + 1}); "
-                        f"pattern from {len(analyses)} analyzed videos",
+                        f"pattern from {len(analyses)} analyzed videos"
+                        + (f"; {freshness_note}" if freshness_note else ""),
         })
     ideas[0]["formula"] = top_formula
     return ideas
@@ -325,8 +368,9 @@ def _mode(vals: list[str]) -> str:
     return statistics.mode(vals) if vals else ""
 
 
-def analyze_dossier(niche: str, videos: list[CompetitorVideo]) -> DossierReport:
-    analyses = [analyze_video(v) for v in videos]
+def analyze_dossier(niche: str, videos: list[CompetitorVideo], *,
+                    today=None, half_life: float = HALF_LIFE_DAYS) -> DossierReport:
+    analyses = [analyze_video(v, today=today, half_life=half_life) for v in videos]
     views = [v.views for v in videos]
     med = _median(views)
     peak = max(views) if views else 0.0
@@ -339,6 +383,36 @@ def analyze_dossier(niche: str, videos: list[CompetitorVideo]) -> DossierReport:
         outlier_x=round(peak / med, 1) if med > 0 else 1.0,
         zack_share=round(sum(1 for a in analyses if a.in_zack_band) / len(analyses), 2),
     )
+
+    # W2 truth layer: fresh_rank = 0.7*engagement + 0.3*recency (a=0.7 capped)
+    dated = [a for a in analyses if a.age_days >= 0]
+    if views:
+        vmax = max(views) or 1.0
+        for a in analyses:
+            a.fresh_rank = round(RECENCY_ALPHA * (a.views / vmax)
+                                 + (1 - RECENCY_ALPHA) * a.recency, 4)
+    stale_ids = [a.id for a in analyses
+                 if a.age_days > LINKROT_AT * half_life]
+    factors = [a.recency for a in dated] or [1.0]
+    ages = [a.age_days for a in dated] or [0.0]
+    report.freshness = {
+        "half_life_days": half_life,
+        "alpha_engagement": RECENCY_ALPHA,
+        "dated": f"{len(dated)}/{len(analyses)}",
+        "median_age_days": round(statistics.median(ages), 1) if dated else None,
+        "median_recency": round(statistics.median(factors), 3),
+        "linkrot_risk_ids": stale_ids,
+        "note": ("recency=1.0 rows carry NO DATE — honest neutral, not a claim"
+                 if len(dated) < len(analyses) else ""),
+    }
+    if dated:
+        rot = f"; LINK-ROT RISK {len(stale_ids)} (age > 2x HL)" if stale_ids else ""
+        report.patterns = []  # filled below; freshness line appended after build
+        _fresh_line = (f"freshness: median evidence age {statistics.median(ages):.0f}d "
+                       f"(HL {half_life:.0f}d), {len(dated)}/{len(analyses)} dated, "
+                       f"median recency {statistics.median(factors):.2f}{rot}")
+    else:
+        _fresh_line = ""
 
     # top vs bottom median split — the same honest JUDGE step as `learn`
     order = sorted(analyses, key=lambda a: -a.views)
@@ -381,12 +455,20 @@ def analyze_dossier(niche: str, videos: list[CompetitorVideo]) -> DossierReport:
     if late_cta:
         p.append(f"{len(late_cta)}/{len(analyses)} videos place first CTA after 50% "
                  "(N4: value-debt before the ask)")
+    if _fresh_line:
+        p.append(_fresh_line)
     report.patterns = p
 
     report.clusters = _top_terms(
         [f"{v.title} {v.transcript[:1200]}" for v in videos]
     )
-    report.ideas = _build_ideas(niche, analyses, report.clusters)
+    fresh_note = ""
+    if dated:
+        fresh_note = (f"evidence freshness: median age "
+                      f"{statistics.median(ages):.0f}d (HL {half_life:.0f}d)"
+                      + (f"; {len(stale_ids)} stale" if stale_ids else ""))
+    report.ideas = _build_ideas(niche, analyses, report.clusters,
+                                freshness_note=fresh_note)
     return report
 
 
@@ -470,6 +552,7 @@ def write_report(r: DossierReport, out_dir: str | Path) -> dict[str, Path]:
         "median_views": r.median_views,
         "outlier_x": r.outlier_x,
         "zack_share": r.zack_share,
+        "freshness": r.freshness,
         "patterns": r.patterns,
         "clusters": r.clusters,
         "analyses": [a.__dict__ for a in r.analyses],
@@ -479,8 +562,9 @@ def write_report(r: DossierReport, out_dir: str | Path) -> dict[str, Path]:
     return paths
 
 
-def run_deep_forensic(dossier_path: str | Path, out_dir: str | Path) -> DossierReport:
+def run_deep_forensic(dossier_path: str | Path, out_dir: str | Path, *,
+                      half_life: float = HALF_LIFE_DAYS) -> DossierReport:
     niche, videos = load_dossier(dossier_path)
-    report = analyze_dossier(niche, videos)
+    report = analyze_dossier(niche, videos, half_life=half_life)
     write_report(report, out_dir)
     return report
