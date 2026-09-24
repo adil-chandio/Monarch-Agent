@@ -225,6 +225,12 @@ def main(argv: list[str] | None = None) -> int:
     au.add_argument("--dossier", default=None, help="optional dossier.json (link-rot)")
     au.add_argument("--json", action="store_true")
 
+    lw = sub.add_parser("laws",
+                        help="production iron laws + checklist (PRODUCTION_LAW_V2)")
+    lw.add_argument("--part", default="laws",
+                    choices=["laws", "checklist", "failures"],
+                    help="which part to print (default: iron laws)")
+
     # Session memory — the new-session handoff bridge (RVF-inspired)
     mem = sub.add_parser("memory", help="Save/restore the cross-session handoff state")
     mem_sub = mem.add_subparsers(dest="mem_cmd", required=True)
@@ -836,6 +842,22 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(rep.as_dict(), indent=2))
         else:
             print(rep.render())
+        return 0
+
+    if args.cmd == "laws":
+        from pathlib import Path
+        doc = Path(__file__).resolve().parents[1] / "docs" / "PRODUCTION_LAW_V2.md"
+        if not doc.is_file():
+            print("FAIL canon missing:", doc)
+            return 2
+        text = doc.read_text(encoding="utf-8")
+        want = ("## PART 3" if args.part == "laws"
+                else "## PART 4" if args.part == "checklist"
+                else "## PART 2")
+        nxt = {"## PART 2": "## PART 3", "## PART 3": "## PART 4",
+               "## PART 4": "## RECONCILIATION"}[want]
+        block = text.split(want, 1)[1].split(nxt, 1)[0]
+        print(want + block.rstrip())
         return 0
 
     # ── TABAAHI wave: humanize / voiceover / mix ──

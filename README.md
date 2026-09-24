@@ -204,7 +204,9 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
-Docs: `docs/RENDER_LAWS.md`, `docs/CONTENT_PLAYBOOK.md`, `docs/MASTER_PLAN.md`.
+Docs: `docs/RENDER_LAWS.md`, `docs/PRODUCTION_LAW_V2.md` (16 registered
+failures G1–G16 + 15 iron laws + delivery checklist — `monarch laws
+[--part laws|failures|checklist]` prints them anywhere), `docs/CONTENT_PLAYBOOK.md`, `docs/MASTER_PLAN.md`.
 
 ## Skills, memory & the learning loop
 

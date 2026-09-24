@@ -177,6 +177,66 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
             "re-run with --with-mix (music duck + SFX + room tone + limiter)",
             "flat audio reads amateur within 5 seconds"))
 
+    # ---- mix: law-aware ceiling + ducking (PRODUCTION_LAW_V2 L8/G7;
+    #      dBFS proxy from the mix report — LUFS needs loudnorm/ffprobe)
+    mix_info = manifest.get("mix") or {}
+    report = str(mix_info.get("report", "")) if mix_info else ""
+    if report:
+        m = re.search(r"master (-?[\d.]+)/(-?[\d.]+) dBFS", report)
+        if m and float(m.group(2)) >= -1.0:
+            rep.findings.append(Finding(
+                "P2", "master peak over ceiling (L8/G12)",
+                f"mix report says master peak {m.group(2)} dBFS (ceiling -1.0); "
+                "note: dBFS proxy — final -14 LUFS check needs loudnorm/ffprobe",
+                "re-run mix with the limiter engaged (G7 layer 7)",
+                "platform loudness normalization pumps or clips the master"))
+        duck = re.search(r"duck events (\d+)", report)
+        if duck and int(duck.group(1)) == 0:
+            rep.findings.append(Finding(
+                "P3", "no sidechain duck events (L8)",
+                "mix report: duck events 0 — music never ducked under VO",
+                "re-run mix (music bed must breathe under voice, ~1.2x VO)",
+                "voice fights the bed; intelligibility drops on phones"))
+        rep.scores["mix_report"] = report[:80]
+
+    # ---- pack checklist (PRODUCTION_LAW_V2 Part 4 / L6+L15) — report-only
+    mp4s = list(d.glob("*.mp4"))
+    pack_have, pack_missing = [], []
+    if list(d.glob("*.srt")):
+        pack_have.append("srt")
+    else:
+        pack_missing.append("captions.srt (L6)")
+    if list(d.glob("*thumb*")):
+        pack_have.append("thumbnails")
+    else:
+        pack_missing.append("2 thumbnails + 120px postage test (L11)")
+    if any(p.name.startswith(("listing", "description", "metadata"))
+           for p in d.iterdir() if p.is_file()):
+        pack_have.append("listing")
+    else:
+        pack_missing.append("listing: title+description+tags+timestamps")
+    if mp4s:
+        pack_have.append(f"{len(mp4s)} mp4")
+    else:
+        pack_missing.append("final video (parked render — operator order)")
+    rep.scores["pack_items"] = len(pack_have)
+    rep.findings.append(Finding(
+        "P3", "pack checklist (Part 4) status",
+        f"have: {', '.join(pack_have) or 'nothing yet'}; "
+        f"missing: {', '.join(pack_missing) or 'nothing'}",
+        "M6/P3 pack stage: srt + thumbs + listing + versioned final "
+        "(preview player points at LATEST final, G16)",
+        "upload day belongs to the operator (HAAN gate)"))
+    unversioned = [p.name for p in mp4s
+                   if not re.search(r"(v\d+|final)", p.name, re.I)]
+    if unversioned:
+        rep.findings.append(Finding(
+            "P3", "final not versioned (G16 cache law)",
+            f"{', '.join(unversioned[:3])} — browser cache serves stale files",
+            "rename with a version token (…_v2_final.mp4) and re-point "
+            "the preview at LATEST",
+            "operator reviews an OLD cut and re-litigates fixed problems"))
+
     # ---- parked gap: REPORTED, never acted on (standing order #1)
     rep.findings.append(Finding(
         "P3", "parked gap: MP4 render stage (in-repo)", 
