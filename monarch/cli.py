@@ -231,6 +231,15 @@ def main(argv: list[str] | None = None) -> int:
                     choices=["laws", "checklist", "failures"],
                     help="which part to print (default: iron laws)")
 
+    rd = sub.add_parser("render",
+                        help="Render a make-video dir to MP4 (in-sandbox, L13 checked)")
+    rd.add_argument("dir", help="make-video output dir")
+    rd.add_argument("--out", default="", help="output mp4 path")
+    rd.add_argument("--crf", type=int, default=20)
+    rd.add_argument("--no-burn", action="store_true",
+                    help="do not burn captions (srt still ships)")
+    rd.add_argument("--json", action="store_true")
+
     cp = sub.add_parser("concat-plan",
                         help="Emit jub0t/Concat JSONL recipe from a make-video dir")
     cp.add_argument("dir", help="make-video output dir (timeline.json truth)")
@@ -862,6 +871,25 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(rep.as_dict(), indent=2))
         else:
             print(rep.render())
+        return 0
+
+    if args.cmd == "render":
+        from monarch.video.render import render_mp4
+
+        try:
+            res = render_mp4(args.dir, out=(args.out or None),
+                             crf=args.crf, burn_captions=not args.no_burn)
+        except (ValueError, OSError) as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(res, indent=2))
+        else:
+            print(f"RENDER OK {res['output']} ({res['bytes']} bytes)")
+            print(f"  video {res['video_s']}s vs audio {res['audio_s']}s "
+                  f"(drift {res['drift_s']}s, "
+                  f"{'OK' if res['duration_ok'] else 'OUT OF BAND'})")
+            print(f"  {res['captions']}")
         return 0
 
     if args.cmd == "concat-plan":

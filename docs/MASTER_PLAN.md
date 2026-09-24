@@ -33,7 +33,12 @@ push + PR comment per wave · honest ran-vs-blocked.
 1. Master-archive gaps (MP4 render stage in-repo, port-8080 player,
    10-SFX-preset task, positional CLI) — do-not-act until operator
    orders. Audit REPORTS gaps, never builds them.
-   *Archive status note:* the MP4 gap is **closed-in-production** via the
+   *ORDER REVERSED (operator, 2026-09-24): "ham PC nahi rakhte - Arena
+   agent hi render karega." MP4 render stage ab IN-SANDBOX SHIPPED:
+   `monarch render DIR` (monarch/video/render.py, imageio-ffmpeg static
+   binary; 2-input concat+audio (G7/L2), duration drift checked vs audio
+   +-0.5s (L13), scene captions burned + srt (G11), versioned name (G16).
+   Upload par wohi HAAN human gate. *Archive status note:* the MP4 gap was **closed-in-production** via the
    operator's journal session (rebuildable recipe, 166s) — the in-repo
    render stage itself remains parked.
 2. ruflo + GPU tools — never dependencies. Hooks/knowledge only.

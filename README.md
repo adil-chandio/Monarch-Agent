@@ -204,6 +204,11 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**Render (in-sandbox, operator order 2026-09-24):** `monarch render DIR`
+turns a make-video dir into `*_v1_render.mp4` — 2-input concat+audio build
+(G7/L2), burned scene captions + `captions.srt` (G11), versioned name (G16),
+duration drift checked vs the audio track ±0.5s (L13). Upload stays human-gated (HAAN).
+
 **Never-again guards** (PRODUCTION_LAW_V2 wired into code, not just canon):
 `monarch doctor` (L1/G2 env check, fail-closed), `monarch budget --frames N --clips M`
 (G3/L10 batch planner), leading-silence trim + 0.3s onset gate (G8/L4), mix VO-gate
