@@ -47,3 +47,32 @@ constitution (fail-closed, stdlib-only core) both say the same thing:
 Monarch must build, test and render its previz + audio pipeline with zero
 external services. GPU tools are *upgrades you own*, not *requirements we
 ship*. Every hook above degrades to the stdlib path automatically.
+
+## 4. Batch-3/4 hunt additions (2026-09-24 forensic — hooks only)
+
+- **EchoMimic V3 (antgroup, Apache-2.0)** — 1.3B params, unified
+  multi-modal human animation; consumer-GPU class (V1 4.3k★ was AAAI-25;
+  V2 CVPR-25; V3 AAAI-26). Hook: needs portrait + **audio clip** — Monarch
+  already emits per-scene WAVs + vo_track.wav (the wav contract IS the
+  feedstock). Faceless → optional talking-face on your GPU box.
+- **video2x (k4yt3x, 21k★)** — super-resolution + frame interpolation.
+  Hook: run final render through it on PC to kill softness/choppiness
+  ("visual humanizer"); can also smooth the 2fps previz via RIFE.
+- **LosslessCut (mifi, 43k★)** — stream-copy trimming, zero re-encode.
+  Hook: lossless assembly stage for per-scene clips on your PC.
+- **pyVideoTrans (jianchang512, 19k★)** — ASR → translate → AI dub →
+  composite; 30+ engines incl. **edge-tts** (same TTS family as Monarch's
+  `--voice-backend edge` — zero contract friction); speaker diarization.
+  Hook: 1 finished video → Urdu/Hindi/English reach multipliers.
+- **faster-whisper (tiny, int8, CPU)** — PROVEN IN PRODUCTION by the
+  journal (v7): word-level timestamps from real audio; text garbled but
+  timings true — take the part that works, discard the rest.
+  Hook: next-step word-level VO QC beyond envelope speech-end.
+- **OpenCut (64k★, MIT)** — rewrite roadmap: Editor API, Rust core,
+  **MCP server for agents, headless mode + batch rendering**.
+  Hook (future, when render stage is ordered): Monarch board.json →
+  editor project → headless render = the MP4 bridge. Roadmap-as-shipped
+  warning applies: classic track is what actually runs today.
+
+All items: knowledge + optional PC hooks. Never pip deps, never required
+(ruflo precedent, constitution 05/08).
