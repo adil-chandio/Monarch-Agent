@@ -243,6 +243,18 @@ def main(argv: list[str] | None = None) -> int:
     lrec.add_argument("--length", type=float, default=0.0, help="runtime seconds")
     lrec.add_argument("--date", default="", help="upload date (default today, UTC)")
     lrec.add_argument("--note", default="")
+    ling = lr_sub.add_parser("ingest",
+                             help="YouTube Studio CSV/TSV export -> performance log")
+    ling.add_argument("csv_file")
+    ling.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+    ling.add_argument("--cohort", default="", help="N2 cohort tag applied to all rows")
+    ling.add_argument("--note", default="", help="note applied to all rows")
+    lhy = lr_sub.add_parser("hygiene",
+                            help="Lesson hygiene: confirmed / provisional / stale / conflicts")
+    lhy.add_argument("--lessons", dest="lessons_file", default=None,
+                     help="lessons.md path (default repo self_improve/lessons.md)")
+    lhy.add_argument("--json", action="store_true")
+    ling.add_argument("--json", action="store_true")
     lrec.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
     ldis = lr_sub.add_parser("distill")
     ldis.add_argument("--min", type=int, default=3, help="min videos for a split (default 3)")
@@ -987,6 +999,52 @@ def main(argv: list[str] | None = None) -> int:
                       f"{r.avg_pct:>3.0f}% avg | {r.cohort or '-':<6} | "
                       f"{r.length_s:.0f}s" + (f" | {r.note}" if r.note else ""))
             return 0
+        if args.learn_cmd == "ingest":
+            from pathlib import Path
+            from monarch.pipelines.performance import ingest_csv
+
+            try:
+                recs = ingest_csv(args.csv_file, cohort=args.cohort,
+                                  note=args.note)
+            except (ValueError, OSError) as e:
+                print("FAIL", e)
+                return 2
+            path = args.file or learn.PERFORMANCE_FILE
+            for r in recs:
+                learn.record_performance(r, path)
+            if args.json:
+                print(json.dumps([r.to_dict() for r in recs], indent=2))
+            else:
+                print(f"INGESTED {len(recs)} record(s) -> {path}")
+                for r in recs:
+                    print(f"  {r.date} | {r.topic[:40]:<40} | "
+                          f"{r.views:>9.0f} views | {r.avg_pct:>4.1f}% avg | "
+                          f"{r.length_s:.0f}s" if r.length_s else
+                          f"  {r.date} | {r.topic[:40]:<40} | "
+                          f"{r.views:>9.0f} views | {r.avg_pct:>4.1f}% avg")
+            return 0
+
+        if args.learn_cmd == "hygiene":
+            from pathlib import Path
+            from monarch.core import lesson_hygiene as lh
+            from monarch.core.lessons import DEFAULT as LESSONS_DEFAULT
+
+            lp = Path(args.lessons_file) if args.lessons_file else LESSONS_DEFAULT
+            if not lp.is_file():
+                print(f"FAIL no lessons file at {lp} — nothing to audit yet")
+                return 2
+            rep, skipped = lh.hygiene_from_file(lp)
+            if args.json:
+                rep.skipped = skipped
+                print(json.dumps({k: v for k, v in rep.__dict__.items()}, indent=2))
+            else:
+                print(rep.summary() + (f" | skipped {skipped}" if skipped else ""))
+                for row in rep.rows:
+                    print(f"  [{row['status']:<11}] x{row['count']} "
+                          f"(last {row['last_seen_days_ago']}d ago) | "
+                          f"{row['miss'][:26]} :: {row['rule'][:56]}")
+            return 0
+
         # distill
         try:
             recs = learn.load_performance(args.file or learn.PERFORMANCE_FILE)
