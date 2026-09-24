@@ -168,12 +168,14 @@ class MixReport:
     duck_events: int
     sfx_events: int
     warnings: list[str] = field(default_factory=list)
+    vo_gate: str = "NO VO"   # G7: VO must survive into the master
 
     def summary(self) -> str:
         return (f"MIX {self.duration_s:.1f}s | VO {self.vo_rms}/{self.vo_peak} dBFS | "
                 f"master {self.master_rms}/{self.master_peak} dBFS | "
                 f"music {self.music_db} dB ducked | "
                 f"duck events {self.duck_events} | sfx {self.sfx_events}"
+                + f" | VO GATE {self.vo_gate}"
                 + ("" if not self.warnings else
                    " | WARN: " + "; ".join(self.warnings)))
 
@@ -252,6 +254,14 @@ def mix(
     )
     if has_voice and report.vo_peak > -1.0:
         warnings.append("VO peaks hot — consider VO_GAIN down")
+    # G7 gate: broadband numbers lie (booms mask a lost VO). Compare the
+    # VO bus against the MASTER inside real speech windows: if the voice
+    # got misbound or lost, the delta explodes. Fail loudly, never silently.
+    if has_voice:
+        ok, detail = _vo_gate(master, voice, sr, n)
+        report.vo_gate = ("PASS: " if ok else "FAIL: ") + detail
+        if not ok:
+            warnings.append("VO GATE FAIL - voice lost/misbound in master (G7)")
     return master, report
 
 
@@ -266,3 +276,38 @@ def _count_dips(vo: list[float], sr: int) -> int:
             dips += 1
             was_up = False
     return dips
+
+
+def _vo_gate(master: list[float], voice: list[float], sr: int, n: int, *,
+             max_delta_db: float = 6.0) -> tuple[bool, str]:
+    """Multi-window speech-level proof (L3): first + middle + last onset."""
+    frame = max(1, int(sr * 0.01))
+    win = max(frame, int(sr * 0.4))
+    env = vo_envelope(voice, sr)
+    voiced = [i for i, v in enumerate(env) if v > 0.02]
+    if not voiced:
+        return False, "no voiced frames in the VO bus"
+    picks = (voiced[0], voiced[len(voiced) // 2], voiced[-1])
+    checked, worst = 0, 0.0
+    for p in picks:
+        a = min(n - 1, p * frame)
+        b = min(n, a + win)
+        if b - a < frame * 5:
+            continue
+        vm = rms_dbfs(voice[a:b])
+        mm = rms_dbfs(master[a:b])
+        if vm <= -60.0:
+            continue
+        # G7 failure mode = the voice is GONE: master collapses to bed
+        # level. Music/sfx sitting ON TOP of the voice is legitimate, so
+        # only the DROP direction fails the window.
+        drop = vm - mm
+        worst = max(worst, drop)
+        checked += 1
+        if drop > max_delta_db:
+            return False, (f"window @{a / sr:.2f}s master {mm} dBFS vs VO "
+                           f"{vm} dBFS (voice dropped {drop:.1f} dB > "
+                           f"{max_delta_db})")
+    if not checked:
+        return False, "no measurable VO windows above -60 dBFS"
+    return True, f"{checked} windows, worst drop {worst:.1f} dB"

@@ -44,6 +44,7 @@ SR_DEFAULT = 24000
 #: glue laws (seconds)
 LEAD_IN = 0.10
 TAIL = 0.35
+LEAD_KEEP = 0.06   # G8: keep a hair of lead room, kill the dead air
 CROSSFADE = 0.06
 GAP_SENTENCE = 0.5
 GAP_COMMA = 0.3
@@ -175,6 +176,21 @@ def _mumble(text: str, sr: int, seed: int = 0) -> list[float]:
             out.append(0.5 * env * v)
         out.extend([0.0] * int((1 / rate) * sr * 0.55))
     return out
+
+
+def trim_lead_silence(samples: list[float], sr: int,
+                      keep_s: float = LEAD_KEEP,
+                      threshold: float = 0.02) -> list[float]:
+    """G8/L4: leading breath-silence dies; first word lands almost at 0.00s.
+
+    Keeps ``keep_s`` of room before the first voiced sample so the attack
+    is not clipped. The no_dead_lead QC gate (<=0.3s) verifies it after.
+    """
+    idx = next((i for i, v in enumerate(samples) if abs(v) > threshold), None)
+    if idx is None:
+        return list(samples)
+    cut = max(0, idx - int(keep_s * sr))
+    return samples[cut:] if cut else list(samples)
 
 
 def _edge_tts(text: str, sr: int, voice: str) -> list[float]:
@@ -316,8 +332,10 @@ def synthesize_scene(
             audio.extend([0.0] * int(next_gap("x") * sr * 0.3))
             audio.extend(p)
         used = "mumble"
-        return glue_chunks(parts, sr), chunks, used
-    return glue_chunks([trim_tail_silence(audio, sr, keep_s=0.12)], sr), chunks, used
+        return trim_lead_silence(glue_chunks(parts, sr), sr), chunks, used
+    return trim_lead_silence(
+        glue_chunks([trim_tail_silence(audio, sr, keep_s=0.12)], sr), sr
+    ), chunks, used
 
 
 def build_voiceover(
@@ -429,7 +447,7 @@ def qc_track(track: list[float], sr: int, *, board_end_s: float,
     add("no_clipped_end", m["speech_end_s"] < m["duration_s"] - 0.02
         or m["duration_s"] == 0.0,
         f"speech ends {m['speech_end_s']}s, file {m['duration_s']}s")
-    add("no_dead_lead", m["leading_silence_s"] <= 0.5,
+    add("no_dead_lead", m["leading_silence_s"] <= 0.3,
         f"leading silence {m['leading_silence_s']}s")
     drift = abs(board_end_s - m["speech_end_s"])
     add("coverage_within_15pct", board_end_s == 0 or
@@ -449,3 +467,19 @@ def write_track(path: str | Path, track: list[float], sr: int) -> Path:
     from monarch.video.audio import write_wav
 
     return write_wav(path, track, sr)
+
+
+def _srt_ts(t: float) -> str:
+    ms = int(round(max(0.0, t) * 1000))
+    h, ms = divmod(ms, 3600000)
+    m, ms = divmod(ms, 60000)
+    sec, ms = divmod(ms, 1000)
+    return f"{h:02d}:{m:02d}:{sec:02d},{ms:03d}"
+
+
+def format_srt(rows: list[tuple[float, float, str]]) -> str:
+    """VO scene windows -> captions.srt text (L6: captions are not optional)."""
+    out: list[str] = []
+    for i, (a, b, text) in enumerate(rows, 1):
+        out.append(f"{i}\n{_srt_ts(a)} --> {_srt_ts(b)}\n{str(text).strip()}\n")
+    return "\n".join(out)

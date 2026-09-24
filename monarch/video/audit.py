@@ -140,6 +140,7 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
     if not d.is_dir():
         raise ValueError(f"subject dir not found: {d}")
     rep = AuditReport(subject=str(d))
+    board: list = []          # G5/G14: defined even when board.json absent
 
     manifest_p = d / "manifest.json"
     manifest: dict = {}
@@ -190,6 +191,13 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
                 "note: dBFS proxy — final -14 LUFS check needs loudnorm/ffprobe",
                 "re-run mix with the limiter engaged (G7 layer 7)",
                 "platform loudness normalization pumps or clips the master"))
+        if "VO GATE FAIL" in report:
+            rep.findings.append(Finding(
+                "P1", "VO lost in master (G7 gate)",
+                report,
+                "re-mix in layers (max 10 inputs per command) and re-verify "
+                "first/mid/last speech windows against raw VO levels",
+                "the operator heard SFX where the voice should be"))
         duck = re.search(r"duck events (\d+)", report)
         if duck and int(duck.group(1)) == 0:
             rep.findings.append(Finding(
@@ -249,7 +257,10 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
     board_p = d / "board.json"
     if board_p.is_file():
         try:
-            board = _load_json(board_p).get("scenes", [])
+            data = _load_json(board_p)
+            # G5: shape-check before subscripting - boards have shipped as
+            # lists AND as {title, maths, scenes} dicts. Both readable.
+            board = data.get("scenes", []) if isinstance(data, dict) else data
         except (json.JSONDecodeError, OSError) as e:
             board = []
             rep.findings.append(Finding("P2", "board.json unreadable", str(e),
@@ -300,6 +311,35 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
             "P3", "no board.json", f"{d} carries no board",
             "make-video emits board.json (scene rows drive the audit)",
             "pacing/hook/AI-signs unaudited"))
+
+    # ---- G14/L13: duration sources must agree (+-0.5s), or the QC is
+    #      repeating the 63.6s-video-on-a-60s-board lie
+    sources: dict[str, float] = {}
+    if manifest.get("total_s"):
+        sources["manifest.total_s"] = float(manifest["total_s"])
+    tl_p = d / "timeline.json"
+    if tl_p.is_file():
+        try:
+            tval = _load_json(tl_p).get("total_s")
+            if tval:
+                sources["timeline.json"] = float(tval)
+        except (json.JSONDecodeError, OSError):
+            pass
+    if board:
+        sources["board.sum"] = round(sum(
+            float(s.get("t_end", 0)) - float(s.get("t_start", 0))
+            for s in board), 3)
+    if len(sources) >= 2:
+        vals = list(sources.values())
+        spread = max(vals) - min(vals)
+        rep.scores["duration_spread_s"] = round(spread, 3)
+        if spread > 0.5:
+            rep.findings.append(Finding(
+                "P1", "duration sources disagree (G14)",
+                f"{sources} - spread {spread:.2f}s > 0.5s",
+                "regenerate from the board (deterministic seed) and run "
+                "ffprobe on the real file before trusting any QC",
+                "one trusted source is how a 63.6s video passed a 60s board"))
 
     # ---- optional Studio CSV: CTR bands + APV spread
     if csv_path is not None:

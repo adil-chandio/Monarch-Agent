@@ -16,6 +16,8 @@ trims, never pads.
 
 from __future__ import annotations
 
+import re
+
 import random
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -462,4 +464,27 @@ def write_storyboard_files(sb: Storyboard, out_dir: str | Path) -> dict[str, Pat
         encoding="utf-8",
     )
     paths["card"].write_text(sb.card, encoding="utf-8")
+    validate_fountain(sb)
     return paths
+
+
+def validate_fountain(sb) -> int:
+    """G4/G9: the written fountain must RE-COUNT to the same word maths.
+
+    Verify the verifier: parse every :: visual :: spoken line back out of
+    the fountain text, count spoken words with the ENGINE tokenizer (never
+    by hand), and demand it matches the board scene's vo_line count, beat
+    for beat. Fail-closed: writer drift dies here, not on render day.
+    """
+    spoken = re.findall(r"^::.*?::\s*(.+)$", sb.fountain, re.M)
+    rows = sb.board()
+    if len(spoken) != len(rows):
+        raise ValueError(
+            f"fountain beats {len(spoken)} != board scenes {len(rows)} (G4)")
+    for i, (line, row) in enumerate(zip(spoken, rows), 1):
+        a = count_words(line)
+        b = count_words(str(row["vo_line"]))
+        if a != b:
+            raise ValueError(
+                f"scene {i}: fountain spoken words {a} != board {b} (G4)")
+    return len(spoken)

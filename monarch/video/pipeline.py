@@ -89,6 +89,11 @@ def make_video(
     timeline = stitch(sb, d, fps=fps, width=width, height=height, accent=accent,
                       seed=sb.seed, animation=animation)
 
+    # G14 honesty: the manifest PROMISES timeline.json - write it, so the
+    # audit can cross-verify duration sources instead of trusting one.
+    (d / "timeline.json").write_text(
+        json.dumps(timeline, indent=2), encoding="utf-8")
+
     # P0: the VO track — audio-first, glued, QC'd (L1: VO is the skeleton)
     voice_info: dict | None = None
     mix_info: dict | None = None
@@ -108,6 +113,14 @@ def make_video(
             "qc": vo["qc"],
             "wav": "vo/vo_track.wav",
         }
+        # G11/L6: captions ship with every VO (scene-level .srt; the
+        # word-level karaoke burn stays render-side by operator order)
+        srt_rows = [(r["start"], r["end"],
+                     board_rows[r["scene_id"] - 1]["vo_line"])
+                    for r in vo["scenes"]]
+        (d / "captions.srt").write_text(
+            voiceover.format_srt(srt_rows), encoding="utf-8")
+        voice_info["srt"] = "captions.srt"
         if do_mix:
             sfx_rows = [
                 {"id": r["id"], "t_start": r["t_start"], "t_end": r["t_end"],
@@ -148,5 +161,7 @@ def make_video(
         },
         "scenes": sb.board(),
     }
+    if voice_info:
+        manifest["files"]["srt"] = "captions.srt"
     (d / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return manifest

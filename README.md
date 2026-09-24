@@ -204,6 +204,13 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**Never-again guards** (PRODUCTION_LAW_V2 wired into code, not just canon):
+`monarch doctor` (L1/G2 env check, fail-closed), `monarch budget --frames N --clips M`
+(G3/L10 batch planner), leading-silence trim + 0.3s onset gate (G8/L4), mix VO-gate
+with multi-window drop proof (G7/L3), fountain re-count validation (G4/G9),
+`captions.srt` + `timeline.json` shipped by every VO build (G10/G11/G14), audit
+cross-verifies duration sources and reads both board shapes (G5/G14).
+
 Docs: `docs/RENDER_LAWS.md`, `docs/PRODUCTION_LAW_V2.md` (16 registered
 failures G1–G16 + 15 iron laws + delivery checklist — `monarch laws
 [--part laws|failures|checklist]` prints them anywhere), `docs/CONTENT_PLAYBOOK.md`, `docs/MASTER_PLAN.md`.

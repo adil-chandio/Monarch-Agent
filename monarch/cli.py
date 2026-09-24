@@ -231,6 +231,14 @@ def main(argv: list[str] | None = None) -> int:
                     choices=["laws", "checklist", "failures"],
                     help="which part to print (default: iron laws)")
 
+    bg = sub.add_parser("budget",
+                        help="G3/L10: plan image/speech batches (10/turn)")
+    bg.add_argument("--frames", type=int, required=True,
+                    help="total frames to generate")
+    bg.add_argument("--clips", type=int, default=0,
+                    help="total speech clips to generate")
+    bg.add_argument("--json", action="store_true")
+
     # Session memory — the new-session handoff bridge (RVF-inspired)
     mem = sub.add_parser("memory", help="Save/restore the cross-session handoff state")
     mem_sub = mem.add_subparsers(dest="mem_cmd", required=True)
@@ -278,7 +286,10 @@ def main(argv: list[str] | None = None) -> int:
     llog.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
 
     # Agent-Reach integration — doctor + multi-platform search
-    sub.add_parser("doctor", help="Check which upstream tools (yt-dlp, twitter, reddit, etc.) are available")
+    dr = sub.add_parser("doctor", help="Environment + upstream-tool readiness (L1/G2, fail-closed)")
+    dr.add_argument("--repo-root", default="",
+                    help="repo root to check (default: this checkout)")
+    dr.add_argument("--json", action="store_true")
 
     sw = sub.add_parser("scrape", help="Scrape a URL via Agent-Reach (yt-dlp for YouTube, Jina for web)")
     sw.add_argument("url", help="YouTube URL or any web URL")
@@ -844,6 +855,22 @@ def main(argv: list[str] | None = None) -> int:
             print(rep.render())
         return 0
 
+    if args.cmd == "budget":
+        from monarch.video.budgets import plan_batches
+
+        try:
+            turns = plan_batches(args.frames, args.clips)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(turns, indent=2))
+        else:
+            for t in turns:
+                print(f"turn {t['turn']}: images {t['images']}/10, "
+                      f"speech {t['speech']}/10")
+        return 0
+
     if args.cmd == "laws":
         from pathlib import Path
         doc = Path(__file__).resolve().parents[1] / "docs" / "PRODUCTION_LAW_V2.md"
@@ -1206,15 +1233,32 @@ def main(argv: list[str] | None = None) -> int:
     # ── Agent-Reach commands ──
 
     if args.cmd == "doctor":
+        from pathlib import Path
+        from monarch.core.doctor import exit_code as doc_exit, run_checks
         from monarch.intel.reach import doctor as reach_doctor
 
+        # L1/G2 environment readiness (fail-closed on FAIL rows)
+        root = (Path(args.repo_root).resolve() if args.repo_root
+                else Path(__file__).resolve().parents[1])
+        checks = run_checks(root)
+
+        # Agent-Reach upstream tools (existing behavior, preserved)
         statuses = reach_doctor()
-        for s in statuses:
-            icon = "ok" if s.available else "MISSING"
-            print(f"  [{icon}] {s.name}: {s.message}")
-        ok = sum(1 for s in statuses if s.available)
-        print(f"\n{ok}/{len(statuses)} tools available")
-        return 0
+
+        if args.json:
+            print(json.dumps({"env": checks,
+                              "tools": [s.__dict__ for s in statuses]},
+                             indent=2, default=str))
+        else:
+            for c in checks:
+                print(f"[{c['status']}] {c['check']}: {c['detail']}")
+            print()
+            for s2 in statuses:
+                icon = "ok" if s2.available else "MISSING"
+                print(f"  [{icon}] {s2.name}: {s2.message}")
+            ok = sum(1 for s2 in statuses if s2.available)
+            print(f"\n{ok}/{len(statuses)} tools available")
+        return doc_exit(checks)
 
     if args.cmd == "scrape":
         from monarch.pipelines.forensic import dissect_url
