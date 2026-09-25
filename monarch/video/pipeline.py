@@ -129,9 +129,15 @@ def make_video(
                  "sfx": r["sfx"]}
                 for r in board_rows
             ]
+            # RENDER MEMORY 3.1: motivational genres get the warm bed;
+            # tension engine stays for mystery/entertainment/storytelling
+            warm_genres = {"tutorial", "educational", "product", "listicle"}
             mixed, mrep = mix_bus.mix(
-                duration_s=max(timeline["total_s"], vo["vo_end_s"]) + 0.4,
+                duration_s=max(tipeline := timeline["total_s"],
+                                vo["vo_end_s"]) + 0.4,
                 vo=vo["track"], sr=sr, board=sfx_rows, seed=sb.seed,
+                music_mood=("warm" if getattr(sb, "genre", "mystery")
+                            in warm_genres else "tension"),
             )
             mp = d / "master_mix.wav"
             voiceover.write_track(mp, mixed, sr)

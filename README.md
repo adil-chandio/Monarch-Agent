@@ -204,6 +204,14 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**Render memory (Einstein-session laws):** `docs/RENDER_MEMORY.md` — 19 paid
+misses, L16 auto-fail. Wired in code: complete-sentence composer (no mid-sentence
+clips, no duplicate seam words), VO lint (no `—`/`...`/digits), VAD + boundary
+silence + gap-budget QC, broadcast polish chain (biquad EQ + saturation, peak
+band 0.72–0.82), warm BGM mood (`--genre tutorial/educational/product/listicle`
+→ Am–F–C–G pads, frame-1 audible, one CTA build; tension engine for mystery),
+measured audit (mix peak, intro RMS, duration drift).
+
 **Render (in-sandbox, operator order 2026-09-24):** `monarch render DIR`
 turns a make-video dir into `*_v1_render.mp4` — 2-input concat+audio build
 (G7/L2), burned scene captions + `captions.srt` (G11), versioned name (G16),

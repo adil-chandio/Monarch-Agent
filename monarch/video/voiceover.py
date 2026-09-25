@@ -347,6 +347,7 @@ def build_voiceover(
     seed: int = 0,
     audio_first: bool = False,
     first_min_s: float = 1.6,
+    polish: bool = True,
 ) -> dict:
     """Board scenes -> VO track + timing (+ new timeline when audio-first).
 
@@ -357,6 +358,7 @@ def build_voiceover(
     """
     if not scenes:
         raise ValueError("This is missing, could you provide it: scenes.")
+    meta_rows_lint = list(scenes)
     tracks: list[list[float]] = []
     meta_rows: list[VOScene] = []
     used_backends: set[str] = set()
@@ -416,23 +418,212 @@ def build_voiceover(
             })
             t += dur
         board_end = t
-    qc = qc_track(track, sr, board_end_s=board_end,
-                  gaps=[(r.start, g) for r, g in zip(timeline[1:], gaps)])
+    # RENDER MEMORY 1.6: broadcast polish on the VO bus (radio-grade)
+    if polish:
+        from monarch.video.mix import room_tone
+        room = room_tone(len(track) / sr, sr, seed=seed + 99)
+        track = polish_chain(track, sr, room=room)
+    qc = vo_lint(meta_rows_lint) if meta_rows_lint else []
+    lint_fail = any(i["kind"] != "digits" for i in qc)
+    checks = qc_track(track, sr, board_end_s=board_end,
+                      gaps=[(r.start, g) for r, g in zip(timeline[1:], gaps)],
+                      starts=[r.start for r in timeline[1:]])
+    checks.extend({"check": f"vo_lint_{i['kind']}", "pass": False,
+                   "detail": f"scene {i['scene']}: {i['detail']}"}
+                  for i in qc if i["kind"] != "digits")
+    checks.append({"check": "vo_lint_digits", "pass": True,
+                   "detail": f"{sum(1 for i in qc if i['kind'] == 'digits')} "
+                             f"digit spot(s) - advisory: write as heard"})
     return {
         "track": track,
+        "lint_fail": lint_fail,
         "sr": sr,
         "vo_end_s": vo_end,
         "board_end_s": round(board_end, 3),
         "scenes": [r.__dict__ for r in timeline],
         "backends": sorted(used_backends),
         "placeholder": "mumble" in used_backends,
-        "qc": qc,
+        "qc": checks,
+        "lint": qc,
         "scenes_new": new_scenes if audio_first else None,
     }
 
 
+# ---------------------------------------------------------------------------
+# RENDER MEMORY (docs/RENDER_MEMORY.md) - stranded-word plague guards
+# ---------------------------------------------------------------------------
+
+STRAND_MARKS = ("\u2014", "\u2026", "...")     # em-dash, ellipsis
+#: digits never belong in VO text - write what the ear hears (ikyanve, nabbe)
+_DIGITS = re.compile(r"\d")
+
+
+def vo_lint(rows: list[dict]) -> list[dict]:
+    """Seam + stranded-word audit (misses #1-3). rows = board/VO scenes.
+
+    Checks: (1) stranded marks in VO text, (2) clip ends mid-sentence
+    (no terminal punctuation), (3) duplicate word at a seam - the same
+    token ending clip N and opening clip N+1, (4) digits in VO text.
+    Returns issue dicts; empty list = clean.
+    """
+    issues: list[dict] = []
+    lines = [str(r.get("vo_line", "")).strip() for r in rows]
+    for i, txt in enumerate(lines, 1):
+        if not txt:
+            issues.append({"scene": i, "kind": "empty",
+                           "detail": "no VO text"})
+            continue
+        for mark in STRAND_MARKS:
+            if mark in txt:
+                issues.append({"scene": i, "kind": "strand_mark",
+                               "detail": f"{mark!r} in VO text (miss #1)"})
+        if txt[-1] not in ".!?":
+            issues.append({"scene": i, "kind": "mid_sentence_end",
+                           "detail": f"clip ends {txt[-12:]!r} (miss #2)"})
+        if _DIGITS.search(txt):
+            d = _DIGITS.search(txt).group(0)
+            issues.append({"scene": i, "kind": "digits",
+                           "detail": f"digit {d!r} - write it as heard "
+                                     f"(nau, ikyanve...) (miss #5 law)"})
+    for i in range(len(lines) - 1):
+        a, b = lines[i].rstrip(".!?,").split(), lines[i + 1].lstrip().split()
+        if a and b:
+            last_word = a[-1].lower().strip(",.")
+            first_word = b[0].lower().strip(",.")
+            if last_word and last_word == first_word:
+                issues.append({"scene": i + 1, "kind": "dup_seam_word",
+                               "detail": f"{last_word!r} spoken twice at "
+                                         f"seam {i}/{i + 1} (miss #3)"})
+    return issues
+
+
+def vad_segments(samples: list[float], sr: int, *, frame_s: float = 0.02,
+                 pct: float = 0.35, merge_s: float = 0.12) -> list[dict]:
+    """Voice-activity map (miss #4: split at word-starts, never guesses).
+
+    20 ms windows; threshold = 30th-percentile window RMS x 0.35; silences
+    shorter than ``merge_s`` are swallowed. Returns
+    [{"start": s, "end": e, "silence_after": s2}, ...].
+    """
+    win = max(1, int(sr * frame_s))
+    n = len(samples) // win
+    if n == 0:
+        return []
+    rms = []
+    for i in range(n):
+        seg = samples[i * win:(i + 1) * win]
+        rms.append((sum(v * v for v in seg) / len(seg)) ** 0.5)
+    floor = sorted(rms)[max(0, int(0.30 * len(rms)) - 1)]
+    thr = floor * pct
+    voiced = [r > thr and r > 1e-4 for r in rms]
+    segs: list[list[float]] = []
+    start = None
+    for i, v in enumerate(voiced):
+        if v and start is None:
+            start = i * frame_s
+        elif not v and start is not None:
+            segs.append([start, i * frame_s])
+            start = None
+    if start is not None:
+        segs.append([start, n * frame_s])
+    merged: list[dict] = []
+    for seg in segs:
+        if merged and seg[0] - merged[-1][1] < merge_s:
+            merged[-1][1] = seg[1]
+        else:
+            merged.append(list(seg))
+    out = []
+    for i, (a, b) in enumerate(merged):
+        nxt = merged[i + 1][0] if i + 1 < len(merged) else None
+        out.append({"start": round(a, 3), "end": round(b, 3),
+                    "silence_after": (None if nxt is None
+                                      else round(nxt - b, 3))})
+    return out
+
+
+def boundary_silences(track: list[float], sr: int,
+                      starts: list[float], *,
+                      window_s: float = 1.4) -> list[float]:
+    """Max silence run inside +/-window_s of each clip boundary (miss #5)."""
+    frame = max(1, int(sr * 0.02))
+    win = int(window_s * sr)
+    out: list[float] = []
+    for t in starts:
+        a = max(0, int(t * sr) - win)
+        b = min(len(track), int(t * sr) + win)
+        if b - a < frame * 3:
+            out.append(0.0)
+            continue
+        seg = track[a:b]
+        env = envelope(seg, sr, frame_s=0.02)
+        thr = sorted(env)[max(0, int(0.30 * len(env)) - 1)] * 0.35
+        run = best = 0.0
+        for v in env:
+            if v <= thr:
+                run += 0.02
+                best = max(best, run)
+            else:
+                run = 0.0
+        out.append(round(best, 3))
+    return out
+
+
+# ---------------------------------------------------------------------------
+# broadcast polish chain (law 1.6) - radio-grade voice, stdlib biquads
+# ---------------------------------------------------------------------------
+
+
+def _biquad(samples: list[float], sr: int, *, f0: float, kind: str,
+            gain_db: float = 0.0, q: float = 1.0) -> list[float]:
+    """RBJ biquad - 'highpass' or 'peaking'. Pure python, deterministic."""
+    import math
+    w0 = 2.0 * math.pi * f0 / sr
+    cw, sw = math.cos(w0), math.sin(w0)
+    A = 10 ** (gain_db / 40.0)
+    alpha = sw / (2.0 * q)
+    if kind == "highpass":
+        b0, b1, b2 = (1 + cw) / 2, -(1 + cw), (1 + cw) / 2
+        a0, a1, a2 = 1 + alpha, -2 * cw, 1 - alpha
+    else:  # peaking
+        b0, b1, b2 = 1 + alpha * A, -2 * cw, 1 - alpha * A
+        a0, a1, a2 = 1 + alpha / A, -2 * cw, 1 - alpha / A
+    b0, b1, b2, a1, a2 = b0 / a0, b1 / a0, b2 / a0, a1 / a0, a2 / a0
+    x1 = x2 = y1 = y2 = 0.0
+    out: list[float] = []
+    for x0 in samples:
+        y0 = b0 * x0 + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2
+        out.append(y0)
+        x1, x2, y1, y2 = x0, x1, y0, y1
+    return out
+
+
+def polish_chain(samples: list[float], sr: int, *,
+                 room: list[float] | None = None) -> list[float]:
+    """Law 1.6: rumble cut 55 Hz, mud dip -1.6 dB @ 300 Hz, presence
+    +2.8 dB @ 3.5 kHz, air +1 dB @ 9 kHz, gentle tanh saturation, ~6%
+    room tone. Deterministic; peak-safe (soft ceiling after)."""
+    out = _biquad(samples, sr, f0=55.0, kind="highpass", q=0.7)
+    out = _biquad(out, sr, f0=55.0, kind="highpass", q=0.7)  # 12 dB/oct
+    out = _biquad(out, sr, f0=300.0, kind="peaking", gain_db=-1.6, q=1.1)
+    out = _biquad(out, sr, f0=3500.0, kind="peaking", gain_db=2.8, q=0.9)
+    if sr > 16000:                       # air only exists above 9 kHz
+        out = _biquad(out, sr, f0=9000.0, kind="peaking", gain_db=1.0, q=0.7)
+    out = [math.tanh(v * 1.25) / math.tanh(1.25) for v in out]
+    if room:
+        k = min(len(room), len(out))
+        out = [out[i] * 0.94 + room[i] * 0.06 for i in range(k)]
+        out.extend(out[k:] if k < len(out) else [])
+    # RENDER MEMORY 3.5: settle the VO bus in the 0.72-0.82 peak band
+    peak = max((abs(v) for v in out), default=0.0)
+    if peak > 0.82:
+        g = 0.79 / peak
+        out = [v * g for v in out]
+    return out
+
+
 def qc_track(track: list[float], sr: int, *, board_end_s: float,
-             gaps: list[tuple[float, float]]) -> list[dict]:
+             gaps: list[tuple[float, float]],
+             starts: list[float] | None = None) -> list[dict]:
     """Named checks, fail-closed honesty (these bugs never ship silently)."""
     checks: list[dict] = []
     m = measure(track, sr)
@@ -455,6 +646,15 @@ def qc_track(track: list[float], sr: int, *, board_end_s: float,
         f"VO {m['speech_end_s']}s vs board {board_end_s}s (drift {drift:.2f}s)")
     add("audible", m["peak_dbfs"] > -30,
         f"peak {m['peak_dbfs']} dBFS, rms {m['rms_dbfs']} dBFS")
+    # RENDER MEMORY 2.2/2.3: gaps > 0.55s = max ONE drama sting; boundary
+    # silence in a +/-1.4s window must stay under 0.65s (stranded word)
+    stings = [(pos, g) for pos, g in gaps if g > 0.55]
+    add("gap_budget", len(stings) <= 1,
+        f"{len(stings)} gap(s) over 0.55s (max 1 drama sting)")
+    if starts is not None:
+        worst = max(boundary_silences(track, sr, starts), default=0.0)
+        add("boundary_silence", worst < 0.65,
+            f"max boundary silence {worst:.2f}s (cap 0.65s)")
     return checks
 
 

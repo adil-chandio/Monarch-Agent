@@ -70,39 +70,64 @@ ROLES = ("hook", "tease", "payoff", "value-debt", "silence-sting", "payoff+cua")
 
 #: role -> spoken-line templates (front-loaded meaning; fit_words trims to maths).
 #: Multiple templates per role so consecutive scenes never read identical.
-_ROLE_LINES: dict[str, list[str]] = {
-    "hook": [
-        "{Topic} keeps one secret almost nobody shows and it starts right now",
-        "nobody shows you this side of {topic} and the first frame already proved it",
-        "stop scrolling one moment {topic} is about to break its own rule",
-    ],
-    "tease": [
-        "most people scroll past what {topic} does next and the loop is not closed yet",
-        "the strange part of {topic} has not landed yet hold one more beat",
-        "what {topic} hides sits one reveal away and it is getting closer now",
-        "the pattern behind {topic} is forming but the shape is not clear yet",
-    ],
-    "payoff": [
-        "here is the proof {topic} works exactly like this in the real world today",
-        "the record shows {topic} does the thing skeptics said it never could do",
-        "measured on camera {topic} breaks the number everyone kept repeating online",
-    ],
-    "value-debt": [
-        "take this one method free no gate and use {topic} for yourself today",
-        "keep the whole method no signup because this channel pays its debts first",
-        "the full trick is yours already nothing held back nothing sold here today",
-    ],
-    "silence-sting": [
-        "watch closely because the next line is the one fact this video exists for",
-        "everything stops here because the next breath carries the whole point home",
-        "this is the beat the first ten seconds were quietly promising you all along",
-    ],
-    "payoff+cua": [
-        "that was the payoff and if it earned it subscribe because the next one goes deeper",
-        "the loop closes here but the next video opens a bigger one subs see first",
-        "if this repaid your attention subscribe the next debt gets paid even bigger",
-    ],
+#: RENDER MEMORY 1.1 fragment banks - complete-sentence composition.
+#: open + mid + end word-counts must sum EXACTLY to n (the maths line).
+#: Coverage per role: sums 5..9 reachable (shorts budgets 6-9, maths 7).
+_FRAGMENTS: dict[str, dict[str, list[tuple[str, int]]]] = {
+    "hook": {
+        "open": [("stop scrolling", 2), ("look closer now", 3),
+                 ("nobody shows you", 3), ("the first frame proves", 4)],
+        "mid": [("on {topic}", 2), ("about {topic}", 2),
+                ("this side of {topic}", 4)],
+        "end": [("now.", 1), ("today.", 1), ("right now.", 2),
+                ("and it bites.", 3), ("before it fades.", 3),
+                ("and the room knows.", 4)],
+    },
+    "tease": {
+        "open": [("the twist", 2), ("still unopened", 2),
+                 ("most people miss", 3), ("the strange part", 3),
+                 ("most people scroll past", 4)],
+        "mid": [("in {topic}", 2), ("about {topic}", 2),
+                ("around {topic}", 2)],
+        "end": [("yet.", 1), ("next.", 1), ("has not landed.", 3),
+                ("is still forming.", 3), ("stays one beat away.", 4)],
+    },
+    "payoff": {
+        "open": [("proof lands", 2), ("the record", 2),
+                 ("measured on camera", 3), ("here is the proof", 4)],
+        "mid": [("{topic} works", 2), ("{topic} breaks it", 3),
+                ("{topic} flips the count", 4)],
+        "end": [("today.", 1), ("still.", 1), ("as claimed.", 2),
+                ("on camera.", 2), ("in the real world.", 4),
+                ("like skeptics said never.", 4)],
+    },
+    "value-debt": {
+        "open": [("take it", 2), ("no gate", 2), ("keep the method", 3),
+                 ("this channel pays debts", 4)],
+        "mid": [("on {topic}", 2), ("for {topic}", 2),
+                ("use {topic} today", 3)],
+        "end": [("today.", 1), ("no charge.", 2), ("nothing held back.", 3),
+                ("and pass it on.", 4)],
+    },
+    "silence-sting": {
+        "open": [("look here", 2), ("hold this", 2), ("watch closely now", 3),
+                 ("everything stops here", 3)],
+        "mid": [("one fact", 2), ("this breath holds", 3),
+                ("the next line carries", 4)],
+        "end": [("now.", 1), ("here.", 1), ("the whole point.", 3),
+                ("the entire weight.", 3), ("everything this means.", 3)],
+    },
+    "payoff+cua": {
+        "open": [("debt paid", 2), ("loop closed", 2),
+                 ("that was the payoff", 4), ("if this repaid you", 4)],
+        "mid": [("and subscribe", 2), ("so subscribe now", 3),
+                ("then follow along", 3)],
+        "end": [("now.", 1), ("today.", 1), ("right now.", 2),
+                ("subscribers see it first.", 4), ("the next digs deeper.", 4)],
+    },
 }
+
+
 
 #: honest tail bank — appended only when the maths line demands more words
 _TAILS: dict[str, list[str]] = {
@@ -232,22 +257,46 @@ def _plan_roles(n: int, seed: int) -> list[dict]:
     return roles
 
 
-def _compose_line(role: str, topic: str, n_words: int, rng: random.Random) -> str:
-    """Template + honest tail to guarantee the maths line can always fit."""
-    template = rng.choice(_ROLE_LINES[role])
-    topic = topic.strip().lower()
-    line = template.format(Topic=topic.capitalize(), topic=topic)
-    tails = list(_TAILS[role])
-    rng.shuffle(tails)
-    i = 0
-    while count_words(line) < n_words:
-        line += " " + tails[i % len(tails)]
-        i += 1
-        if i > 64:  # cannot happen with the banks above — fail loudly anyway
-            raise ValueError(f"cannot compose {n_words} words for role {role}")
-    # sanity: fit must succeed without padding (the director never pads)
-    return fit_words(line, count_words(line))
+def _compose_line(role: str, topic: str, n_words: int,
+                  rng: random.Random) -> str:
+    """RENDER MEMORY 1.1: complete sentence at EXACTLY n words.
 
+    open + mid + end fragment counts must sum to n (fail-closed ValueError
+    otherwise - never trim mid-sentence). Topics longer than 3 words are
+    referred to as "this tale" (the topic lives in title/logline/board).
+    Deterministic under the passed rng.
+    """
+    topic = (topic or "").strip().lower()
+    if not topic:
+        raise ValueError("empty topic")
+    tlen = count_words(topic)
+    sub = topic if tlen <= 3 else "this tale"
+    # banks count "{topic}" as ONE word; a real subject costs tlen words
+    # (the referer "this tale" costs 2)
+    shift = (tlen if tlen <= 3 else 2) - 1
+    bank = _FRAGMENTS.get(role)
+    if bank is None:
+        raise ValueError(f"no fragment bank for role {role!r}")
+    opens, mids, ends = (list(bank["open"]), list(bank["mid"]),
+                         list(bank["end"]))
+    rng.shuffle(opens)
+    rng.shuffle(mids)
+    rng.shuffle(ends)
+    for o, oc in opens:
+        for m, mc in mids:
+            me = (mc + shift) if "{topic}" in m else mc
+            if me < 1:
+                continue
+            for e, ec in ends:
+                if oc + me + ec == n_words:
+                    line = f"{o} {m.replace('{topic}', sub)} {e}"
+                    if count_words(line) != n_words:
+                        raise ValueError(f"composer sum broken: {line!r}")
+                    return line
+    raise ValueError(
+        f"cannot compose a complete {n_words}-word sentence for role "
+        f"{role!r} (topic words {tlen}) - extend the fragment bank "
+        f"(fail-closed, no padding)")
 
 # --------------------------------------------------------------------------
 # Fountain emission — screenplay + NEURO_DRIVER notes
@@ -403,6 +452,10 @@ def plan_storyboard(
         # HUMANIZE pass: AI-tell phrases die before the script exists
         # (cold open keeps its not-just shape — proven retention pattern)
         draft, hum = humanize(draft, hook=(plan["role"] == "hook"))
+        # RENDER MEMORY 1.1: fit_words tokenizes punctuation away - the
+        # complete sentence must END with its terminal mark on screen/VO
+        if not draft.rstrip().endswith((".", "!", "?")):
+            draft = draft.rstrip() + "."
         visual = (
             f"one focal {plan['role']} visual on {topic}, high contrast, "
             f"single subject, motion snap"
@@ -410,6 +463,11 @@ def plan_storyboard(
         match = "pose and facing direction" if i < len(roles) else ""
         # compose the final spoken line: fit_words trims the draft to the maths
         spoken = fit_words(draft, maths.words_per_clip)
+        # RENDER MEMORY 1.1: fit_words tokenizes punctuation away - the
+        # complete sentence must end with its terminal mark (never ship a
+        # clipped-looking VO line; miss #2)
+        if not spoken.rstrip().endswith((".", "!", "?")):
+            spoken = spoken.rstrip() + "."
         scenes.append(Scene(
             id=i,
             vo_line=spoken,
@@ -449,6 +507,14 @@ def plan_storyboard(
     )
     sb.genre = genre
     sb.logline = sb_logline
+    # RENDER MEMORY 1.1 (miss #2): the M3 gate re-parses the fountain and
+    # its tokenizer DROPS terminal punctuation (the G4 quirk). The board
+    # is the truth the VO/captions read - so the complete-sentence mark is
+    # restored HERE, after the gate, before anything downstream. Word
+    # counts are punctuation-blind, so the maths stays exact.
+    for _sc in sb.scenes:
+        if _sc.vo_line and not _sc.vo_line.rstrip().endswith((".", "!", "?")):
+            _sc.vo_line = _sc.vo_line.rstrip() + "."
 
     sb.card = render_box_card(sb)
     return sb

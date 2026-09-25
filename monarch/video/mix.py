@@ -169,15 +169,101 @@ class MixReport:
     sfx_events: int
     warnings: list[str] = field(default_factory=list)
     vo_gate: str = "NO VO"   # G7: VO must survive into the master
+    mood: str = "tension"    # RENDER MEMORY 3: warm | tension
 
     def summary(self) -> str:
         return (f"MIX {self.duration_s:.1f}s | VO {self.vo_rms}/{self.vo_peak} dBFS | "
                 f"master {self.master_rms}/{self.master_peak} dBFS | "
                 f"music {self.music_db} dB ducked | "
                 f"duck events {self.duck_events} | sfx {self.sfx_events}"
-                + f" | VO GATE {self.vo_gate}"
+                + f" | VO GATE {self.vo_gate} | MOOD {self.mood}"
                 + ("" if not self.warnings else
                    " | WARN: " + "; ".join(self.warnings)))
+
+
+# ---------------------------------------------------------------------------
+# RENDER MEMORY 3 - warm supportive bed (motivational storytelling)
+# Banned-by-default here: heartbeat, drones, sub-drops, riser stacks,
+# silence carves (law 3.2). Pads breathe; sparkle cannot clash (C-pent).
+# ---------------------------------------------------------------------------
+
+WARM_PROG = [
+    ("A2", ["A2", "C3", "E3"]),          # Am
+    ("F2", ["F2", "A2", "C3"]),          # F
+    ("C3", ["C3", "E3", "G3"]),          # C
+    ("G2", ["G2", "B2", "D3"]),          # G
+]
+_WARM_END = ("C3", ["C3", "D3", "E3", "G3"])   # Cadd9 resolve
+_NOTE_A4 = 440.0
+_SEMITONES = {"C": -9, "D": -7, "E": -5, "F": -4, "G": -2, "A": 0, "B": 2}
+
+
+def _hz(note: str) -> float:
+    import math as _m
+    name = note[0]
+    octv = int(note[-1]) if note[-1].isdigit() else 4
+    semi = _SEMITONES[name] + (octv - 4) * 12
+    return _NOTE_A4 * (2.0 ** (semi / 12.0))
+
+
+def warm_bed(duration_s: float, sr: int, *, seed: int = 0) -> list[float]:
+    """Law 3.1/3.4: warm pads Am-F-C-G (+Cadd9 resolve), attack <= 0.4 s,
+    sparse C-pentatonic music-box sparkle, ONE gentle build into the CTA
+    window (last ~18%), hopeful resolve at the end. Deterministic."""
+    import math as _m
+    import random as _r
+    n = int(duration_s * sr)
+    rng = _r.Random(seed * 31 + 7)
+    chord_s = 2.6
+    pad = [0.0] * n
+    t = 0.0
+    ci = 0
+    prog = [ch for ch in WARM_PROG] + [_WARM_END]
+    while t < duration_s:
+        root, notes = prog[ci % len(prog)]
+        seg_s = min(chord_s, duration_s - t)
+        if seg_s <= 0.05:
+            break
+        a = int(t * sr)
+        seg_n = int(seg_s * sr)
+        # per-chord envelope: 0.35s rise, 0.5s fall (breathing)
+        rise = min(int(0.35 * sr), seg_n // 2)
+        fall = min(int(0.50 * sr), seg_n // 2)
+        for i in range(seg_n):
+            env = 1.0
+            if i < rise:
+                env = i / rise
+            elif i > seg_n - fall:
+                env = max(0.0, (seg_n - i) / fall)
+            v = 0.0
+            for note in notes:
+                f = _hz(note)
+                v += _m.sin(2 * _m.pi * f * ((i + a) / sr))
+            pad[a + i] += env * v / len(notes) * 0.32
+        t += seg_s
+        ci += 1
+    # music-box sparkle: C-pentatonic plucks, sparse + quiet
+    pent = [_hz("C5"), _hz("D5"), _hz("E5"), _hz("G5"), _hz("A5")]
+    pos = 0.9
+    while pos < duration_s - 0.4:
+        f = pent[rng.randrange(len(pent))]
+        a = int(pos * sr)
+        dur = int(0.5 * sr)
+        for i in range(min(dur, n - a)):
+            envv = _m.exp(-i / (0.09 * sr))
+            pad[a + i] += 0.05 * envv * _m.sin(2 * _m.pi * f * (i / sr))
+        pos += rng.uniform(1.4, 2.3)
+    # ONE gentle build into the CTA window (+3 dB over the last 18%)
+    build_a = int(n * 0.82)
+    if build_a < n:
+        for i in range(build_a, n):
+            g = 1.0 + 1.412 * (i - build_a) / max(1, n - build_a)  # +3 dB
+            pad[i] *= g
+    # frame-1 law (3.4): 0.4 s global fade-in only - pads audible at once
+    lead = min(int(0.4 * sr), n)
+    for i in range(lead):
+        pad[i] *= i / lead
+    return pad
 
 
 def mix(
@@ -189,8 +275,14 @@ def mix(
     wavs_dir: str | Path | None = None,
     music: bool = True,
     seed: int = 0,
+    music_mood: str = "tension",
 ) -> tuple[list[float], MixReport]:
-    """Five-layer master. VO wins; everything else serves it."""
+    """Five-layer master. VO wins; everything else serves it.
+
+    ``music_mood``: "tension" = the classic 3-act engine (heartbeat,
+    riser, sub-drops); "warm" = RENDER MEMORY 3.1 supportive pads
+    (Am-F-C-G, sparkle, gentle CTA build) - motivational content law.
+    """
     if duration_s <= 0:
         raise ValueError("duration must be > 0")
     board = board or []
@@ -207,7 +299,12 @@ def mix(
     # Layer 2 — music bed, ducked
     warnings: list[str] = []
     music_gain = db_to_gain(MUSIC_DB if has_voice else MUSIC_NOVO_DB)
-    bed = music_bed(duration_s, sr, seed=seed) if music else [0.0] * n
+    if not music:
+        bed = [0.0] * n
+    elif music_mood == "warm":
+        bed = warm_bed(duration_s, sr, seed=seed)
+    else:
+        bed = music_bed(duration_s, sr, seed=seed)
     if has_voice and music:
         bed = duck_under_voice(bed, voice, sr)
     bed = [b * music_gain for b in bed]
@@ -239,7 +336,9 @@ def mix(
 
     # Layer 5 — sum + master limiter
     master = [voice[i] + bed[i] + tone[i] for i in range(n)]
-    master = limiter(master, ceiling=0.97)
+    # RENDER MEMORY 3.5: mix peak law 0.72-0.82 (AAC headroom; the old
+    # 0.97 ceiling read as clipping next to the per-channel law)
+    master = limiter(master, ceiling=0.82)
 
     report = MixReport(
         duration_s=round(n / sr, 3),
@@ -248,6 +347,7 @@ def mix(
         master_rms=rms_dbfs(master),
         master_peak=peak_dbfs(master),
         music_db=MUSIC_DB if has_voice else MUSIC_NOVO_DB,
+        mood=music_mood,
         duck_events=_count_dips(voice, sr) if has_voice else 0,
         sfx_events=sfx_events,
         warnings=warnings,

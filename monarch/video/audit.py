@@ -349,6 +349,55 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
                 "ffprobe on the real file before trusting any QC",
                 "one trusted source is how a 63.6s video passed a 60s board"))
 
+    # ---- RENDER MEMORY 3.5/3.4/6.6: MEASURE the rendered audio files
+    #      (never guess): peak in the 0.72-0.82 law band + frame-1 audible
+    import wave as _wave
+
+    def _wav_stats(path: Path) -> tuple[float, float] | None:
+        try:
+            with _wave.open(str(path), "rb") as w:
+                sw, fr, nf = w.getsampwidth(), w.getframerate(), w.getnframes()
+                raw = w.readframes(min(nf, fr * 2))  # first 2s suffice
+        except (wave.Error, OSError, EOFError):
+            return None
+        if sw != 2 or not raw:
+            return None
+        step = sw  # 2 bytes
+        n = len(raw) // (step * w.getnchannels())
+        peak = 0.0
+        sq = 0.0
+        cnt = 0
+        for i in range(n):
+            v = int.from_bytes(raw[i * 2 * w.getnchannels():
+                                   i * 2 * w.getnchannels() + 2],
+                               "little", signed=True) / 32768.0
+            peak = max(peak, abs(v))
+            sq += v * v
+            cnt += 1
+        return peak, (sq / cnt) ** 0.5 if cnt else 0.0
+
+    mix_wav = d / "master_mix.wav"
+    if mix_wav.is_file():
+        stats = _wav_stats(mix_wav)
+        if stats:
+            peak, intro_rms = stats
+            rep.scores["mix_peak"] = round(peak, 3)
+            rep.scores["intro_rms"] = round(intro_rms, 4)
+            if peak > 0.85:
+                rep.findings.append(Finding(
+                    "P2", "master peak over the render-memory band",
+                    f"peak {peak:.3f} > 0.85 (law band 0.72-0.82; measure "
+                    "per stereo channel on stereo files - mono downmix lies)",
+                    "re-mux with limiter/alimiter=limit=0.93 or trim gain "
+                    "(10-second re-mux, no re-render)",
+                    "platform normalization pumps or clips the master"))
+            if intro_rms < 0.03 and peak > 0:
+                rep.findings.append(Finding(
+                    "P2", "music inaudible at the hook (frame-1 law)",
+                    f"intro RMS {intro_rms:.4f} < 0.03 in the first 2s",
+                    "pad attack <= 0.5s / raise intro bed gain, re-mux",
+                    "a silent hook is a wasted hook (miss #7)"))
+
     # ---- optional Studio CSV: CTR bands + APV spread
     if csv_path is not None:
         from monarch.pipelines.performance import _cell  # reuse normalization? no — raw scan
