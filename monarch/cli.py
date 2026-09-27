@@ -242,6 +242,12 @@ def main(argv: list[str] | None = None) -> int:
                     help="do not burn captions (srt still ships)")
     rd.add_argument("--json", action="store_true")
 
+    up = sub.add_parser("upload",
+                        help="Upload a finished render to the renders release (operator-gated)")
+    up.add_argument("file", help="file to upload (mp4/zip)")
+    up.add_argument("--label", default="", help="human label for the asset")
+    up.add_argument("--json", action="store_true")
+
     cp = sub.add_parser("concat-plan",
                         help="Emit jub0t/Concat JSONL recipe from a make-video dir")
     cp.add_argument("dir", help="make-video output dir (timeline.json truth)")
@@ -895,6 +901,22 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {res['captions']}")
             print(f"  audio {res.get('audio_kbps') or 'wav-lossless'} kbps "
                   f"({'OK' if res.get('bitrate_ok') else 'UNDER 160k - robotic risk'})")
+        return 0
+
+    if args.cmd == "upload":
+        from monarch.core.upload import upload_render
+
+        try:
+            res = upload_render(args.file, label=(args.label or None))
+        except (ValueError, OSError) as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(res, indent=2))
+        else:
+            print(f"UPLOAD OK {res['file']} ({res['mb']} MB)")
+            print(f"  link: {res['browser_url']}")
+            print(f"  sha256: {res['sha256'][:16]}...")
         return 0
 
     if args.cmd == "concat-plan":

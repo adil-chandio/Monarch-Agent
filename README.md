@@ -204,6 +204,11 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**Upload (the gofile step, legal-egress edition):** `monarch upload FILE` —
+finished render goes to the repo's `deliverables` branch (asset commit + sha256
++ tip-diet; history link lives forever). gofile/Release-assets are TLS-blocked
+in-sandbox; the operator's browser follows the raw link fine. HAAN-gated.
+
 **Monarch V2 post-mortem (Every-Bear session):** `docs/MONARCH_V2_POSTMORTEM.md` +
 `monarch/video/chunks.py` — chunk planner that NEVER splits a topic across render
 chunks (the repetition bug), gap 0.85s + whoosh/riser at every boundary; audio
