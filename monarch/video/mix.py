@@ -311,6 +311,14 @@ def mix(
 
     # Layer 3 — SFX per scene role from the board
     sfx_events = 0
+    # MONARCH V2 miss #2: a harsh tick at the intro/outro reads as an
+    # irritating beep - the law maps those slots to the smooth crescendo.
+    for _idx, _row in enumerate(board):
+        if _row.get("sfx") == "tick" and _idx in (0, len(board) - 1):
+            _row["sfx"] = "crescendo"
+            warnings.append(
+                f"scene {_row.get('id')}: tick at intro/outro auto-swapped "
+                "to crescendo (harsh-beep law)")
     for s in board:
         kind = str(s.get("sfx", "")).strip()
         if not kind:

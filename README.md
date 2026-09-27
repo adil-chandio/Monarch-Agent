@@ -204,6 +204,13 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**Monarch V2 post-mortem (Every-Bear session):** `docs/MONARCH_V2_POSTMORTEM.md` +
+`monarch/video/chunks.py` — chunk planner that NEVER splits a topic across render
+chunks (the repetition bug), gap 0.85s + whoosh/riser at every boundary; audio
+bitrate verified post-render (never the 32k robotic class); `sfx_crescendo`
+(1.8s smooth FOMO sweep) replaces harsh intro/outro ticks (mix auto-swaps);
+audit flags duplicate frames (unique image per beat law).
+
 **Render memory (Einstein-session laws):** `docs/RENDER_MEMORY.md` — 19 paid
 misses, L16 auto-fail. Wired in code: complete-sentence composer (no mid-sentence
 clips, no duplicate seam words), VO lint (no `—`/`...`/digits), VAD + boundary

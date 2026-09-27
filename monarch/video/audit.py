@@ -349,6 +349,36 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
                 "ffprobe on the real file before trusting any QC",
                 "one trusted source is how a 63.6s video passed a 60s board"))
 
+    # ---- MONARCH V2 miss #5: unique image per beat - a repeated frame
+    #      across scenes reads as a stuck video (the Chunk5 bug)
+    if tl_p.is_file():
+        try:
+            frames = (_load_json(tl_p).get("frames") or [])
+            files = [str(f.get("file", "")) for f in frames if f.get("file")]
+            dups = len(files) - len(set(files))
+            rep.scores["frames_unique"] = (len(files) - dups, len(files))
+            if dups:
+                rep.findings.append(Finding(
+                    "P2", "repeated frame across beats (Chunk5 bug)",
+                    f"{dups} duplicate frame slot(s) across {len(files)}",
+                    "generate a unique image per beat BEFORE rendering "
+                    "(AI 10/turn + PIL fill; monarch budget plans it)",
+                    "one still held for multiple beats = viewers leave"))
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    # ---- MONARCH V2 miss #2: harsh tick at intro/outro = irritating beep
+    if board:
+        edge_sfx = [str(board[0].get("sfx", "")),
+                    str(board[-1].get("sfx", ""))]
+        if any(x == "tick" for x in edge_sfx):
+            rep.findings.append(Finding(
+                "P2", "harsh tick at intro/outro (beep law)",
+                f"edge scene sfx = {edge_sfx}",
+                "swap to crescendo (1.8s smooth sweep 80->520Hz) - mix.py "
+                "auto-swaps this at mix time",
+                "an intro beep kills the hook in one second"))
+
     # ---- RENDER MEMORY 3.5/3.4/6.6: MEASURE the rendered audio files
     #      (never guess): peak in the 0.72-0.82 law band + frame-1 audible
     import wave as _wave
@@ -375,6 +405,24 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
             sq += v * v
             cnt += 1
         return peak, (sq / cnt) ** 0.5 if cnt else 0.0
+
+    for mp4 in mp4s:
+        try:
+            from monarch.video.render import ffmpeg_exe
+            import subprocess as _sp
+            info = _sp.run([ffmpeg_exe(), "-hide_banner", "-i", str(mp4)],
+                           capture_output=True, text=True)
+            kb = re.search(r"Audio:\s+.*?(\d+)\s+kb/s", info.stderr)
+            if kb and int(kb.group(1)) < 72:
+                rep.findings.append(Finding(
+                    "P1", "audio bitrate starvation (robotic VO class)",
+                    f"{mp4.name}: {kb.group(1)} kb/s measured (< 72 = the "
+                    "32k starvation class; encode target stays >= 160k)",
+                    "re-mux with -c:a copy or -b:a 160k/192k - never "
+                    "32k/48k/64k",
+                    "robotic voice = instant skip, the whole video dies"))
+        except (ValueError, OSError):
+            pass
 
     mix_wav = d / "master_mix.wav"
     if mix_wav.is_file():

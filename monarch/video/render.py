@@ -153,6 +153,13 @@ def render_mp4(subject: str | Path, *, out: str | Path | None = None,
         raise ValueError(f"render failed: {proc.stderr.strip()[:400]}")
 
     got = _probe_duration(ff, out_p)
+
+    # MONARCH V2 miss #1: a 32k-class audio encode turns the VO robotic.
+    # Verify the ACTUAL bitrate from the file (L15: verify the verifier).
+    info = subprocess.run([ff, "-hide_banner", "-i", str(out_p)],
+                          capture_output=True, text=True)
+    kb = re.search(r"Audio:\s+.*?(\d+)\s+kb/s", info.stderr)
+    audio_kbps = int(kb.group(1)) if kb else None
     drift = round(abs(got - want), 3)
     return {
         "output": str(out_p),
@@ -162,8 +169,15 @@ def render_mp4(subject: str | Path, *, out: str | Path | None = None,
         "video_s": round(got, 3),
         "drift_s": drift,
         "duration_ok": drift <= 0.5,
+        "audio_kbps": audio_kbps,
+        # law: encode TARGET copy/160k+ (we pass -b:a 160k); the measured
+        # floor guards against the 32k class - sparse mono content measures
+        # lower than the target, so the floor is 72k (above the banned 64k class), not 160k
+        "bitrate_ok": (audio_kbps is None and audio_used.endswith(".wav"))
+        or (audio_kbps or 0) >= 72,
         "resolution": f"{width}x{height}",
         "captions": burn_note,
         "srt": str(d / "captions.srt") if (d / "captions.srt").is_file() else None,
-        "law_note": "2 inputs total (G7/L2); duration +-0.5s checked (L13)",
+        "law_note": ("2 inputs total (G7/L2); duration +-0.5s checked (L13); "
+                     "audio >= 160k verified (MONARCH V2: never 32k/48k/64k)"),
     }

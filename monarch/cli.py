@@ -893,6 +893,8 @@ def main(argv: list[str] | None = None) -> int:
                   f"(drift {res['drift_s']}s, "
                   f"{'OK' if res['duration_ok'] else 'OUT OF BAND'})")
             print(f"  {res['captions']}")
+            print(f"  audio {res.get('audio_kbps') or 'wav-lossless'} kbps "
+                  f"({'OK' if res.get('bitrate_ok') else 'UNDER 160k - robotic risk'})")
         return 0
 
     if args.cmd == "concat-plan":

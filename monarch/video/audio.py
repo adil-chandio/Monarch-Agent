@@ -162,6 +162,30 @@ def sfx_glitch(sr: int = 44100, seed: int = 0) -> list[float]:
     return out if out else _silence(0.3, sr)
 
 
+def sfx_crescendo(sr: int = 44100, seed: int = 0) -> list[float]:
+    """MONARCH V2 miss #2 fix: smooth FOMO riser, NOT a harsh tick.
+
+    Exponential frequency sweep 80 -> 520 Hz over 1.8 s (soft attack so
+    the intro never clicks), low rumble underneath, gentle landing so
+    the transition ends inviting - never irritating.
+    """
+    import math as _m
+    dur = 1.8
+    n = int(dur * sr)
+    out: list[float] = []
+    phase = 0.0
+    for i in range(n):
+        t = i / n
+        f = 80.0 * (520.0 / 80.0) ** t          # exponential sweep
+        phase += 2.0 * _m.pi * f / sr
+        env = min(1.0, t / 0.25) * (1.0 - 0.35 * t)   # rise, soft landing
+        sweep = 0.42 * _m.sin(phase) * env
+        rumble = 0.18 * _m.sin(2.0 * _m.pi * 45.0 * (i / sr)) * min(1.0, t / 0.4)
+        out.append(sweep + rumble)
+    peak = max(abs(v) for v in out) or 1.0
+    return [v * 0.8 / peak for v in out]
+
+
 def sfx_riser(sr: int = 44100, seed: int = 0) -> list[float]:
     """Noise + tone sweep rising into a cut — prediction build (N3/N5)."""
     tone = _sweep(110, 880, 1.6, sr, amp=0.5, shape="exp")
@@ -182,6 +206,7 @@ SFX_KINDS: dict[str, tuple] = {
     "sonar_ping": (sfx_sonar_ping, 0.78),
     "glitch": (sfx_glitch, 0.4),
     "riser": (sfx_riser, 1.6),
+    "crescendo": (sfx_crescendo, 1.2),   # MONARCH V2: FOMO build, no beep
 }
 
 
