@@ -263,6 +263,31 @@ def main(argv: list[str] | None = None) -> int:
     sa.add_argument("--last-n", type=int, default=6)
     sa.add_argument("--json", action="store_true")
 
+    vt = sub.add_parser("vitals",
+                        help="W-B4: engaged-class post-launch sheet "
+                             "(enter Studio numbers, get band verdicts)")
+    vt.add_argument("dir", help="render dir (sheet saves to kit/)")
+    vt.add_argument("--impressions", type=int)
+    vt.add_argument("--clicks", type=int)
+    vt.add_argument("--views", type=int, help="PUBLIC views (first-frame)")
+    vt.add_argument("--engaged", type=int, help="ENGAGED views (the real one)")
+    vt.add_argument("--viewed", type=int, help="Shorts 'viewed vs swiped'")
+    vt.add_argument("--swiped", type=int)
+    vt.add_argument("--avp", type=float, help="average percentage viewed")
+    vt.add_argument("--returning", type=float, help="returning viewers %%")
+    vt.add_argument("--save", action="store_true")
+    vt.add_argument("--json", action="store_true")
+
+    rp = sub.add_parser("repurpose",
+                        help="W-B4: 1 long -> Shorts queue skeleton "
+                             "(5-15 law, 22-45s band)")
+    rp.add_argument("dir", help="render dir (board.json)")
+    rp.add_argument("--n", type=int, default=6)
+    rp.add_argument("--topics", default="",
+                    help="ranked topics best-LAST for the ranking-teaser")
+    rp.add_argument("--title", default="")
+    rp.add_argument("--json", action="store_true")
+
     fc = sub.add_parser("forecast",
                         help="W-B1: 9-link chain check + curve forecast "
                              "(pre-render gate)")
@@ -987,6 +1012,60 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"SLOP AUDIT score {rep['score']}/100 - "
                       + ("CLEAN" if rep["ok"] else "P1 PRESENT - fix before launch"))
         return 0 if (rep.get("advisory_only") or rep["ok"]) else 2
+
+    if args.cmd == "vitals":
+        from pathlib import Path as _P
+        from monarch.video.vitals import evaluate_vitals, sheet_md
+        v = evaluate_vitals(impressions=args.impressions, clicks=args.clicks,
+                            public_views=args.views,
+                            engaged_views=args.engaged,
+                            viewed=args.viewed, swiped=args.swiped,
+                            avp_pct=args.avp, returning_pct=args.returning)
+        title = ""
+        try:
+            title = str(json.loads((_P(args.dir) / "timeline.json")
+                                   .read_text(encoding="utf-8"))
+                        .get("title") or "")
+        except (OSError, ValueError):
+            pass
+        if args.json:
+            print(json.dumps(v, indent=2))
+            return 0
+        sheet = sheet_md(v, title=title)
+        print(sheet)
+        if args.save:
+            kit = _P(args.dir) / "kit"
+            kit.mkdir(parents=True, exist_ok=True)
+            (kit / "vitals_sheet.md").write_text(sheet, encoding="utf-8")
+            print(f"saved: {kit / 'vitals_sheet.md'}")
+        return 0 if (v["ok"] is not False) else 2
+
+    if args.cmd == "repurpose":
+        from pathlib import Path as _P
+        from monarch.video.vitals import queue_md, repurpose_queue
+        try:
+            board = json.loads((_P(args.dir) / "board.json")
+                               .read_text(encoding="utf-8"))
+        except (OSError, ValueError) as e:
+            print("FAIL", e)
+            return 2
+        topics = [t.strip() for t in args.topics.split(",") if t.strip()]
+        try:
+            q = repurpose_queue(board, title=args.title, n=args.n,
+                                topics=topics)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(q, indent=2))
+        else:
+            print(queue_md(q, title=args.title))
+        kit = _P(args.dir) / "kit"
+        kit.mkdir(parents=True, exist_ok=True)
+        (kit / "repurpose_queue.md").write_text(
+            queue_md(q, title=args.title), encoding="utf-8")
+        print(f"saved: {kit / 'repurpose_queue.md'}")
+        return 0
 
     if args.cmd == "forecast":
         from pathlib import Path as _P

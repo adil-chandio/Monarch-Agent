@@ -291,7 +291,7 @@ replaces the wired core.
 
 ## WAVE EXECUTION ORDER (acceptance criteria per wave)
 
-> **STATUS 2026-09-28: W-A1 ✅ W-A2 ✅ W-B1 ✅ W-B2 ✅ W-B3 ✅ DONE** (shipped in one push).
+> **STATUS 2026-09-28: PROTOCOL 100% WIRED — W-A1 ✅ W-A2 ✅ W-B1 ✅ W-B2 ✅ W-B3 ✅ W-B4 ✅ ALL DONE** (shipped in one push).
 > Live evidence: `v6 layer burned (karaoke words + progress bar + loop tail +
 > end screen)`; render measures **-14.3 LUFS** (target -14, in band); sonic
 > logo sting@0.0 + resolve@end in the master (never ducked); audit 94/100.
@@ -335,9 +335,19 @@ replaces the wired core.
   Live: kit all-green on a real render (LUFS -14.1 measured); slop
   tests prove the assembly-line channel fails with findings named.
   Tests +11 (466 total).
-- **W-B4 — PERFORMANCE/VITALS:** engaged-class reporting template +
-  returning-viewers vital + repurposing queue skeleton. DONE =
-  post-launch sheet generated from a real upload's metadata shape.
+- **W-B4 — PERFORMANCE/VITALS:** ✅ **DONE** —
+  `monarch/video/vitals.py`: `evaluate_vitals` (engaged-class bands
+  from the research: CTR 4-8/10+/<2 critical, swipe-through >50/30
+  dead/~70 velocity gate, inflation vs ~1.67x, AVP 50/70, returning-
+  viewers proxy) + `sheet_md` (honest [fill] placeholders - never a
+  fake verdict; the Aug-24-2026 cutover + sponsor-deck laws printed)
+  + `repurpose_queue` (1 long -> Shorts skeleton: hook-remix,
+  payoff-tease cut BEFORE the reveal - Zeigarnik, WTF-detail beats,
+  loop-cut, ranking-teaser with the 60/25/12 plan; 5-15 law, 22-45s
+  band, anti-slop grammar note; kit/repurpose_queue.md written).
+  CLI `monarch vitals DIR [...] [--save --json]` (rc 2 on P1) and
+  `monarch repurpose DIR [--n --topics --title]`. Live E2E: queue
+  + verdicts generated from a real render. Tests +11 (477 total).
 - **W-C — PARKED (egress):** neural VO, whisper align, image-gen,
   publish API, mirror host. Unchanged verdicts.
 
