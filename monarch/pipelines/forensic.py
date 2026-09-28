@@ -42,7 +42,10 @@ def _dissect_youtube(url: str) -> dict:
     try:
         transcript = video_transcript(url)
     except RuntimeError:
-        pass  # transcript may not be available
+        pass  # transcript may not be available locally
+    if not transcript:
+        # third path: hosted youtube-transcript.io (no yt-dlp needed)
+        transcript = _hosted_transcript(url)
 
     words = transcript.split() if transcript else []
     return {
@@ -65,6 +68,19 @@ def _dissect_web(url: str) -> dict:
     from monarch.intel.web import extract_competitor_page
 
     return extract_competitor_page(url)
+
+
+def _hosted_transcript(url: str) -> str:
+    """youtube-transcript.io fallback. Silent "" when unavailable."""
+    try:
+        from monarch.intel import ytt
+
+        if not ytt.has_token():
+            return ""
+        recs = ytt.fetch_transcripts([url])
+        return recs[0]["transcript"] if recs else ""
+    except Exception:
+        return ""  # forensic is best-effort; the CLI transcript command is strict
 
 
 def dissect_multiple(urls: list[str]) -> list[dict]:

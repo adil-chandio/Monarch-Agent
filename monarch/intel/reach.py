@@ -90,6 +90,17 @@ def doctor() -> list[ToolStatus]:
             backend=name if ok else "missing",
             message=desc if ok else f"{name} not installed",
         ))
+    # hosted API row — youtube-transcript.io (no local tool, token-gated)
+    from monarch.intel.ytt import has_token as ytt_has_token
+
+    ytt_ok = ytt_has_token()
+    results.append(ToolStatus(
+        name="youtube-transcript.io",
+        available=ytt_ok,
+        backend="hosted API" if ytt_ok else "no token",
+        message="hosted transcripts" if ytt_ok
+        else "set YOUTUBE_TRANSCRIPT_IO_TOKEN in .env",
+    ))
     return results
 
 
