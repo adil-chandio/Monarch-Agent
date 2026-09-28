@@ -204,6 +204,12 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**TABAAHI PROTOCOL — THE MAX PIPELINE (2026-09-28):** `docs/TABAHI_PROTOCOL.md`
+- the integrated grand structure: ALL 4 hunt layers fused into one 11-stage
+workflow (P0 Idea Hunt -> P10 Learn), 50-item weapons-coverage matrix
+(nothing left out), per-stage laws/gates/outputs, and the W-A/W-B wave
+execution order with acceptance criteria.
+
 **TOOFAN LAYER deep hunt #4 (2026-09-28):** `docs/TOOFAN_LAYER.md` - the brain's
 actual code: dopamine = prediction error (surprise, not reward;
 calibrated MEDIUM curiosity gaps peak, payoffs must EXCEED promise),
