@@ -204,6 +204,13 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**TABAAHI ARSENAL hunt (2026-09-28):** `docs/TABAHI_ARSENAL.md` - research-only
+haul: 2026 algorithm numbers (swipe gates, 22-45s band, AI-disclosure law),
+LUFS -14/-1dBTP standard (loudnorm/ebur128 confirmed in our ffmpeg binary),
+But/Therefore story DNA, retention-curve sickness metaphors, thumbnail CTR
+numbers, live-verified repos, auto-dub free-reach play. Awaiting HAAN to
+graduate into canon.
+
 **Forensic audit + CHAOS MAX roadmap (2026-09-28):** `docs/CHAOS_MAX_FORENSIC.md`
 - full microscope sweep: findings F1-F10 (own-compositor zoom-law breach
   FIXED with Motion clamp, tipeline typo tipeline typo FIXED, CI file READY-
