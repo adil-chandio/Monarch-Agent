@@ -204,6 +204,13 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**TOOFAN LAYER deep hunt #4 (2026-09-28):** `docs/TOOFAN_LAYER.md` - the brain's
+actual code: dopamine = prediction error (surprise, not reward;
+calibrated MEDIUM curiosity gaps peak, payoffs must EXCEED promise),
+Dan Harmon's 8-step story circle mapped to shorts, sonic-logo science
+(+16% willingness-to-pay; numpy synth = our native tongue), Von
+Restorff/returning-viewers/session-chaining quickfires.
+
 **ABYSS LAYER deep hunt #3 (2026-09-28):** `docs/ABYSS_LAYER.md` - engaged-vs-public
 view split (Aug 24 2026: earnings/YPP run on ENGAGED views only, public
 overstated ~1.67x), the Peak-End doctrine (Kahneman -> the engineering spec
