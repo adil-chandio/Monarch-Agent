@@ -204,6 +204,12 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**Forensic audit + CHAOS MAX roadmap (2026-09-28):** `docs/CHAOS_MAX_FORENSIC.md`
+- full microscope sweep: findings F1-F10 (own-compositor zoom-law breach
+  FIXED with Motion clamp, tipeline typo tipeline typo FIXED, CI file READY-
+  to-enable via web (docs/CI_READY.md; App token lacks workflows scope)), coverage 84% mapped, egress-honest
+  constraint table, W-A/W-B/W-C upgrade waves.
+
 **V6 viral Shorts canon (1.2B-views session):** `docs/VIRAL_SHORTS_V6.md` +
 `monarch/video/shorts.py` — the 14-miss laws executable: no-text prompt
 builder (Urdu-leak guard), VO-driven beat timing (never cut VO: VO+0.7),

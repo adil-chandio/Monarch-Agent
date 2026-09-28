@@ -42,21 +42,30 @@ ANIMATIONS = ("kenburns", "parallax")
 class Motion:
     kind: str
     zoom_from: float = 1.0
-    zoom_to: float = 1.12
+    zoom_to: float = 1.08
     focus_from: tuple[float, float] = (0.5, 0.5)   # normalized center
     focus_to: tuple[float, float] = (0.5, 0.5)
     shake_amp: float = 0.0                          # fraction of width
 
+    def __post_init__(self) -> None:
+        """V6 miss #6 law (docs/VIRAL_SHORTS_V6.md): zoom is a nudge,
+        not a QualityDestroyer - 1.0..1.08 hard band, clamped at
+        construction so a bad caller CANNOT render a 1.18 pixelator."""
+        for name in ("zoom_from", "zoom_to"):
+            z = float(getattr(self, name))
+            z = min(1.08, max(1.0, z))
+            object.__setattr__(self, name, z)
+
 
 #: N1: the open clip snaps — frame one moves before the reflex can ignore it;
 #: N3: variety through the body; last scene holds slow (payoff)
-_OPEN = Motion("zoom_in", 1.0, 1.18, (0.5, 0.42), (0.5, 0.5))
+_OPEN = Motion("zoom_in", 1.0, 1.08, (0.5, 0.42), (0.5, 0.5))
 _ALTERNATE = (
     Motion("pan_left", 1.08, 1.08, (0.62, 0.5), (0.38, 0.5)),
     Motion("pan_right", 1.08, 1.08, (0.38, 0.5), (0.62, 0.5)),
-    Motion("zoom_in", 1.0, 1.14, (0.5, 0.45), (0.5, 0.55)),
+    Motion("zoom_in", 1.0, 1.08, (0.5, 0.45), (0.5, 0.55)),
     Motion("shake", 1.06, 1.06, (0.5, 0.5), (0.5, 0.5), 0.012),
-    Motion("zoom_out", 1.16, 1.0, (0.45, 0.5), (0.5, 0.5)),
+    Motion("zoom_out", 1.08, 1.0, (0.45, 0.5), (0.5, 0.5)),
 )
 _HOLD = Motion("zoom_in", 1.0, 1.06, (0.5, 0.45), (0.5, 0.5))
 

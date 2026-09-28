@@ -133,7 +133,7 @@ def make_video(
             # tension engine stays for mystery/entertainment/storytelling
             warm_genres = {"tutorial", "educational", "product", "listicle"}
             mixed, mrep = mix_bus.mix(
-                duration_s=max(tipeline := timeline["total_s"],
+                duration_s=max(total_s_v := timeline["total_s"],
                                 vo["vo_end_s"]) + 0.4,
                 vo=vo["track"], sr=sr, board=sfx_rows, seed=sb.seed,
                 music_mood=("warm" if getattr(sb, "genre", "mystery")
