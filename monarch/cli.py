@@ -1222,19 +1222,25 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.cmd == "upload":
-        from monarch.core.upload import upload_render
+        from monarch.core.gofile import upload_deliverable
 
         try:
-            res = upload_render(args.file, label=(args.label or None))
+            res = upload_deliverable(args.file, label=(args.label or None))
         except (ValueError, OSError) as e:
             print("FAIL", e)
             return 2
         if args.json:
             print(json.dumps(res, indent=2))
         else:
-            print(f"UPLOAD OK {res['file']} ({res['mb']} MB)")
-            print(f"  link: {res['browser_url']}")
+            print(f"UPLOAD OK {res['file']} ({res['mb']} MB) "
+                  f"via {res['host']}"
+                  + (f" (expires: {res['expires']})" if res.get("expires")
+                     else ""))
+            print(f"  link: {res['link']}")
             print(f"  sha256: {res['sha256'][:16]}...")
+            for k in ("gofile_error", "tmpfiles_error"):
+                if res.get(k):
+                    print(f"  {k}: {res[k]}")
         return 0
 
     if args.cmd == "concat-plan":

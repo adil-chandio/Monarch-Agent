@@ -64,3 +64,15 @@ def test_live_upload_roundtrip(tmp_path):
 def test_cli_upload_fail_closed(capsys, tmp_path):
     rc = main(["upload", str(tmp_path / "nope.mp4")])
     assert rc == 2 and "FAIL" in capsys.readouterr().out
+
+
+def test_live_upload_idempotent(tmp_path):
+    """Same bytes re-uploaded: rail must NOT die on 'nothing to commit'."""
+    f = tmp_path / "same.mp4"
+    f.write_bytes(b"IDEMPOTENT-PROBE-BYTES-\x00\x01")
+    a = upload_render(f, label="idempotency probe 1 (safe)",
+                      keep_on_tip=True)
+    b = upload_render(f, label="idempotency probe 2 (safe)",
+                      keep_on_tip=True)
+    assert a["commit"] == b["commit"]
+    upload_render(f, label="idempotency probe diet (safe)")  # tip stays lean

@@ -90,13 +90,15 @@ def upload_render(path: str | Path, *, label: str | None = None,
     import shutil
     shutil.copy2(p, clone / p.name)
     _git(["add", p.name], cwd=clone)
-    r = _git(["-c", "user.email=monarch@agent",
-              "-c", "user.name=Monarch Agent", "commit", "-qm",
-              f"asset: {p.name} ({size} bytes, sha256 {digest[:16]})"
-              + (f" - {label}" if label else "")], cwd=clone)
-    if r.returncode != 0:
-        raise ValueError(f"commit failed: "
-                         f"{(r.stderr or r.stdout).strip()[:300]}")
+    if _git(["status", "--porcelain"], cwd=clone).stdout.strip():
+        r = _git(["-c", "user.email=monarch@agent",
+                  "-c", "user.name=Monarch Agent", "commit", "-qm",
+                  f"asset: {p.name} ({size} bytes, sha256 {digest[:16]})"
+                  + (f" - {label}" if label else "")], cwd=clone)
+        if r.returncode != 0:
+            raise ValueError(f"commit failed: "
+                             f"{(r.stderr or r.stdout).strip()[:300]}")
+    # else: identical blob already committed at tip - idempotent re-upload
     commit = _git(["rev-parse", "HEAD"], cwd=clone).stdout.strip()
 
     r = _git(["push", "origin", branch], cwd=clone)
