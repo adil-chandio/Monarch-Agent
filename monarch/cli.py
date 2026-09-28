@@ -187,6 +187,13 @@ def main(argv: list[str] | None = None) -> int:
                     help="burn the V6 end-screen element (last 7s, right 40%%)")
     mv.add_argument("--with-mix", action="store_true",
                     help="render master_mix.wav (music duck, SFX, room tone)")
+    mv.add_argument("--with-ai-art", action="store_true",
+                    help="AI keyframe stage: write ai_prompts.json, then "
+                         "render ai_frames/key<N>.png to ai_short.mp4 "
+                         "(missing frames = PENDING + rc2, never guessing)")
+    mv.add_argument("--ai-frames", default=None,
+                    help="dir with the agent-generated key<N>.png "
+                         "(default <out>/ai_frames)")
     mv.add_argument("--json", action="store_true", help="manifest JSON to stdout")
 
     # TABAAHI wave: voice + humanize + mix commands
@@ -280,6 +287,15 @@ def main(argv: list[str] | None = None) -> int:
     aan.add_argument("--prop", default=None)
     aan.add_argument("--seed", type=int, default=7)
     aan.add_argument("--out", required=True, help="output dir")
+
+    aip = sub.add_parser("ai-plan",
+                         help="AI-ART: keyframe prompt plan from a "
+                              "make-video dir (+ fail-closed frame check)")
+    aip.add_argument("dir", help="make-video output dir (board.json)")
+    aip.add_argument("--frames", default=None,
+                     help="dir with agent key<N>.png (default <dir>/ai_frames)")
+    aip.add_argument("--no-render", action="store_true",
+                     help="write the plan and check frames only")
 
     vt = sub.add_parser("vitals",
                         help="W-B4: engaged-class post-launch sheet "
@@ -934,6 +950,13 @@ def main(argv: list[str] | None = None) -> int:
         except ValueError as e:
             print("FAIL", e)
             return 2
+        if getattr(args, "with_ai_art", False):
+            from pathlib import Path as _PA
+            from monarch.video.ai_art import cli_stage as _ai_stage
+            rc = _ai_stage(_PA(out),
+                           _PA(args.ai_frames) if args.ai_frames else None)
+            if rc != 0:
+                return rc
         if args.json:
             print(json.dumps(manifest, indent=2))
         else:
@@ -1061,6 +1084,13 @@ def main(argv: list[str] | None = None) -> int:
         print("  note: silent art stage - master mix rides the render "
               "pipeline")
         return 0
+
+    if args.cmd == "ai-plan":
+        from pathlib import Path as _P
+        from monarch.video.ai_art import cli_stage
+        return cli_stage(_P(args.dir),
+                         _P(args.frames) if args.frames else None,
+                         render=not args.no_render)
 
     if args.cmd == "vitals":
         from pathlib import Path as _P
