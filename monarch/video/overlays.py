@@ -35,7 +35,7 @@ SHOW_S = 1.7           # V6 text show window
 FADE_S = 0.3
 PLATE = "&HA0000000"   # ~ (0,0,0,160) semi-transparent plate (miss #7)
 GOLD = "&H0000D7FF"    # #FFD700 in BGR
-GOLD_RAW = "00D7FF"    # bare BGR hex for inline \\1C&H...& overrides
+GOLD_RAW = "00D7FF"    # bare BGR hex for inline \\1c&H...& overrides
 WHITE = "&H00FFFFFF"
 GREY = "&H00888888"
 DARK = "&H50000000"
@@ -129,7 +129,7 @@ def v6_ass(scenes: list[tuple[float, float, str]], *,
     out.append("ScriptType: v4.00+")
     out.append(f"PlayResX: {w}")
     out.append(f"PlayResY: {h}")
-    out.append("WrapStyle: 2")
+    out.append("WrapStyle: 0")   # wrap long VO lines at the side margins
     out.append("ScaledBorderAndShadow: yes")
     out.append("")
     out.append("[V4+ Styles]")
@@ -138,8 +138,8 @@ def v6_ass(scenes: list[tuple[float, float, str]], *,
                "Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, "
                "BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, "
                "MarginV, Encoding")
-    out.append(f"Style: V6Kar,Sans,58,{WHITE},{GREY},{PLATE},&H00000000,-1,0,0,0,100,100,1,0,3,4,0,5,0,0,0,1")
-    out.append(f"Style: V6Cue,Sans,76,{WHITE},{GREY},{PLATE},&H00000000,-1,0,0,0,100,100,1,0,3,8,0,5,0,0,0,1")
+    out.append(f"Style: V6Kar,Sans,58,{WHITE},{GREY},{PLATE},&H00000000,-1,0,0,0,100,100,1,0,3,4,0,5,70,70,0,1")
+    out.append(f"Style: V6Cue,Sans,76,{WHITE},{GREY},{PLATE},&H00000000,-1,0,0,0,100,100,1,0,3,8,0,5,80,80,0,1")
     out.append(f"Style: V6End,Sans,56,{GOLD},{GREY},&H96000000,&H00000000,-1,0,0,0,100,100,1,0,3,3,0,5,0,0,0,1")
     out.append(f"Style: V6Sub,Sans,40,{WHITE},{GREY},&H00000000,&H00000000,-1,0,0,0,100,100,1,0,1,2,0,5,0,0,0,1")
     out.append(f"Style: V6Draw,Sans,40,{WHITE},{GREY},&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1")
@@ -204,7 +204,7 @@ def v6_ass(scenes: list[tuple[float, float, str]], *,
                    f"m 0 0 l {bw} 0 {bw} {bh} 0 {bh}{{\\p0}}")
         out.append(f"Dialogue: 2,{_ass_time(es_a)},{_ass_time(es_b)},"
                    f"V6Draw,,0,0,0,,{{\\an7\\pos({x1 + border},{y1 + border})"
-                   f"\\p1\\1C&H201010&\\3C&H201010&}}"
+                   f"\\p1\\1c&H201010&\\3C&H201010&}}"
                    f"m 0 0 l {bw - 2 * border} 0 {bw - 2 * border} "
                    f"{bh - 2 * border} 0 {bh - 2 * border}{{\\p0}}")
         cx = (x1 + x2) // 2
@@ -220,7 +220,7 @@ def v6_ass(scenes: list[tuple[float, float, str]], *,
         step = 0.5
         out.append(f"Dialogue: 0,{_ass_time(0.0)},{_ass_time(end_cap)},"
                    f"V6Draw,,0,0,0,,{{\\an7\\pos(0,{h - PROGRESS_H})\\p1"
-                   f"\\1C&H303030&\\3C&H303030&}}"
+                   f"\\1c&H303030&\\3C&H303030&}}"
                    f"m 0 0 l {w} 0 {w} {PROGRESS_H} 0 {PROGRESS_H}{{\\p0}}")
         t = 0.0
         while t < end_cap:
@@ -229,7 +229,7 @@ def v6_ass(scenes: list[tuple[float, float, str]], *,
             bw = max(PROGRESS_H, int(w * frac))
             out.append(f"Dialogue: 1,{_ass_time(t)},{_ass_time(t2)},"
                        f"V6Draw,,0,0,0,,{{\\an7\\pos(0,{h - PROGRESS_H})\\p1"
-                       f"\\1C&H{GOLD_RAW}&\\3C&H{GOLD_RAW}&}}"
+                       f"\\1c&H{GOLD_RAW}&\\3C&H{GOLD_RAW}&}}"
                        f"m 0 0 l {bw} 0 {bw} {PROGRESS_H} 0 {PROGRESS_H}{{\\p0}}")
             t = t2
     return "\n".join(out) + "\n"
