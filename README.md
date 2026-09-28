@@ -204,6 +204,11 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**CHAOS LAYER deep hunt (2026-09-28):** `docs/CHAOS_LAYER.md` - Arsenal addendum #2:
+the leaked MrBeast playbook laws, the SURVIVAL layer (inauthentic-content
+enforcement tripwires + Monarch anti-slop armor), the 1,100x cloning-trap
+study, and the stickman face-bias counter-strategy. Research-only, awaiting HAAN.
+
 **TABAAHI ARSENAL hunt (2026-09-28):** `docs/TABAHI_ARSENAL.md` - research-only
 haul: 2026 algorithm numbers (swipe gates, 22-45s band, AI-disclosure law),
 LUFS -14/-1dBTP standard (loudnorm/ebur128 confirmed in our ffmpeg binary),
