@@ -204,6 +204,12 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**RESEARCH MASTER — complete inventory (2026-09-28):** `docs/RESEARCH_MASTER.md`
+- ALL 105 findings from the 4 hunt layers in one file: every number, repo,
+  law and concept (algorithm gates, LUFS, story DNA, thumbnails, Beast
+  leak, survival tripwires, outliers, engaged views, peak-end, gaze,
+  RPE, Harmon circle, sonic branding, quickfires). Nothing left out.
+
 **TABAAHI PROTOCOL — THE MAX PIPELINE (2026-09-28):** `docs/TABAHI_PROTOCOL.md`
 - the integrated grand structure: ALL 4 hunt layers fused into one 11-stage
 workflow (P0 Idea Hunt -> P10 Learn), 50-item weapons-coverage matrix
