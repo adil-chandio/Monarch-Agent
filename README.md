@@ -204,6 +204,12 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**ABYSS LAYER deep hunt #3 (2026-09-28):** `docs/ABYSS_LAYER.md` - engaged-vs-public
+view split (Aug 24 2026: earnings/YPP run on ENGAGED views only, public
+overstated ~1.67x), the Peak-End doctrine (Kahneman -> the engineering spec
+for the 2026 #1 satisfaction signal), gaze physics (eyes direct viewer
+attention), and the 9-link convergence chain (the forecaster's spec).
+
 **CHAOS LAYER deep hunt (2026-09-28):** `docs/CHAOS_LAYER.md` - Arsenal addendum #2:
 the leaked MrBeast playbook laws, the SURVIVAL layer (inauthentic-content
 enforcement tripwires + Monarch anti-slop armor), the 1,100x cloning-trap
