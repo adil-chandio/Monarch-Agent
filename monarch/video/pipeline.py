@@ -48,6 +48,8 @@ def make_video(
     wavs_dir: str | Path | None = None,
     do_mix: bool = False,
     genre: str = "mystery",
+    do_mix_sonic: bool = False,
+    v6_end_screen: bool = False,
 ) -> dict:
     """Topic in, previz animatic out. Returns the manifest dict.
 
@@ -123,6 +125,29 @@ def make_video(
         (d / "captions.srt").write_text(
             voiceover.format_srt(srt_rows), encoding="utf-8")
         voice_info["srt"] = "captions.srt"
+        # W-A1/W-A2: the V6 overlay layer - karaoke word captions +
+        # progress bar + loop tail (+ end screen when ordered). Cues
+        # come from v6_plan.json when the operator/shorts flow wrote one.
+        cues: list[dict] = []
+        plan_p = d / "v6_plan.json"
+        if plan_p.is_file():
+            try:
+                meta = json.loads(plan_p.read_text(encoding="utf-8"))
+                from monarch.video.shorts import plan_texts
+                cues = plan_texts(meta.get("cues") or [],
+                                  subject_centered=True)
+            except (ValueError, OSError) as e:
+                voice_info["v6_cues_error"] = str(e)
+        v6_dur = max(float(vo.get("board_end_s") or 0.0),
+                     float(vo.get("vo_end_s") or 0.0)) + 0.7
+        (d / "v6_plan.json").write_text(
+            json.dumps({"end_screen": bool(v6_end_screen)}), encoding="utf-8")
+        from monarch.video import overlays
+        (d / "v6.ass").write_text(
+            overlays.v6_ass(srt_rows, cues=cues, dur_s=v6_dur,
+                            end_screen=v6_end_screen, progress=True),
+            encoding="utf-8")
+        voice_info["v6_ass"] = "v6.ass"
         if do_mix:
             sfx_rows = [
                 {"id": r["id"], "t_start": r["t_start"], "t_end": r["t_end"],
@@ -138,6 +163,7 @@ def make_video(
                 vo=vo["track"], sr=sr, board=sfx_rows, seed=sb.seed,
                 music_mood=("warm" if getattr(sb, "genre", "mystery")
                             in warm_genres else "tension"),
+                sonic=do_mix_sonic,
             )
             mp = d / "master_mix.wav"
             voiceover.write_track(mp, mixed, sr)

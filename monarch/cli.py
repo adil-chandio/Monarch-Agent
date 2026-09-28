@@ -181,6 +181,10 @@ def main(argv: list[str] | None = None) -> int:
                     help="none | auto | edge | dir | mumble (audio-first VO)")
     mv.add_argument("--wavs-dir", default=None,
                     help="per-scene wavs for --voice-backend dir")
+    mv.add_argument("--with-sonic", action="store_true",
+                    help="layer the deterministic sonic logo (sting+resolve)")
+    mv.add_argument("--v6-end-screen", action="store_true",
+                    help="burn the V6 end-screen element (last 7s, right 40%%)")
     mv.add_argument("--with-mix", action="store_true",
                     help="render master_mix.wav (music duck, SFX, room tone)")
     mv.add_argument("--json", action="store_true", help="manifest JSON to stdout")
@@ -848,6 +852,8 @@ def main(argv: list[str] | None = None) -> int:
                 voice_backend=args.voice_backend,
                 wavs_dir=args.wavs_dir,
                 do_mix=args.with_mix,
+                do_mix_sonic=getattr(args, "with_sonic", False),
+                v6_end_screen=getattr(args, "v6_end_screen", False),
             )
         except GateFail as e:
             print("FAIL", "; ".join(e.misses))

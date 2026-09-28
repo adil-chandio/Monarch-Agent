@@ -170,6 +170,7 @@ class MixReport:
     warnings: list[str] = field(default_factory=list)
     vo_gate: str = "NO VO"   # G7: VO must survive into the master
     mood: str = "tension"    # RENDER MEMORY 3: warm | tension
+    sonic: bool = False      # W-B2: sonic logo layered
 
     def summary(self) -> str:
         return (f"MIX {self.duration_s:.1f}s | VO {self.vo_rms}/{self.vo_peak} dBFS | "
@@ -322,6 +323,7 @@ def mix(
     music: bool = True,
     seed: int = 0,
     music_mood: str = "tension",
+    sonic: bool = False,
 ) -> tuple[list[float], MixReport]:
     """Five-layer master. VO wins; everything else serves it.
 
@@ -390,8 +392,29 @@ def mix(
     # Layer 4 — room tone (anti digital-silence)
     tone = [t * db_to_gain(ROOM_DB) for t in room_tone(duration_s, sr, seed=seed + 3)]
 
+    # Layer 4.5 — sonic logo (W-B2): brand sting (primacy) + resolve
+    # (recency). Fixed gain, NEVER ducked - the logo must be identical
+    # in every render (mere-exposure brand law, TOOFAN L3).
+    sonic_on = False
+    if sonic:
+        from monarch.video.audio import sonic_logo, sonic_resolve
+        sting = sonic_logo(sr, seed=seed)
+        res = sonic_resolve(sr, seed=seed)
+        logo = [0.0] * n
+        for i, v in enumerate(sting[:n]):
+            logo[i] += v
+        off = max(0, n - len(res))
+        for i, v in enumerate(res):
+            if off + i < n:
+                logo[off + i] += v
+        sonic_on = True
+        warnings.append("sonic logo: sting@0.0 + resolve@end placed "
+                        "(never ducked, identical every render)")
+    else:
+        logo = [0.0] * n
+
     # Layer 5 — sum + master limiter
-    master = [voice[i] + bed[i] + tone[i] for i in range(n)]
+    master = [voice[i] + bed[i] + tone[i] + logo[i] for i in range(n)]
     # RENDER MEMORY 3.5: mix peak law 0.72-0.82 (AAC headroom; the old
     # 0.97 ceiling read as clipping next to the per-channel law)
     master = limiter(master, ceiling=0.82)
@@ -407,6 +430,7 @@ def mix(
         duck_events=_count_dips(voice, sr) if has_voice else 0,
         sfx_events=sfx_events,
         warnings=warnings,
+        sonic=sonic_on,
     )
     if has_voice and report.vo_peak > -1.0:
         warnings.append("VO peaks hot — consider VO_GAIN down")

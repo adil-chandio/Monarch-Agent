@@ -204,6 +204,15 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**W-A1/W-A2/W-B2 SHIPPED (2026-09-28):** canon = pixels now. `monarch/video/overlays.py`
+- the V6 overlay layer burned into every render via libass (ZERO new deps):
+karaoke word captions (word timing computed from our own synth), TEXT_SYNCED
+cue band (y=320, 750 forever forbidden), end screen (last 7s, right 40%, gold
+WATCH HERE), progress bar, loop tail. Sound law landed too: render loudnorm
+targets -14 LUFS (live render measures -14.3), `measure_lufs` ebur128 meter,
+audit LUFS finding; sonic logo (deterministic six-tone sting+resolve, never
+ducked) via `--with-sonic`; end screen via `--v6-end-screen`. Suite 443.
+
 **RESEARCH MASTER — complete inventory (2026-09-28):** `docs/RESEARCH_MASTER.md`
 - ALL 130 findings from the 4 hunt layers in one file (incl. fine-print addendum: 1280x720/90%-custom/contrast evidence base, auto-dub 232+ langs & +13.48%, Beast integrity laws + The Goal, channel-level review posture, dopamine quantization 3-5Hz/10-20 spikes, RPE-vs-startle circuits, the no-slot-machine ethics law, universe-level peak-end, computer-agent gaze evidence, freebuff rejected-verdict): every number, repo,
   law and concept (algorithm gates, LUFS, story DNA, thumbnails, Beast

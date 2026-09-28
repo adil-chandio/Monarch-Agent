@@ -245,6 +245,43 @@ def audit_dir(subject: str | Path, *, csv_path: str | Path | None = None,
             "the preview at LATEST",
             "operator reviews an OLD cut and re-litigates fixed problems"))
 
+    # ---- W-B2: LUFS law (ARSENAL B19-21) - measured from the FILE
+    if mp4s:
+        try:
+            from monarch.video.render import ffmpeg_exe, measure_lufs
+            latest = max(mp4s, key=lambda p: p.stat().st_mtime)
+            lufs = measure_lufs(ffmpeg_exe(), latest)
+            if lufs is None:
+                rep.findings.append(Finding(
+                    "P3", "LUFS meter failed",
+                    f"{latest.name}: ebur128 returned no integrated reading",
+                    "re-run render (loudnorm tag); verify ffmpeg ebur128",
+                    "loudness unverified - YouTube may turn it up/down"))
+            else:
+                rep.scores["lufs"] = round(lufs, 1)
+                if not (-16.0 <= lufs <= -12.0):
+                    rep.findings.append(Finding(
+                        "P1", "master outside the -14 LUFS band",
+                        f"{latest.name} measures {lufs} LUFS "
+                        "(law: -16..-12, target -14, TP <= -1 dBTP)",
+                        "re-render (render applies loudnorm) or remeasure; "
+                        "YouTube normalizes to -14 LUFS and quiet masters "
+                        "play quiet",
+                        "viewer hears a quieter/uneven mix vs the feed"))
+                else:
+                    rep.findings.append(Finding(
+                        "P3", "LUFS in band (W-B2 law)",
+                        f"{latest.name} measures {lufs} LUFS (target -14)",
+                        "no action - loudnorm chain verified",
+                        "master survives YouTube normalization"))
+        except Exception as e:   # meter must never kill the audit
+            rep.scores["lufs"] = None
+            rep.findings.append(Finding(
+                "P3", "LUFS check skipped",
+                f"meter unavailable: {str(e)[:120]}",
+                "install imageio-ffmpeg (pypi allowlist)",
+                "loudness unverified this run"))
+
     # ---- parked gap: REPORTED, never acted on (standing order #1)
     rep.findings.append(Finding(
         "P3", "parked gap: MP4 render stage (in-repo)", 

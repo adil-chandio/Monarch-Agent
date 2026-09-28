@@ -346,3 +346,49 @@ def read_wav(path: str | Path) -> tuple[list[float], int]:
 
 def duration_s(samples: list[float], sr: int = 44100) -> float:
     return round(len(samples) / sr, 3) if sr else 0.0
+
+# -------------------------------------------------------------------------
+# MONARCH TABAAHI PROTOCOL W-B2: the sonic logo (TOOFAN L3) - the brand's
+# AUDITORY face. Six-tone deterministic motif (the +16% six-tone study):
+# rising sting = primacy, falling resolve = recency. Pure synthesis = the
+# SAME samples in every render - sample-identical branding no API or
+# session could guarantee. Gain law: peak 0.30, never ducked, so the
+# logo is identical whether or not a VO rides over it.
+# -------------------------------------------------------------------------
+
+SONIC_PEAK = 0.30
+_NOTES_STING = ((392.0, 0.09), (523.25, 0.13), (659.25, 0.13),
+                (783.99, 0.15), (1046.5, 0.24), (1318.5, 0.18))
+_NOTES_RESOLVE = ((1046.5, 0.28), (783.99, 0.22), (659.25, 0.20),
+                  (523.25, 0.16), (392.0, 0.14), (261.63, 0.14))
+
+
+def _motif(notes, sr: int, peak: float, shimmer_seed: int = 0) -> list[float]:
+    import math as _m
+    out: list[float] = []
+    for i, (freq, dur) in enumerate(notes):
+        n = max(1, int(dur * sr))
+        decay = 3.2 - 0.25 * i          # later notes ring a touch longer
+        ph0 = (shimmer_seed * 13 + i * 29) % 7 / 7.0
+        for k in range(n):
+            t = k / sr + ph0 * 0.001
+            env = _m.exp(-t * decay) * min(1.0, k / (0.004 * sr))
+            v = (_m.sin(2 * _m.pi * freq * t)
+                 + 0.35 * _m.sin(2 * _m.pi * freq * 2.002 * t))
+            out.append(peak * env * v / 1.35)
+        out.extend([0.0] * int(0.012 * sr))   # articulation gap
+    # frame-1 soft head (no click)
+    lead = min(int(0.004 * sr), len(out))
+    for i in range(lead):
+        out[i] *= i / lead
+    return out
+
+
+def sonic_logo(sr: int = 44100, seed: int = 7) -> list[float]:
+    """Rising six-tone brand sting (~1.0 s, peak 0.30). Deterministic."""
+    return _motif(_NOTES_STING, sr, SONIC_PEAK, shimmer_seed=seed)
+
+
+def sonic_resolve(sr: int = 44100, seed: int = 7) -> list[float]:
+    """Falling six-tone brand resolve (~1.3 s, peak 0.30). Deterministic."""
+    return _motif(_NOTES_RESOLVE, sr, SONIC_PEAK, shimmer_seed=seed + 1)

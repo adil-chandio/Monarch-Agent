@@ -291,6 +291,15 @@ replaces the wired core.
 
 ## WAVE EXECUTION ORDER (acceptance criteria per wave)
 
+> **STATUS 2026-09-28: W-A1 ✅ DONE, W-A2 ✅ DONE, W-B2 ✅ DONE** (shipped in one push).
+> Live evidence: `v6 layer burned (karaoke words + progress bar + loop tail +
+> end screen)`; render measures **-14.3 LUFS** (target -14, in band); sonic
+> logo sting@0.0 + resolve@end in the master (never ducked); audit 94/100.
+> Modules: `monarch/video/overlays.py` (ASS/libass route, ZERO new deps),
+> `audio.sonic_logo/sonic_resolve`, `mix(sonic=)`, `render.loudnorm +
+> measure_lufs`, `pipeline` v6.ass+v6_plan.json emitters, audit LUFS finding,
+> CLI `--with-sonic --v6-end-screen`. Tests +13 (443 total).
+
 - **W-A1 — RENDER THE CANON (pixels):** overlay pass (TEXT_SYNCED
   burn, end-screen, progress bar, no-end-signal cut, loop frame,
   gaze-pose fields in board) → tests: position laws, animation laws,
