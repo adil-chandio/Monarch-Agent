@@ -204,6 +204,15 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**ART ENGINE — image banao, pose animate karo (2026-09-28):** `monarch/video/stickman_art.py`
+- the operator's wish made real INSIDE the egress law: deterministic stickman
+ART (Pillow) - head/torso/joints poses (idle/point/shock/wave/crown/walk/bow),
+props (crown/magnifier), void+moon+stars - and POSE-TO-POSE animation
+(joint-lerp frames -> mp4). Same persona bytes every render (brand law),
+fail-closed, no text ever. CLI: `monarch art-scene --pose shock --prop crown`,
+`monarch art-anim --poses idle,shock,crown`. AI photoreal gen stays parked
+(egress); this is the in-sandbox art stage. Suite 487.
+
 **W-B4 SHIPPED - PROTOCOL 100% WIRED (2026-09-28):** `monarch/video/vitals.py`
 - engaged-class post-launch vitals (Studio numbers in -> band verdicts out:
 CTR/swipe-gate/inflation/AVP/returning, honest [fill] placeholders, the

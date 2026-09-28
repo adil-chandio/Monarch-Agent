@@ -263,6 +263,24 @@ def main(argv: list[str] | None = None) -> int:
     sa.add_argument("--last-n", type=int, default=6)
     sa.add_argument("--json", action="store_true")
 
+    art = sub.add_parser("art-scene",
+                         help="ART: stickman scene PNG (pose + prop)")
+    art.add_argument("--pose", default="idle")
+    art.add_argument("--prop", default=None, help="crown | magnifier")
+    art.add_argument("--seed", type=int, default=7)
+    art.add_argument("--out", required=True, help="output PNG path")
+
+    aan = sub.add_parser("art-anim",
+                         help="ART: pose-to-pose animation -> mp4")
+    aan.add_argument("--poses", required=True,
+                     help="comma sequence, e.g. idle,shock,crown")
+    aan.add_argument("--steps", type=int, default=8)
+    aan.add_argument("--hold", type=int, default=3)
+    aan.add_argument("--fps", type=int, default=12)
+    aan.add_argument("--prop", default=None)
+    aan.add_argument("--seed", type=int, default=7)
+    aan.add_argument("--out", required=True, help="output dir")
+
     vt = sub.add_parser("vitals",
                         help="W-B4: engaged-class post-launch sheet "
                              "(enter Studio numbers, get band verdicts)")
@@ -1012,6 +1030,37 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"SLOP AUDIT score {rep['score']}/100 - "
                       + ("CLEAN" if rep["ok"] else "P1 PRESENT - fix before launch"))
         return 0 if (rep.get("advisory_only") or rep["ok"]) else 2
+
+    if args.cmd == "art-scene":
+        try:
+            from monarch.video.stickman_art import scene_png
+            path = scene_png(args.out, pose=args.pose, seed=args.seed,
+                             prop=args.prop)
+        except (ImportError, ValueError) as e:
+            print("FAIL", e)
+            return 2
+        print(f"ART SCENE {path} (pose={args.pose}, prop={args.prop}, "
+              f"seed={args.seed})")
+        return 0
+
+    if args.cmd == "art-anim":
+        try:
+            from monarch.video.stickman_art import pose_frames, render_art_mp4
+            seq = [p.strip() for p in args.poses.split(",") if p.strip()]
+            frames = pose_frames(seq, steps=args.steps, hold=args.hold,
+                                 seed=args.seed, prop=args.prop)
+            res = render_art_mp4(frames, args.out, fps=args.fps)
+        except (ImportError, ValueError) as e:
+            print("FAIL", e)
+            return 2
+        print(f"ART ANIM {res['output']}")
+        print(f"  poses {args.poses} -> {res['frames']} frames @ {res['fps']}fps")
+        print(f"  video {res['got_s']}s vs want {res['want_s']}s "
+              f"(drift {res['drift_s']}s, "
+              f"{'OK' if res['duration_ok'] else 'FAIL'})")
+        print("  note: silent art stage - master mix rides the render "
+              "pipeline")
+        return 0
 
     if args.cmd == "vitals":
         from pathlib import Path as _P
