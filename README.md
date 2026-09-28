@@ -205,7 +205,7 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
 **RESEARCH MASTER — complete inventory (2026-09-28):** `docs/RESEARCH_MASTER.md`
-- ALL 105 findings from the 4 hunt layers in one file: every number, repo,
+- ALL 130 findings from the 4 hunt layers in one file (incl. fine-print addendum: 1280x720/90%-custom/contrast evidence base, auto-dub 232+ langs & +13.48%, Beast integrity laws + The Goal, channel-level review posture, dopamine quantization 3-5Hz/10-20 spikes, RPE-vs-startle circuits, the no-slot-machine ethics law, universe-level peak-end, computer-agent gaze evidence, freebuff rejected-verdict): every number, repo,
   law and concept (algorithm gates, LUFS, story DNA, thumbnails, Beast
   leak, survival tripwires, outliers, engaged views, peak-end, gaze,
   RPE, Harmon circle, sonic branding, quickfires). Nothing left out.

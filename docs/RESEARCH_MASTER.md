@@ -1,7 +1,7 @@
 # 📚 RESEARCH MASTER — SAB KUCH (4 Hunts, Complete Inventory, 2026-09-28)
 
 The operator asked for EVERYTHING researched, complete, nothing left.
-This is the single-source inventory of all four hunt layers
+This is the single-source inventory of all four hunt layers (130 findings)
 (ARSENAL → CHAOS → ABYSS → TOOFAN) with every finding, number, repo
 and concept. Wave-mapping lives in TABAAHI_PROTOCOL.md; this file is
 the raw knowledge itself. Sources probed live 2026-09-28.
@@ -310,3 +310,126 @@ Production", 36 pages, Jimmy Donaldson)
      enforcement thresholds = industry reporting of reviewer
      behavior. All bridge-mappings flagged as synthesis where they
      are synthesis.
+
+
+---
+
+## ADDENDUM — THE FINE PRINT (findings 106–130, sweep-completeness pass)
+
+*Everything in the sources/chat verdicts that the main list compressed
+or skipped — now on the record.*
+
+**Thumbnail fine print:**
+106. Canvas reality: 1280×720 mobile-critical; 70% of views are mobile;
+     must read at the 168 px sidebar (some guides say test at 130 px).
+107. 90% of top-performing videos use CUSTOM thumbnails (Creator
+     Academy figure via alici).
+108. Contrast evidence base: 3,200+ thumbnails + 127 A/B tests
+     aggregated (CTRpilot/ThumbMentor); WCAG ≥7:1 = 6.5% avg CTR vs
+     4.7% below 4:1.
+109. Color data: dark navy/charcoal backgrounds ≈ 6.6–6.8% avg CTR;
+     vivid-vs-muted +20–45% lift (58% A/B win-rate); warm-vs-cool
+     +5–15% (mood-match wins on mobile in some tests).
+110. Text specs: gold/white with a 4–6 px stroke; 0–3 words; numbers
+     in overlay text can add ~15% CTR (finance/education niches).
+111. Arrows/circles: moderate lift, HARD cap 1–2 elements (they burn
+     the element budget that clutter penalizes).
+112. Template systems speed production 60–70% — but see the slop
+     tripwires: channel-level consistency must live in GRAMMAR, not
+     in identical visual templates (assembly-line detector).
+113. Curiosity-gap packaging: 15–40% CTR potential WITH real
+     backlash risk — the video must always deliver (RPE law).
+
+**Strategy fine print:**
+114. Auto-dub numbers: 232+ languages for custom upload vs 27 auto;
+     custom track cost $1–$200/min; early localized-metadata tests
+     showed +13.48% views in the first weeks; delete the auto-dub
+     before uploading a custom track; translated title/description =
+     the foreign-SEO unlock; one-channel-multi-track is the 2026
+     default (Mark Rober serves 30+ languages per video).
+115. Case studies: Lexi Hidalgo 30K→500K subs in ~4 months on 2
+     Shorts/day repurposing; Shorts-first channel study: engaged
+     views +41.8%, revenue +64.1% (long-form captured most revenue).
+116. YPP mechanics: qualified Shorts views / watch-hour thresholds
+     run on ENGAGED-class counting — first-frame public views do NOT
+     qualify; the 8,000 watch-hour class thresholds measured as
+     before through the Aug-24 cutover.
+
+**Beast fine print:**
+117. Slogans from the leak: "We don't fake things" (an integrity LAW,
+     not a tactic), "It's okay for the boys to be childish" (tone),
+     and the consultant doctrine in one line: need the world's
+     largest slice of cake? Call the person who made the last one.
+118. Mandatory reading inside the company: "The Goal" (Goldratt) —
+     theory of constraints: identify the bottleneck, elevate it,
+     repeat (factory thinking applied to content).
+
+**Survival fine print:**
+119. More canonical enforcement cases: True Crime Case Files (83K
+     subs TERMINATED — AI murder stories narrated as fact), the
+     deepfake celebrity-disinfo network (demonetized/terminated),
+     AI-simulated deceased-children narrations (removed + strikes),
+     StoriezTold (animal-slideshow template flag); the 8 slop
+     patterns also include Made-for-Kids AI characters and
+     re-upload aggregators without transformative commentary.
+120. Review posture: channels are now evaluated at CHANNEL level —
+     the assembly-line PATTERN flags the channel, not just videos.
+
+**Science fine print:**
+121. Dopamine quantization: VTA neurons hold a 3–5 Hz tonic baseline;
+     a positive PE fires a 10–20+ spike burst; a negative PE pauses
+     firing below baseline; burst size encodes error size — a
+     measurable teaching signal.
+122. Novelty/startle are DIFFERENT circuits (norepinephrine, P300) —
+     RPE is reward/value-specific. Hooks must promise a
+     value-surprise, not a jump-scare: shock without promised value
+     reads as noise, not curiosity.
+123. ETHICS/LAW NOTE — the line Monarch does NOT cross: variable-
+     ratio reward schedules (slot-machine mechanics) hijack the
+     teaching signal into compulsion. Our laws = genuine satisfaction
+     (a payoff that truly exceeds the promise) and EARNED loops —
+     never engineered compulsion. (Also why the loop law says
+     genuine rewatches only.)
+124. Peak-end mechanics extended: recency beats primacy for extended
+     hedonic experiences (Garbinsky/Morewedge/Shiv 2014); evaluation
+     also depends on how the viewer feels AT the moment of recall
+     (Ariely/Carmon 2000) → the LAST video watched colors the memory
+     of the whole catalog: universe-level peak-end is real.
+
+**Gaze fine print:**
+125. The eye-tracking evidence used COMPUTER AGENTS — direct gaze
+     captured attention even from non-human faces (Baron-Cohen's
+     Eye-Direction Detector hypothesis). The stickman's dot eyes
+     are therefore lab-qualified for the gaze laws.
+
+**Metric fine print:**
+126. Engaged-views history: Shorts already counted from first frame
+     since March 2025; the Aug 24, 2026 change (announced Aug 19)
+     extended it to every format; thumbnail-impression and
+     unique-viewer definitions were untouched by the cutover.
+
+**Repo fine print:**
+127. 1of10 details: AI trained on 62 billion views; Niche Explorer
+     red-ocean/blue-ocean sub-topic tracking; free tier = outlier
+     search + 3 tracked channels. (Research-workflow reference,
+     never a dependency.)
+128. Assessed-and-REJECTED (live verdict from an earlier turn):
+     CodebuffAI/freebuff — 12,855★ Apache-2.0 "free coding agent"
+     (ads-subsidized model catalog: GLM/DeepSeek/Luna/MiMo/Solar).
+     Backend egress-blocked in-sandbox (api.codebuff.com 000), zero
+     video-factory relevance, weak idea-value (role-agents+evals
+     pattern Monarch already runs); only the catalog-fallback
+     pattern was noted for the far-future LLM layer. 63 MB clone
+     deleted same-turn (workspace diet).
+129. VAbk-Studio detail: PyQt6 orchestrator turning books into
+     word-synced karaoke-caption videos — the exact W-A2 concept
+     match (audio-timed captions), zero stars but concept-relevant.
+130. Egress final sweep: hf.co / bing-TTS / every generic file host
+     BLOCKED; only github.com/pypi.org work. ALL Monarch sound/music
+     features are numpy-native BY NECESSITY and by brand
+     determinism — this constraint is a feature (sample-identical
+     sonic identity no API could guarantee).
+
+**Close-out:** the inventory now stands at **130 findings**. Every
+one maps to a stage + wave in TABAAHI_PROTOCOL.md. Nothing researched
+is off the record.
