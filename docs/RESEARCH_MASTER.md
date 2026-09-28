@@ -433,3 +433,42 @@ or skipped — now on the record.*
 **Close-out:** the inventory now stands at **130 findings**. Every
 one maps to a stage + wave in TABAAHI_PROTOCOL.md. Nothing researched
 is off the record.
+
+
+---
+
+## LIVE REPO ASSESSMENTS (operator-submitted, probed same-day)
+
+**131. ruashots/ComfyUI-OpenH3-IR** — 25★, Apache-2.0, Python, pushed
+2026-08-23. Four ComfyUI nodes for MiniMax H3 (video-gen model): the
+OpenH3-IR "Context-IR" layer compiles natural prose into the
+STRUCTURED BRIEF H3 consumes. Verdict: **kaam ki hai — idea-mine for
+the parked gen layer** (never a dependency: needs H3 weights/GPU/
+ComfyUI — all egress/parked). What to mine:
+  - **The brief schema (contract.json):** brief_fields / asset_fields /
+    dialogue_fields + a DECLARED error-code taxonomy (asset-digest-
+    mismatch, asset-two-sources, aspect-invalid...) — a real production
+    schema for video-gen briefs; exactly the artifact our board->
+    gen-layer compiler would emit when egress unblocks.
+  - **The @-reference grammar:** `@the-man crosses @desert` — named
+    media refs instead of `<Picture 1>` bookkeeping; hover a name, see
+    the file; replace the file, the prompt still points at the role.
+    Maps 1:1 to our stickman persona + per-beat assets: STABLE NAMED
+    ASSET LAYER.
+  - **@speaks("exact dialogue")** — dialogue LOCKED verbatim in the
+    brief = our complete-sentences/VO law in gen-land; the VO track is
+    the source of truth, the model may not paraphrase.
+  - **Director node = reusable direction object** (camera, lighting,
+    pacing, performance, sound, music) — our director.py/mood-map as a
+    portable direction object per genre.
+  - Engineering mirrors (validates our patterns): function-scoped
+    lazy imports so a broken compiler can't kill the pack (our cli.py
+    pattern), a local brief-builder tested FIELD-BY-FIELD against the
+    reference (our L15 verify-the-verifier), and research/
+    contract_falsification.py — they falsify their own contract (our
+    never-again discipline).
+
+**132. Assessment method note:** live probes remain the law —
+metadata (gh repo view) -> shallow clone -> README/schema read ->
+verdict in the same turn; scratch clones deleted immediately
+(workspace-diet). freebuff verdict stands at #128.

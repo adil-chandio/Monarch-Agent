@@ -143,6 +143,7 @@ numbers give the auditor measurable checks).
 | Shaarav4795/ClippedAI | 211 / 9-27 | OpusClip-alternative clipping heuristics (long→shorts moment-picking) |
 | KrishPatel1404/reddit-story-video-gen | 19 / 8-07 | RSCG story-format pipeline (small but same DNA) |
 | stanyanman/VAbk-Studio | 0 / 6-20 | books→**word-synced karaoke-caption** videos — exact W-A2 concept match |
+| ruashots/ComfyUI-OpenH3-IR | 25 / 8-23 | **Context-IR brief schema** for MiniMax H3 video-gen: @-named media refs, @speaks() exact-dialogue lock, Director-as-direction-object, declared error-code taxonomy — the FREE schema for our parked gen layer (finding #131) |
 | (tools, not repos) Reap / Vozo | SaaS | 1 long → 5-15 captioned shorts + 80-100-language dubbing + scheduling via CLI/API/MCP — the *distribution layer* pattern |
 
 Verdict: none of these replace Monarch (ours is the only one with
