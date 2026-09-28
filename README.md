@@ -204,6 +204,13 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**W-B3 SHIPPED (2026-09-28):** `monarch/video/slop.py` + `kit.py` - the survival
+layer + the launch kit. `monarch slop-audit CHANNEL`: assembly-line detector
+(topic-stripped VO similarity), persona/disclosure/coverage tripwires, rc 2 on
+P1. `monarch package DIR [--shorts --topics ...]`: title law + MANDATORY AI-
+disclosure + no-bio-link + pinned comment tease + first-frame thumbnail +
+honest checklist with measured LUFS. Suite 466.
+
 **W-B1 SHIPPED (2026-09-28):** `monarch/video/forecast.py` - the pre-render
 9-link chain gate (promise->click->first_3s->engaged->loops->peak->end->loop->
 satisfaction; weak links NAMED, deliberately-bad plans fail with links listed)

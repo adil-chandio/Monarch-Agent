@@ -291,7 +291,7 @@ replaces the wired core.
 
 ## WAVE EXECUTION ORDER (acceptance criteria per wave)
 
-> **STATUS 2026-09-28: W-A1 ✅ DONE, W-A2 ✅ DONE, W-B1 ✅ DONE, W-B2 ✅ DONE** (shipped in one push).
+> **STATUS 2026-09-28: W-A1 ✅ W-A2 ✅ W-B1 ✅ W-B2 ✅ W-B3 ✅ DONE** (shipped in one push).
 > Live evidence: `v6 layer burned (karaoke words + progress bar + loop tail +
 > end screen)`; render measures **-14.3 LUFS** (target -14, in band); sonic
 > logo sting@0.0 + resolve@end in the master (never ducked); audit 94/100.
@@ -321,10 +321,20 @@ replaces the wired core.
 - **W-B2 — SOUND SCIENCE:** LUFS measure/normalize (`lufs_ok`),
   true-peak check, sonic-logo synth + placement laws. DONE = master
   tagged −14±1 LUFS on a live render + logo audible in every render.
-- **W-B3 — SURVIVAL + PACKAGING KIT:** slop-audit (template-distance,
-  persona, disclosure, cadence, ≥30%) + one-shot kit emitter
-  (title/desc/pinned/srt/thumb/disclosure). DONE = doctor flags a
-  synthetic template-cluster + kit completes an upload bundle.
+- **W-B3 — SURVIVAL + PACKAGING KIT:** ✅ **DONE** —
+  `monarch/video/slop.py` (channel-level: assembly-line signature via
+  topic-STRIPPED trigram similarity >=0.75 on 2+ consecutive pairs,
+  genre-variety + cadence advisories, stickman-persona presence,
+  disclosure shield, VO-coverage >=50% proxy) and
+  `monarch/video/kit.py` (`monarch package DIR [--shorts --title
+  --topics --hashtags]`: title-band score, description with the
+  MANDATORY AI-disclosure line + miss-13 pointer law, pinned comment
+  with the condensed-incomplete tease, first-frame thumbnail export,
+  honest upload checklist incl. measured LUFS, package.json).
+  CLI `monarch slop-audit CHANNEL [--last-n --json]` rc 2 on P1.
+  Live: kit all-green on a real render (LUFS -14.1 measured); slop
+  tests prove the assembly-line channel fails with findings named.
+  Tests +11 (466 total).
 - **W-B4 — PERFORMANCE/VITALS:** engaged-class reporting template +
   returning-viewers vital + repurposing queue skeleton. DONE =
   post-launch sheet generated from a real upload's metadata shape.

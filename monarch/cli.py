@@ -246,6 +246,23 @@ def main(argv: list[str] | None = None) -> int:
                     help="do not burn captions (srt still ships)")
     rd.add_argument("--json", action="store_true")
 
+    pk = sub.add_parser("package",
+                        help="W-B3: emit the launch kit (title/description/"
+                             "pinned/disclosure/thumb/checklist)")
+    pk.add_argument("dir", help="make-video output dir")
+    pk.add_argument("--shorts", action="store_true")
+    pk.add_argument("--title", default="")
+    pk.add_argument("--topics", default="",
+                    help="ranked topics best-LAST (pinned-comment tease)")
+    pk.add_argument("--hashtags", default="")
+
+    sa = sub.add_parser("slop-audit",
+                        help="W-B3: channel-level inauthentic-content "
+                             "tripwires (survival layer)")
+    sa.add_argument("dir", help="channel dir containing render dirs")
+    sa.add_argument("--last-n", type=int, default=6)
+    sa.add_argument("--json", action="store_true")
+
     fc = sub.add_parser("forecast",
                         help="W-B1: 9-link chain check + curve forecast "
                              "(pre-render gate)")
@@ -929,6 +946,47 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  audio {res.get('audio_kbps') or 'wav-lossless'} kbps "
                   f"({'OK' if res.get('bitrate_ok') else 'UNDER 160k - robotic risk'})")
         return 0
+
+    if args.cmd == "package":
+        from monarch.video.kit import emit_kit
+        topics = [t.strip() for t in args.topics.split(",") if t.strip()]
+        tags = [t.strip() for t in args.hashtags.split(",") if t.strip()]
+        try:
+            pkg = emit_kit(args.dir, shorts=args.shorts,
+                           title=args.title or None, topics=topics,
+                           hashtags=tags or None)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        tc = pkg["title_check"]
+        print(f"KIT {pkg['kit_dir']}")
+        print(f"  title: {pkg['title']} ({tc['chars']} chars, "
+              f"{'OK' if tc['ok'] else 'OUT OF BAND'})")
+        print(f"  disclosure: shipped | thumb: {pkg['thumbnail']}")
+        print(f"  lufs: {pkg['lufs']} | srt: {pkg['srt']} | "
+              f"end_screen: {pkg['end_screen']}")
+        for line in pkg["checklist"]:
+            print("  " + line)
+        return 0
+
+    if args.cmd == "slop-audit":
+        from monarch.video.slop import slop_audit
+        try:
+            rep = slop_audit(args.dir, last_n=args.last_n)
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps(rep, indent=2))
+        else:
+            for f in rep["findings"]:
+                print(f"  [{f['priority']}] {f['finding']}")
+            if rep.get("advisory_only"):
+                print("  ADVISORY: " + rep["note"])
+            else:
+                print(f"SLOP AUDIT score {rep['score']}/100 - "
+                      + ("CLEAN" if rep["ok"] else "P1 PRESENT - fix before launch"))
+        return 0 if (rep.get("advisory_only") or rep["ok"]) else 2
 
     if args.cmd == "forecast":
         from pathlib import Path as _P
