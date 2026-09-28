@@ -242,6 +242,14 @@ def main(argv: list[str] | None = None) -> int:
                     help="do not burn captions (srt still ships)")
     rd.add_argument("--json", action="store_true")
 
+    sp6 = sub.add_parser("short-plan",
+                         help="V6: long -> condensed-incomplete Shorts plan")
+    sp6.add_argument("--topics", required=True,
+                     help="ranked topics best-LAST, comma separated")
+    sp6.add_argument("--vo-s", type=float, default=0.0,
+                     help="measured VO duration (ffprobe), if known")
+    sp6.add_argument("--json", action="store_true")
+
     up = sub.add_parser("upload",
                         help="Upload a finished render to the renders release (operator-gated)")
     up.add_argument("file", help="file to upload (mp4/zip)")
@@ -901,6 +909,38 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {res['captions']}")
             print(f"  audio {res.get('audio_kbps') or 'wav-lossless'} kbps "
                   f"({'OK' if res.get('bitrate_ok') else 'UNDER 160k - robotic risk'})")
+        return 0
+
+    if args.cmd == "short-plan":
+        from monarch.video.shorts import (beats_for_vo, end_screen_plan,
+                                          long_to_short)
+
+        try:
+            topics = [t.strip() for t in args.topics.split(",") if t.strip()]
+            plan = long_to_short(topics)
+            timing = beats_for_vo(args.vo_s) if args.vo_s > 0 else None
+        except ValueError as e:
+            print("FAIL", e)
+            return 2
+        if args.json:
+            print(json.dumps({"plan": plan, "timing": timing,
+                              "end_screen": end_screen_plan(
+                                  timing["total_s"] if timing else 33.0)},
+                             indent=2))
+        else:
+            print(f"SHOW ({plan['pct']['show']}%): {', '.join(plan['show'])}")
+            print(f"SKIPPED ({plan['pct']['skipped']}%): "
+                  f"{', '.join(plan['skipped'])}")
+            print(f"CENSORED ({plan['pct']['censored']}%): "
+                  f"{', '.join(plan['censored'])} <- #1 blurred, no WHY")
+            if timing:
+                print(f"timing: VO {timing['vo_s']}s -> video "
+                      f"{timing['total_s']}s = {timing['beats']} beats x "
+                      f"{timing['beat_s']}s")
+            e = end_screen_plan(timing["total_s"] if timing else 33.0)
+            print(f"end screen: last 7s (from {e['start_s']}s), {e['side']} "
+                  f"{int(e['width_frac'] * 100)}% thumb, {e['arrow']}")
+            print(f"comment bait: {plan['comment_bait']}")
         return 0
 
     if args.cmd == "upload":

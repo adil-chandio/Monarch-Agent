@@ -266,6 +266,52 @@ def warm_bed(duration_s: float, sr: int, *, seed: int = 0) -> list[float]:
     return pad
 
 
+def buildup_bed(duration_s: float, sr: int, *, seed: int = 0) -> list[float]:
+    """MONARCH V6 miss #11: build-up tension WITHOUT irritation.
+
+    4 layers, all low volume under a loud VO: (1) deep drone 55+110 Hz
+    through a warm envelope rising over 8 s, (2) beating 110 vs 116.5 Hz
+    (minor-2nd tension) growing slowly, (3) soft heartbeat pulse every
+    1.4 s, (4) white-noise riser only in the last 10 s. NO hard kicks,
+    no repetition loops - smooth FOMO, not a broken metronome.
+    """
+    import math as _m
+    import random as _r
+    n = int(duration_s * sr)
+    rng = _r.Random(seed * 17 + 3)
+    t_all = duration_s
+    out = [0.0] * n
+    for i in range(n):
+        tt = i / sr
+        # 1) drone: 55 + 110 Hz, warm envelope 0.02 -> 0.09 over 8 s
+        env = 0.02 + (0.09 - 0.02) * (1.0 - _m.exp(-tt / 8.0))
+        v = env * (_m.sin(2 * _m.pi * 55 * tt) + 0.6 * _m.sin(2 * _m.pi * 110 * tt))
+        # 2) beating: 110 vs 116.5 Hz minor-2nd tension, slow growth
+        b = 0.04 * min(1.0, tt / max(1.0, t_all)) * _m.sin(2 * _m.pi * 110 * tt) \
+            * _m.sin(2 * _m.pi * 116.5 * tt)
+        # 3) soft heartbeat pulse every 1.4 s (exp decay thump)
+        ph = tt % 1.4
+        pulse = (_m.exp(-ph * 6.0) * 0.25 * _m.sin(2 * _m.pi * 55 * ph)
+                 + _m.exp(-ph * 8.0) * 0.10 * _m.sin(2 * _m.pi * 90 * ph))
+        out[i] = v + b + pulse
+    # 4) riser: white noise, last 10 s only, 0 -> 0.06
+    rise_s = min(10.0, t_all * 0.3)
+    rise_a = max(0, n - int(rise_s * sr))
+    for i in range(rise_a, n):
+        g = (i - rise_a) / max(1, n - rise_a)
+        out[i] += 0.06 * g * g * (rng.random() * 2 - 1)
+    # soft lowpass (one-pole) to keep it warm, then frame-1 fade 0.4s
+    y = 0.0
+    a = 0.20
+    for i in range(n):
+        y += a * (out[i] - y)
+        out[i] = y
+    lead = min(int(0.4 * sr), n)
+    for i in range(lead):
+        out[i] *= i / lead
+    return out
+
+
 def mix(
     *,
     duration_s: float,
@@ -303,6 +349,8 @@ def mix(
         bed = [0.0] * n
     elif music_mood == "warm":
         bed = warm_bed(duration_s, sr, seed=seed)
+    elif music_mood == "buildup":
+        bed = buildup_bed(duration_s, sr, seed=seed)
     else:
         bed = music_bed(duration_s, sr, seed=seed)
     if has_voice and music:

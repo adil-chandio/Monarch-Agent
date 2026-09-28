@@ -204,6 +204,14 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**V6 viral Shorts canon (1.2B-views session):** `docs/VIRAL_SHORTS_V6.md` +
+`monarch/video/shorts.py` — the 14-miss laws executable: no-text prompt
+builder (Urdu-leak guard), VO-driven beat timing (never cut VO: VO+0.7),
+TEXT_SYNCED planner (y 320/1450 never 750, 6 animations ≤2 repeats,
+2-3 words), title 24-27 chars, link-in-bio banned (end-screen last 7s),
+condensed-incomplete long_to_short (60/25/12 Zeigarnik split), buildup
+music mood (4-layer FOMO, never hard kicks).
+
 **Upload (the gofile step, legal-egress edition):** `monarch upload FILE` —
 finished render goes to the repo's `deliverables` branch (asset commit + sha256
 + tip-diet; history link lives forever). gofile/Release-assets are TLS-blocked
