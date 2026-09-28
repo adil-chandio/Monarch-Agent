@@ -291,7 +291,7 @@ replaces the wired core.
 
 ## WAVE EXECUTION ORDER (acceptance criteria per wave)
 
-> **STATUS 2026-09-28: W-A1 ✅ DONE, W-A2 ✅ DONE, W-B2 ✅ DONE** (shipped in one push).
+> **STATUS 2026-09-28: W-A1 ✅ DONE, W-A2 ✅ DONE, W-B1 ✅ DONE, W-B2 ✅ DONE** (shipped in one push).
 > Live evidence: `v6 layer burned (karaoke words + progress bar + loop tail +
 > end screen)`; render measures **-14.3 LUFS** (target -14, in band); sonic
 > logo sting@0.0 + resolve@end in the master (never ducked); audit 94/100.
@@ -308,9 +308,16 @@ replaces the wired core.
 - **W-A2 — WORD TIMING + KARAOKE:** synth-time word map → karaoke
   burn + SRT export → tests: monotonic times, coverage, sync
   tolerance. DONE = captions land on spoken words in a live render.
-- **W-B1 — CHAIN CHECK + CURVE FORECAST:** 9-link pre-render gate +
-  sickness classification + peak/escalation/but-therefore lints.
-  DONE = a deliberately bad plan FAILS with the link named.
+- **W-B1 — CHAIN CHECK + CURVE FORECAST:** ✅ **DONE** —
+  `monarch/video/forecast.py`: the 9-link gate names every weak link
+  (bad plan fails with SEVEN links named + hockey_stick curve in
+  tests), But/Therefore lint (explicit connectors OR cue/driver
+  inference - the engine's own N4 VALUE-DEBT marker counts), curve
+  verdicts (healthy/hockey_stick/gradual_bleed/camel_humps/
+  peak_too_early), CLI `monarch forecast DIR [--title --shorts
+  --end-screen --loop --disclosure]` with rc 2 + the broken link
+  printed. Live: probe board = CHAIN 9/9 + healthy, cleared for
+  render. Tests +12 (455 total).
 - **W-B2 — SOUND SCIENCE:** LUFS measure/normalize (`lufs_ok`),
   true-peak check, sonic-logo synth + placement laws. DONE = master
   tagged −14±1 LUFS on a live render + logo audible in every render.

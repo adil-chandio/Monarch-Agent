@@ -204,6 +204,14 @@ Four waves turned Monarch from a tool into an organism that measures itself:
   (allowed frontmatter keys only, name/dir match ≤64, description ≤1024,
   body ≤500 lines). The validator fails the suite before a bad card ships.
 
+**W-B1 SHIPPED (2026-09-28):** `monarch/video/forecast.py` - the pre-render
+9-link chain gate (promise->click->first_3s->engaged->loops->peak->end->loop->
+satisfaction; weak links NAMED, deliberately-bad plans fail with links listed)
++ But/Therefore beat lint (connectors or cue/driver inference) + curve
+forecaster (healthy/hockey_stick/gradual_bleed/camel_humps/peak_too_early).
+CLI: `monarch forecast DIR [--title --shorts --end-screen --loop --disclosure]`
+- rc 2 names the broken link. Suite 455.
+
 **W-A1/W-A2/W-B2 SHIPPED (2026-09-28):** canon = pixels now. `monarch/video/overlays.py`
 - the V6 overlay layer burned into every render via libass (ZERO new deps):
 karaoke word captions (word timing computed from our own synth), TEXT_SYNCED

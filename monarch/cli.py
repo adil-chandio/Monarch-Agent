@@ -246,6 +246,19 @@ def main(argv: list[str] | None = None) -> int:
                     help="do not burn captions (srt still ships)")
     rd.add_argument("--json", action="store_true")
 
+    fc = sub.add_parser("forecast",
+                        help="W-B1: 9-link chain check + curve forecast "
+                             "(pre-render gate)")
+    fc.add_argument("dir", help="make-video output dir (board.json)")
+    fc.add_argument("--title", default="", help="intended packaging title")
+    fc.add_argument("--shorts", action="store_true",
+                    help="score title against the Shorts 22-35 band")
+    fc.add_argument("--end-screen", action="store_true")
+    fc.add_argument("--loop", action="store_true")
+    fc.add_argument("--disclosure", action="store_true",
+                    help="AI disclosure line is planned for the description")
+    fc.add_argument("--json", action="store_true")
+
     sp6 = sub.add_parser("short-plan",
                          help="V6: long -> condensed-incomplete Shorts plan")
     sp6.add_argument("--topics", required=True,
@@ -916,6 +929,49 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  audio {res.get('audio_kbps') or 'wav-lossless'} kbps "
                   f"({'OK' if res.get('bitrate_ok') else 'UNDER 160k - robotic risk'})")
         return 0
+
+    if args.cmd == "forecast":
+        from pathlib import Path as _P
+        from monarch.video.forecast import chain_check, verdict
+        try:
+            board = json.loads((_P(args.dir) / "board.json")
+                               .read_text(encoding="utf-8"))
+        except (OSError, ValueError) as e:
+            print("FAIL", e)
+            return 2
+        title = args.title
+        if not title:
+            try:
+                tl = json.loads((_P(args.dir) / "timeline.json")
+                                .read_text(encoding="utf-8"))
+                title = str(tl.get("title") or "")
+            except (OSError, ValueError):
+                pass
+        lufs = None
+        mp4s = sorted(_P(args.dir).glob("*.mp4"))
+        if mp4s:
+            try:
+                from monarch.video.render import ffmpeg_exe, measure_lufs
+                lufs = measure_lufs(ffmpeg_exe(), max(mp4s, key=lambda p: p.stat().st_mtime))
+            except Exception:
+                lufs = None
+        rep = chain_check(board, title=title, shorts=args.shorts,
+                          has_end_screen=args.end_screen,
+                          loop_planned=args.loop,
+                          has_disclosure=args.disclosure, lufs=lufs)
+        if args.json:
+            print(json.dumps(rep, indent=2, default=str))
+        else:
+            for k in ("promise", "click", "first_3s_gate", "engaged_open",
+                      "open_loops", "one_peak", "engineered_end", "loop",
+                      "satisfaction"):
+                v = rep["links"][k]
+                print(("  OK  " if v["ok"] else "  XX  ") + k + ": "
+                      + v["note"])
+            c = rep["curve"]
+            print(f"  curve: {c['sickness']} - {c['why']}")
+            print("VERDICT: " + verdict(rep))
+        return 0 if rep["ok"] else 2
 
     if args.cmd == "short-plan":
         from monarch.video.shorts import (beats_for_vo, end_screen_plan,
