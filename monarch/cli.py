@@ -288,6 +288,21 @@ def main(argv: list[str] | None = None) -> int:
     aan.add_argument("--seed", type=int, default=7)
     aan.add_argument("--out", required=True, help="output dir")
 
+    amo = sub.add_parser("art-motion",
+                         help="ART: FK motion clip (walk|wave|jump) -> mp4")
+    amo.add_argument("--motion", required=True,
+                     choices=["walk", "wave", "jump"],
+                     help="walk/wave are seamless loops; jump is a "
+                          "one-shot that lands exactly on the idle base")
+    amo.add_argument("--seconds", type=float, default=None,
+                     help="clip length (default: motion spec)")
+    amo.add_argument("--fps", type=int, default=None)
+    amo.add_argument("--wav", default=None,
+                     help="lock the clip to this audio (audio is truth)")
+    amo.add_argument("--prop", default=None, help="crown | magnifier")
+    amo.add_argument("--seed", type=int, default=7)
+    amo.add_argument("--out", required=True, help="output dir")
+
     aip = sub.add_parser("ai-plan",
                          help="AI-ART: keyframe prompt plan from a "
                               "make-video dir (+ fail-closed frame check)")
@@ -1086,6 +1101,25 @@ def main(argv: list[str] | None = None) -> int:
               f"{'OK' if res['duration_ok'] else 'FAIL'})")
         print("  note: silent art stage - master mix rides the render "
               "pipeline")
+        return 0
+
+    if args.cmd == "art-motion":
+        try:
+            from monarch.video.stickman_art import render_motion_mp4
+            res = render_motion_mp4(args.motion, args.out, fps=args.fps,
+                                    seconds=args.seconds, wav=args.wav,
+                                    seed=args.seed, prop=args.prop)
+        except (ImportError, ValueError) as e:
+            print("FAIL", e)
+            return 2
+        print(f"MOTION {args.motion} -> {res['output']}")
+        print(f"  {res['frames']} frames @ {res['fps']}fps | video "
+              f"{res['got_s']}s vs want {res['want_s']}s (drift "
+              f"{res['drift_s']}s, "
+              f"{'OK' if res['duration_ok'] else 'FAIL'})")
+        print("  " + ("seamless loop" if res["loop"]
+                      else "one-shot (landing = exact idle base)")
+              + f" | prop={args.prop or '-'}")
         return 0
 
     if args.cmd == "ai-plan":
