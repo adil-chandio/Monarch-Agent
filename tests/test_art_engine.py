@@ -143,3 +143,16 @@ def test_cli_art_scene_and_anim(tmp_path, capsys):
     rc3 = main(["art-scene", "--pose", "karate", "--out",
                 str(tmp_path / "x.png")])
     assert rc3 == 2 and "FAIL" in capsys.readouterr().out
+
+
+def test_moon_reads_as_hole_not_ball():
+    """Brand read: the moon is a HOLE (rim-lit donut) - the centre must be
+    void-dark, the ring bright, everywhere around the moon."""
+    img = draw_scene("idle", seed=7)
+    px = img.load()
+    cx, cy = int(1080 * 0.80), int(1920 * 0.12)
+    r = int(1080 * 0.055)
+    centre = px[cx, cy]
+    ring = px[cx - int(r * 0.78), cy]
+    assert sum(centre) / 3 < 30          # void inside the hole
+    assert sum(ring) / 3 > 150           # bright rim around it

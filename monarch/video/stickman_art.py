@@ -146,9 +146,14 @@ def _bg(d, w: int, h: int, *, seed: int = 7, moon: bool = True,
         mx, my, mr = int(w * 0.80), int(h * 0.12), int(w * 0.055)
         d.ellipse([(mx - mr) * SS, (my - mr) * SS, (mx + mr) * SS,
                    (my + mr) * SS], fill=(232, 234, 240))
-        d.ellipse([(mx - mr * 0.32) * SS, (my - mr * 0.4) * SS,
-                   (mx + mr * 0.5) * SS, (my + mr * 0.42) * SS],
-                  fill=(206, 210, 222))
+        # rim-lit HOLE, not a ball (the house brand read: "the moon is a
+        # hole"): the interior is the void itself + a thin depth rim.
+        mri = int(mr * 0.52)
+        d.ellipse([(mx - mri) * SS, (my - mri) * SS, (mx + mri) * SS,
+                   (my + mri) * SS], fill=BG)
+        d.ellipse([(mx - mri) * SS, (my - mri) * SS, (mx + mri) * SS,
+                   (my + mri) * SS], outline=(120, 122, 140),
+                  width=max(1, int(1.4 * SS)))
 
     # ground line (the void floor)
     d.line([(int(w * 0.06) * SS, gy * SS), (int(w * 0.94) * SS, gy * SS)],
