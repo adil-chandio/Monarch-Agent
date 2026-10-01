@@ -143,3 +143,21 @@ def test_cli_ai_plan_pending_then_render(tmp_path, capsys):
     assert rc2 == 0 and "AI-ART RENDER" in out2 and "drift" in out2
     short = tmp_path / "ai_short.mp4"
     assert short.is_file() and short.stat().st_size > 0
+
+
+def test_render_transition_laws(tmp_path):
+    frames = tmp_path / "ai_frames"
+    _tiny_frames(frames, 3)
+    wav = _tone(tmp_path / "master_mix.wav", 0.8)
+    board = {"scenes": [{"t_start": 0.0, "t_end": 0.8,
+                         "retention_role": "hook",
+                         "visual": "one focal test visual of a lone king"}]}
+    with pytest.raises(ValueError, match="XFADE_SET"):
+        render_ai_short(frames, wav, tmp_path / "o.mp4", board,
+                        transition="hyperjump")
+    m = render_ai_short(frames, wav, tmp_path / "none.mp4", board,
+                        transition="none")
+    assert (tmp_path / "none.mp4").is_file() and m["transition"] == "none"
+    m2 = render_ai_short(frames, wav, tmp_path / "morph.mp4", board,
+                         transition="zoomin")
+    assert m2["transition"] == "zoomin" and m2["duration_ok"]

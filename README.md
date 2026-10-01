@@ -213,6 +213,19 @@ fail-closed, no text ever. CLI: `monarch art-scene --pose shock --prop crown`,
 `monarch art-anim --poses idle,shock,crown`. AI photoreal gen stays parked
 (egress); this is the in-sandbox art stage. Suite 487.
 
+**FK MOTION ENGINE — bone rotation, loops + one-shot (2026-10-01):** the
+lost local commit (45efc06) recovered onto canon: joints from real forward
+kinematics (spine/head/arm/forearm/thigh/shin angles, `fk_joints`), motion
+registry `walk` (1.0s stride loop, arms counter-swing), `wave` (1.2s greet
+loop, arm waves twice), `jump` (1.6s one-shot: crouch → launch → air-tuck +
+mouth → landing = EXACT idle base, no float). Loops are seamless by
+construction (sin/cos of phase, t=1 == t=0). Also merged the never-merged
+`e5d57ed` (xfade morphs + `docs/AI_ANIMATE_FORENSICS.md`) and fixed two
+pre-recovery bugs: `_render_joints` painted over an idle background figure
+(double-figure) and skipped supersampling/props. CLI: `monarch art-motion
+--motion jump|walk|wave [--wav VO.wav] --out DIR` (`--wav` = audio truth +
+loudnorm). Suite 516.
+
 **W-B4 SHIPPED - PROTOCOL 100% WIRED (2026-09-28):** `monarch/video/vitals.py`
 - engaged-class post-launch vitals (Studio numbers in -> band verdicts out:
 CTR/swipe-gate/inflation/AVP/returning, honest [fill] placeholders, the
