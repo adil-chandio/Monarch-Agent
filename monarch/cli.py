@@ -296,6 +296,9 @@ def main(argv: list[str] | None = None) -> int:
                      help="dir with agent key<N>.png (default <dir>/ai_frames)")
     aip.add_argument("--no-render", action="store_true",
                      help="write the plan and check frames only")
+    aip.add_argument("--transition", default="fade",
+                     help="xfade morph between keyframes: none | fade | "
+                          "dissolve | wipeleft | slideup | zoomin | ...")
 
     vt = sub.add_parser("vitals",
                         help="W-B4: engaged-class post-launch sheet "
@@ -1090,7 +1093,8 @@ def main(argv: list[str] | None = None) -> int:
         from monarch.video.ai_art import cli_stage
         return cli_stage(_P(args.dir),
                          _P(args.frames) if args.frames else None,
-                         render=not args.no_render)
+                         render=not args.no_render,
+                         transition=args.transition)
 
     if args.cmd == "vitals":
         from pathlib import Path as _P

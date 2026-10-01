@@ -36,6 +36,17 @@ ZOOM_CAP = 0.08          # M10: never beyond 1.08 total zoom
 DEFAULT_ZOOM = 0.05      # ideal 1.0 -> 1.05 drift per keyframe
 NO_TEXT_CLAUSE = "no text, no letters, no numbers, no watermark"
 
+# xfade morph transitions (forensic-probed live 2026-09-28: filter
+# exists in the sandbox ffmpeg build; minterpolate silently emits 0
+# frames on yuv444p - never used). Blend-morphs between keyframes.
+XFADE_SET = {
+    "none", "fade", "dissolve", "wipeleft", "wiperight", "wipeup",
+    "wipedown", "slideleft", "slideright", "slideup", "slidedown",
+    "circleopen", "circleclose", "radial", "smoothleft", "smoothright",
+    "zoomin",
+}
+DEFAULT_XFADE = "fade"   # classic pencil-dissolve feel
+
 # Roman-Urdu tokens that must never leak into an image prompt (M4).
 _DESI_TOKENS = {
     "bilkul", "jhakaas", "zabardast", "karo", "karna", "banaye", "banayo",
@@ -175,11 +186,20 @@ def _audio_s(path: Path) -> float:
 def render_ai_short(frames_dir: str | Path, wav: str | Path,
                     out: str | Path, board: dict, *,
                     ass: str | Path | None = None, fps: int = 10,
-                    zoom: float = DEFAULT_ZOOM, crf: int = 20) -> dict:
+                    zoom: float = DEFAULT_ZOOM, crf: int = 20,
+                    transition: str = DEFAULT_XFADE,
+                    xfade_s: float = 0.25) -> dict:
     """Animate the keyframes (Ken Burns <= 1+ZOOM_CAP) and mix.
 
-    Returns metrics like render_art_mp4: drift-checked, law-noted.
+    transition: xfade morph between consecutive keyframes (fade,
+    dissolve, zoomin, ... see XFADE_SET) or 'none' for hard cuts.
+    Transition overlap seconds are re-added as tail hold so the video
+    still lands on the audio truth (L13).
     """
+    if transition not in XFADE_SET:
+        raise ValueError(f"transition {transition!r} not in XFADE_SET")
+    if transition != "none" and xfade_s <= 0:
+        raise ValueError("xfade_s must be > 0 when transition is on")
     if zoom > ZOOM_CAP:
         raise ValueError(f"zoom {zoom} exceeds the M10 cap {ZOOM_CAP} "
                          "(total zoom would pass 1.08)")
@@ -216,12 +236,41 @@ def render_ai_short(frames_dir: str | Path, wav: str | Path,
     lst.write_text("\n".join(f"file '{s.resolve()}'" for s in segs) + "\n",
                    encoding="utf-8")
     silent = d / "ai_silent.mp4"
-    r = subprocess.run(
-        [ff, "-y", "-hide_banner", "-loglevel", "error", "-f", "concat",
-         "-safe", "0", "-i", str(lst), "-c", "copy", str(silent)],
-        capture_output=True, text=True)
-    if r.returncode != 0:
-        raise ValueError(f"concat failed: {(r.stderr or r.stdout).strip()[:200]}")
+    if transition == "none" or len(segs) == 1:
+        r = subprocess.run(
+            [ff, "-y", "-hide_banner", "-loglevel", "error", "-f", "concat",
+             "-safe", "0", "-i", str(lst), "-c", "copy", str(silent)],
+            capture_output=True, text=True)
+        if r.returncode != 0:
+            raise ValueError(f"concat failed: "
+                             f"{(r.stderr or r.stdout).strip()[:200]}")
+    else:
+        # xfade morph chain. offset_k = sum(durs[:k]) - k*d_eff; the
+        # overlap seconds are cloned back at the tail (tpad) so the
+        # total lands on the audio truth (L13).
+        durs = [c / fps for c in counts]
+        d_eff = min(xfade_s, min(durs) * 0.5)
+        pad_s = (len(segs) - 1) * d_eff
+        parts: list[str] = []
+        prev = "[0:v]"
+        off = 0.0
+        for k in range(1, len(segs)):
+            off += durs[k - 1] - d_eff
+            parts.append(f"{prev}[{k}:v]xfade=transition={transition}:"
+                         f"duration={d_eff:.3f}:offset={off:.3f}[x{k}]")
+            prev = f"[x{k}]"
+        parts.append(f"{prev}tpad=stop_mode=clone:"
+                     f"stop_duration={pad_s:.3f},format=yuv420p[vout]")
+        cmd = [ff, "-y", "-hide_banner", "-loglevel", "error"]
+        for s in segs:
+            cmd += ["-i", str(s)]
+        cmd += ["-filter_complex", ";".join(parts), "-map", "[vout]",
+                "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf),
+                "-pix_fmt", "yuv420p", str(silent)]
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        if r.returncode != 0:
+            raise ValueError(f"xfade chain failed: "
+                             f"{(r.stderr or r.stdout).strip()[:300]}")
     out_p = Path(out)
     cmd = [ff, "-y", "-hide_banner", "-loglevel", "error",
            "-i", str(silent), "-i", str(wav),
@@ -252,14 +301,16 @@ def render_ai_short(frames_dir: str | Path, wav: str | Path,
         "bytes": out_p.stat().st_size,
         "duration_ok": drift <= 0.5,
         "zoom_max": round(1 + zoom, 3),
-        "law_note": ("AI keyframes -> Ken Burns <=1.08 -> burn -> "
-                     "loudnorm mix; images text-free (miss-#2, M4); "
-                     "2 inputs: keyframe segs + master mix"),
+        "transition": transition,
+        "law_note": ("AI keyframes -> Ken Burns <=1.08 -> xfade morph -> "
+                     "burn -> loudnorm mix; images text-free (miss-#2, "
+                     "M4); inputs: keyframe segs + master mix"),
     }
 
 
 def cli_stage(out_dir: str | Path, frames_dir: str | Path | None = None,
-              *, render: bool = True) -> int:
+              *, render: bool = True,
+              transition: str = DEFAULT_XFADE) -> int:
     """Shared CLI path: write ai_prompts.json, fail-closed on frames,
     render when all keyframes exist. Returns the process exit code."""
     base = Path(out_dir)
@@ -287,7 +338,8 @@ def cli_stage(out_dir: str | Path, frames_dir: str | Path | None = None,
     ass = base / "v6.ass"
     try:
         m = render_ai_short(fdir, wav, base / "ai_short.mp4", board,
-                            ass=ass if ass.is_file() else None)
+                            ass=ass if ass.is_file() else None,
+                            transition=transition)
     except ValueError as e:
         print(f"FAIL {e}")
         return 2
