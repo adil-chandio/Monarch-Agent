@@ -23,10 +23,13 @@ The existing access-key rule in `monarch/constitution/00_IDENTITY.md` applies be
 route. If the key is not verified, use Monarch's standard refusal message and stop. The Cam
 route never bypasses the access law.
 
-This is separate from the base `monarch activate` trigger. That trigger still asks the same four
-intake questions and follows the normal flow. The Cam route skips only details fixed by this
-world and the active assignment; it preserves the constitution, safety, evidence, approval,
-QC, WAIT, and human-publishing gates.
+The generic `monarch activate` trigger first shows the workflow selector in
+`monarch/constitution/09_INTAKE.md`. Choosing **Monarch Cam** loads this world; the explicit
+`monarch cam activate` phrase is a direct shortcut. Choosing **Monarch Activate 💀** (or using
+that explicit shortcut) enters the original overall workflow and its same four intake questions.
+
+For Cam, skip only facts fixed by this world and the active assignment. The selector does not
+replace any safety, evidence, human approval, QC, WAIT, or human-publishing gate.
 
 ---
 
@@ -147,8 +150,9 @@ AI wildlife visuals or a base-agent previz render as a substitute.
 
 ## 5. WHAT THIS WORLD CHANGES VS NORMAL MONARCH
 
-| Thing | `monarch activate` (base, unchanged) | Monarch Cam world |
+| Thing | Monarch Activate 💀 — overall workflow | Monarch Cam world |
 |---|---|---|
+| Activation | selected from the `monarch activate` menu or invoked directly | selected from the menu or invoked with `monarch cam activate` |
 | Niche/channel | asked in intake | fixed — wildlife, two pillars |
 | Language | asked in intake | English (US/UK) final narration |
 | Ratio | asked in intake | target 9:16, 1080×1920, 30fps when source/tooling support it |
@@ -166,7 +170,7 @@ YouTube upload, and WAIT gates remain in force. A world may add gates, never wea
 ## 6. RETURN TO BASE MODE
 
 World selection is per activation request; it does not permanently switch the agent's runtime
-state. For unrelated work, use the existing normal `monarch activate` path. Select Monarch Cam
-only when the operator explicitly uses the `monarch cam activate` trigger. Do **not** use
-`monarch lock` to switch worlds: that locks the whole agent. The additive router must leave the
-normal intake unchanged.
+state. For unrelated work, use `monarch activate` and choose **Monarch Activate 💀**, or use
+`monarch activate 💀` as the direct overall-workflow shortcut. Select Monarch Cam from the same
+menu or use `monarch cam activate` directly. Do **not** use `monarch lock` to switch worlds:
+that locks the whole agent. The overall four-question intake remains unchanged after selection.

@@ -1,6 +1,13 @@
 # Approval ladder — never skip
 
-## Order (hard stops)
+The generic workflow chooser in `09_INTAKE.md` comes **before** this ladder; it is not a
+replacement for an approval gate. If the user selects **Monarch Activate 💀**, use the overall
+sequence below unchanged. If the user selects a documented channel world, follow that world's
+stage order and named approval gates while preserving the constitution, safety rules, human
+approval, and WAIT law. A world may specialize the work or prefill facts it explicitly fixes;
+it may not silently bypass a required decision.
+
+## Overall Monarch order (hard stops)
 
 0. **Intake** — channel or niche, ratio, short/long, language. STOP. WAIT. No invented niche.
 

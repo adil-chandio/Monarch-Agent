@@ -1,9 +1,9 @@
 # WORLD: MONARCH CAM
 
-**Activation phrase:** `monarch cam activate` (wired through the root agent instructions)
+**Workflow chooser label:** `Monarch Cam` · **Direct phrase:** `monarch cam activate`
 **Slug:** `monarch-cam` · **Format target:** 9:16 vertical, 1080×1920, 30fps · **Language:** English (US/UK)
 **Created by:** Adil Chandio · Boss Contact: `workadilchandio@gmail.com`
-**Integration state:** additive prompt-level route in `BOOT.md`, `AGENT.md`, and `CLAUDE.md`; not a shell/CLI command. Existing access-key law still applies.
+**Integration state:** `monarch activate` shows a two-workflow chooser after access verification; this world is also a direct prompt-level route in `BOOT.md`, `AGENT.md`, and `CLAUDE.md`. Not a shell/CLI command.
 
 > “Wildlife gets close. Monarch Cam tells viewers what they are really seeing.”
 

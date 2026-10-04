@@ -27,16 +27,27 @@ monarch --key DoitMon@rch status
 
 ## Start
 
-Clone branch `arena/01a0c8a4-monarch-agent`, activate with your key, then:
+### Agent workflow (natural-language)
 
-```
-monarch activate DoitMon@rch
-```
+After the existing access check, say `monarch activate`. The agent first asks one question in
+simple Roman Urdu and waits:
 
-Agent asks 4 things: channel/niche, 16:9 or 9:16, short or long, language.  
-Then: YT forensic + keywords → 10 ideas + TOP 1 → wait → script → wait → video (haan) → QC → thumbs → metadata. **You upload.**
+> Kaunsa workflow chalana hai?
+>
+> 1. **Monarch Cam** — wildlife channel ka workflow
+> 2. **Monarch Activate 💀** — pehle wala overall Monarch Agent workflow
 
-Full law: `BOOT.md` · `AGENT.md` · `docs/WORKFLOW.md`
+Choose **Monarch Cam** to load its channel world, or **Monarch Activate 💀** for the original
+overall workflow. The overall workflow still begins with its four intake questions. Direct
+shortcuts: `monarch cam activate` for Cam; `monarch activate 💀` for the overall workflow.
+Do not start repository setup/dependency installation as part of this workflow choice.
+
+Full law: `BOOT.md` · `AGENT.md` · `monarch/worlds/README.md`
+
+### Terminal CLI
+
+`monarch activate <key>` is a separate CLI command for unlocking the local agent; it does not
+show the natural-language workflow selector. This selector applies when talking to the agent.
 
 ```
 python -m monarch status

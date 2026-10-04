@@ -6,38 +6,41 @@ A **world** is one YouTube channel's complete operating system: its identity, it
 analytics, its audience, its creative law, its footage/rights standard, its packaging
 system and its per-video assignments.
 
-This is an **additive layer**. A narrow prompt-level router in the root wake-up files selects
-a world only when its explicit activation phrase is used. It does not replace the normal
-Monarch flow or alter the underlying constitution, skills, role cards, or CLI:
+This is an **additive layer**. A prompt-level workflow selector in the root wake-up files
+routes the user only after access verification. It offers Monarch Cam or the original overall
+Monarch workflow and does not alter the underlying constitution, skills, role cards, or CLI:
 
-- `CLAUDE.md` / `BOOT.md` / `AGENT.md` — include an additive explicit-world route; the regular
-  `monarch activate` path remains unchanged
+- `CLAUDE.md` / `BOOT.md` / `AGENT.md` — offer a workflow selector; the overall workflow's
+  original four-question intake remains unchanged after it is selected
 - `monarch/constitution/` — the ten law files, unchanged
 - `monarch/skills/` — the seven SKILL.md playbooks, unchanged
 - `monarch/agents/` — the five role cards, unchanged
 - `monarch/cli.py` — the registered shell commands, unchanged
 
 ```
-monarch activate            → normal Monarch (4 intake questions, niche hunt)   [UNCHANGED]
-monarch cam activate        → MONARCH CAM world via additive prompt router        [WIRED]
-<channel 2> activate        → channel 2 world                                    [PLANNED]
-<channel 3> activate        → channel 3 world                                    [PLANNED]
+monarch activate            → ask workflow selector; wait for choice                [WIRED]
+Monarch Cam                → load Cam world and active assignment                   [WIRED]
+Monarch Activate 💀        → original overall workflow (four questions)             [WIRED]
+monarch cam activate       → direct shortcut to Monarch Cam                         [WIRED]
+monarch activate 💀       → direct shortcut to overall workflow                     [WIRED]
+<channel 2> activate       → channel 2 world                                        [PLANNED]
+<channel 3> activate       → channel 3 world                                        [PLANNED]
 ```
 
-When no world is activated, Monarch behaves exactly as before. A world is a mode, not a fork.
+On generic `monarch activate`, the agent waits for the workflow choice before starting work. The overall workflow itself is unchanged after selection. A world is a mode, not a fork.
 
 ## Integration status — important
 
-`monarch cam activate` is now an **explicit natural-language route** in `CLAUDE.md`, `BOOT.md`,
-and `AGENT.md`. After the existing access-key check, that phrase loads
-`monarch/worlds/monarch-cam/WORLD.md` and follows its pipeline. It skips only intake details fixed
-by the world and active assignment; if no assignment exists, the agent asks for a brief.
+After the existing access-key check, generic `monarch activate` now asks one workflow question
+in simple Roman Urdu and waits: **Monarch Cam** or **Monarch Activate 💀**. Selecting Cam loads
+`monarch/worlds/monarch-cam/WORLD.md`; selecting the overall workflow leads into its original
+four-question intake. `monarch cam activate` and `monarch activate 💀` remain direct shortcuts.
+The selector does not start repository setup or dependency installation.
 
-The normal `monarch activate` flow still asks its original four questions and is unchanged.
-The route does not bypass the constitution, human approval/WAIT gates, QC, or human YouTube
-publishing. This is prompt-level routing, not Python runtime code, and there is no shell/CLI
-command `monarch cam`. The entrypoint instructions must be present in the agent's loaded context
-for the natural-language trigger to work.
+This is prompt-level routing in `CLAUDE.md`, `BOOT.md`, and `AGENT.md`, not Python runtime code.
+The terminal `monarch activate <key>` remains the separate CLI access operation; there is no
+`monarch cam` CLI command. The agent must have these updated entrypoint instructions in its
+loaded context for the workflow selector to appear.
 
 ## Why a new folder and not `monarch/skills/` or `monarch/channels/`
 
