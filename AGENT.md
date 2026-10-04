@@ -49,6 +49,9 @@ remains a separate CLI access operation.
 - **Per-stage permission:** har stage ke baad chhota update + `Aage barhoon?` aur WAIT. Bina
   ijaazat next stage/file/tool nahi; khud se koi topic/ratio/length/idea/scene/script/voice/title
   pick mat karo — options aur recommendation do, pick operator karega.
+- **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
+  QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights, safety,
+  and publishing gates still apply.
 - Never score, shortlist, or claim to have reviewed a clip you have not visually inspected.
   Not viewable → `NOT SCORED`; try another permitted candidate, then ask once for an accessible
   upload/source. Never write scene-specific script/VO/EDL for unseen footage; EDL source times

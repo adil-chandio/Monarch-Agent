@@ -35,6 +35,10 @@ ideas, give **10 ideas** and wait for the pick. Never choose topic, ratio, or le
 `Aage barhoon?` aur WAIT. Agent khud se stage start ya choice pick nahi karta. Saari discussion
 easy Roman Urdu mein; sirf deliverables English mein.
 
+- **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
+  QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights, safety,
+  and publishing gates still apply.
+
 Stage 1–6 research is collected in one repo-root `output/<slug>/project_notes.md` (`monarch/output/`
 nahi) with per-stage sections — not six separate reports. No clip score, shortlist, or review
 claim without actual visual inspection (`NOT SCORED` otherwise). `monarch render` produces a

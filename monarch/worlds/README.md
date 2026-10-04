@@ -107,6 +107,9 @@ Per-video work goes in `assignments/` so the channel files never churn.
    WAIT. Bina ijaazat agla stage/file/tool nahi, aur agent khud se koi choice (topic, ratio,
    length, idea, scene, script, voice, title) nahi karta. Stopping to ask is not abandoning the
    workflow.
+   - **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
+     QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights,
+     safety, and publishing gates still apply.
 10. **Discussion language** — easy Roman Urdu (Urdu–English mix), short; max 5 bullets per
    update. Sirf final deliverables (script, captions, titles) English mein.
 

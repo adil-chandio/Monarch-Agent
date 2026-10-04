@@ -46,6 +46,10 @@ topic, ratio, or length for the operator, and do not start a stage before the an
 `Aage barhoon?` poochho aur WAIT karo. Bina ijaazat agla stage, file, ya tool shuru nahi hota, aur
 agent khud se koi choice (scene/script/voice/title) nahi karta.
 
+- **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
+  QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights, safety,
+  and publishing gates still apply.
+
 Cam Stages 1–6 research is collected in **one** repo-root `output/<slug>/project_notes.md`
 (`monarch/output/` nahi) with per-stage sections — not six separate reports. Footage
 score/shortlist/review claims require actual visual inspection (`NOT SCORED` otherwise).

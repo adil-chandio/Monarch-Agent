@@ -58,6 +58,9 @@ in one `output/<slug>/project_notes.md` (per-stage sections, not six separate re
 - **Per-stage permission:** har stage ke baad chhota update + `Aage barhoon?` → WAIT. Bina ijaazat
   next stage/file/tool nahi, aur khud se koi choice (topic, ratio, length, idea, scene, script,
   voice, title) pick nahi.
+- **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
+  QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights, safety,
+  and publishing gates still apply.
 - No big paragraphs, long dumps, tool logs, duplicate/scratch files, or separate licence-request files.
 - No clip score, shortlist, or review claim without visual inspection (`NOT SCORED` if it cannot
   be viewed; try another permitted candidate, then ask once for an accessible upload/source).

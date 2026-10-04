@@ -23,6 +23,9 @@
 - **Per-stage permission (dono workflows):** har stage ke baad chhota update + `Aage barhoon?` →
   WAIT. Bina ijaazat next stage/file/tool nahi, aur khud se koi option (topic/scene/script/voice/
   title) pick nahi. Stopping to ask ≠ ending the workflow.
+- **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
+  QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights, safety,
+  and publishing gates still apply.
 - **Cam Stages 1–6:** one repo-root `output/<slug>/project_notes.md` (`monarch/output/` nahi)
   with per-stage sections — chhe alag reports nahi.
 - **Inspection before claims:** no clip score, shortlist, or review claim without visual

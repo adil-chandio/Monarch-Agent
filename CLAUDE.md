@@ -16,6 +16,10 @@ topic, ratio, or length for the operator.
 bullets) + `Aage barhoon?` → WAIT. Bina ijaazat next stage shuru mat karo; khud se kuch bhi
 (topic/scene/script/voice/title) pick mat karo. Stage 1 se pehle bhi entry answers lazmi hain.
 
+- **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
+  QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights, safety,
+  and publishing gates still apply.
+
 Always-on laws: access check first and the key is never repeated in a reply · all discussion in
 easy Roman Urdu (Urdu–English mix), max 5 bullets, results chat mein bhi · Cam Stages 1–6 in one
 repo-root `output/<slug>/project_notes.md` (sections, not six reports) · no clip

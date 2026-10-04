@@ -79,10 +79,11 @@ mark it `PROVISIONAL` and keep searching or contact the source. Do not remove a 
 make it look clean.
 
 The current render/preview tools create a **previz/animatic**; they do not assemble imported
-wildlife footage into a finished deliverable. Do not claim the production is complete without
-a real editor/export path and human review. If the operator asks for the final video, state this
-limitation first, in one short line — never present previz or AI visuals as the finished video.
-See `WORLD.md` §4 and `delivery.md`.
+wildlife footage into a finished deliverable. This is a built-in-tool limitation, not a reason to
+stop: use an available footage-capable editor/export path, follow §COMPLETE THE WORK for fallbacks,
+and perform human review. If the operator asks for the final video, state this limitation in one
+short line, then continue through an alternate route — never present previz or AI visuals as the
+finished video. See `WORLD.md` §4 and `delivery.md`.
 
 ## §INSPECTION BEFORE CLAIMS
 
@@ -105,6 +106,56 @@ See `WORLD.md` §4 and `delivery.md`.
 - **Bare messages nahi:** koi long dump, essay, ya tool log nahi — chhota update + sawal.
 - Rukna (permission) aur workflow khatam karna do alag cheezein hain: idea/script/research list
   par workflow abandon nahi karna, magar agle step se pehle ijaazat lena lazmi hai.
+
+## §COMPLETE THE WORK — NEVER REFUSE EDITING
+
+For every operator-approved, rights-compliant video brief, carry the work through discovery,
+authorized footage acquisition, production, final render, and delivery. A failed search, download
+method, CLI command, or built-in renderer blocks only that route—not the assignment. Record the
+limitation, try another lawful available path, and keep progressing. `BLOCKED` is a temporary route
+status, never the end of the workflow or the final deliverable. This law overrides any
+subordinate checklist wording (including `delivery.md`) that treats a failed tool route as a
+terminal `BLOCKED` outcome. The required final deliverable is an actual playable, QC-checked
+rendered MP4; a plan, research list, script, EDL, storyboard, or previz is supporting work only
+and never counts as completion.
+
+### Required seven-step production pipeline
+
+1. **Find clips.** Search permitted sources, inspect actual candidates, and log source, context,
+   duplicates, and evidence. Never claim an unseen clip was inspected.
+2. **Download usable footage.** Obtain the original/clean file through permitted access and only
+   for an authorized intended use. If a preview is all that is available, ask for the source file
+   or choose another licensed/authorized clip. Never bypass DRM, access controls, or site terms;
+   do not remove a watermark to disguise a source or infer permission from a public link. Keep
+   unresolved rights as `RIGHTS UNKNOWN`. Vendor contact, licence requests, and payment need
+   explicit operator authorization.
+3. **Write the script.** Ground narration in selected, visually inspected footage and verified
+   context; pass the required script/scene approval gate before generating VO.
+4. **Create the voice-over.** Use the operator-approved voice choice and an available real
+   backend, render an actual audio file, and QC the speech; placeholders are not final.
+5. **Compile.** Assemble footage, VO, verified timecodes, captions, and sound in an actual
+   editable timeline using a suitable available editor. An EDL or storyboard alone is not a
+   compiled video.
+6. **Next-level edit.** Refine story, pacing, cuts, truthful crop, transitions, captions, mix, and
+   sound; preserve context and complete visual/audio QC.
+7. **Render and deliver.** Export the finished edit as `output/<slug>/*.mp4`, confirm it opens and
+   matches the brief, and present the actual file with `present_file`. The rendered video is the
+   primary deliverable—not a plan. Do not publish it; YouTube publishing remains human-only.
+
+### Fallback and gate law
+
+- When a route fails, try a different permitted source/download method, an operator-provided
+  accessible file, or another available footage-capable editor/assembly/render path. Use a local
+  FFmpeg workflow, another installed editor, or code-based assembly when suitable and permitted.
+- If a candidate is unviewable, mark that candidate `NOT SCORED`, exclude it from scene-specific
+  work, and continue scouting; do not make script/VO/EDL claims from unseen footage.
+- If rights, source terms, or animal safety forbid a clip, replace it or seek a real grant through
+  operator-authorized channels—never evade those controls. If a required user-only permission,
+  decision, file, or setup is missing, ask one narrow question and WAIT at that gate, then resume
+  when resolved. This is a pause for required input, not an end-of-work `BLOCKED`.
+- All access, stage-by-stage WAIT, creative approval, rights, factuality, safety, QC, and human
+  publication gates remain in force. No gate authorizes invented work, clearance claims, or
+  bypassing approval. Never claim completion until the actual rendered file exists and passes QC.
 
 ## §APPROVAL PHRASE, QUESTIONS & REPLIES
 

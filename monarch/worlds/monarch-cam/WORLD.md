@@ -81,7 +81,7 @@ Create the slug folder once and keep every stage's section inside that single fi
 | 8 | CREATE VOICE-OVER | `output/<slug>/vo.wav` (normalize/copy backend output into this deliverable) | `monarch voiceover --script-file ... --out ...` only with an approved real voice backend. Placeholder/mumble audio is never final. |
 | 9 | EDIT | `output/<slug>/09_edl.md` — exact source in/out, sequence, captions, and sound notes | `monarch video-storyboard` / `monarch make-video` produce **previz/animatic**, not an edit of external wildlife footage. The current CLI has no general external-footage assembly path; use an actual editor and record its EDL. Every row needs verified source timecodes from inspected footage; a `TBD` row is not a complete edit. |
 | 10 | MIX AUDIO | `output/<slug>/mix.wav` (VO/SFX/music plan and final mix) | `monarch sfx --kind ...` / `monarch mix --vo ... --duration 60 --out ...` may assist if the inputs fit. Check original clip audio and finish/verify in an editor or DAW as needed. |
-| 11 | RENDER | Final `output/<slug>/*.mp4`, real footage, target 9:16, 1080×1920, 30fps | **Current engine blocker:** `monarch render <dir>` renders the base `make-video` previz frames + audio; it does not assemble imported wildlife clips. Do not call a previz MP4 the final deliverable. Use a real footage-capable editor/export path or report Stage 11 blocked. If the operator asks for the final video, say this limitation first, in one short line. |
+| 11 | RENDER | Final `output/<slug>/*.mp4`, real footage, target 9:16, 1080×1920, 30fps | **Built-in CLI limitation:** `monarch render <dir>` renders the base `make-video` previz frames + audio; it does not assemble imported wildlife clips. A CLI limitation blocks that route only: use a real footage-capable editor/export path (for example, an available FFmpeg/editor workflow), verify the MP4, and follow §4 fallbacks if it fails. Never call a previz the final deliverable or stop at `BLOCKED`. If asked, state the built-in limitation briefly, then continue via an alternative. |
 | 12 | PACKAGE | `output/<slug>/12_package.md` with title, alternatives, copy, and conversion path | `monarch package <render-dir> --shorts --title ...` generates a launch kit for a compatible render directory; inspect it and supplement tags, hashtags, and platform-specific captions. |
 | 13 | DELIVER & PRE-PUBLISH CHECK | All 17 items in `delivery.md` + completed `output/<slug>/17_upload_checklist.md` | A human handles YouTube Studio upload/checks and the final publish decision. The CLI command `monarch upload <file>` is a file/release transfer, **not** YouTube publishing. Studio checks can take time and are not final rights clearance. |
 
@@ -147,8 +147,8 @@ Stage 8 ke baad:  "VO ready — edit/EDL banau?"
 - **Gate B — after Stage 7:** present the Fountain script + numbered timecoded board. Wait for
   `perfect | improve`. Do not produce final VO/edit from an unapproved script.
 - **Gate C — after Stage 9:** present storyboard/EDL and VO recommendation. Wait for explicit
-  `haan` before final production/export. The approval does not bypass the external-footage
-  renderer limitation in Stage 11.
+  `haan` before final production/export. The approval does not make a previz a final export; use
+  the real-footage fallback path in §4 for Stage 11.
 - **Gate D — after the actual final export:** show QC results and preview. Wait for
   `perfect | reedit`; fix all failures before packaging.
 - **Gate E — after cover/metadata package:** present the cover and full package. Wait for
@@ -157,56 +157,61 @@ Stage 8 ke baad:  "VO ready — edit/EDL banau?"
 
 Run the stages in order and stop at **every** stage for a short update + permission (per-stage
 law above). A stop is one short Roman Urdu message with the result and one question — not a long
-report. If source, risk evidence, or tooling is incomplete, report it honestly and request only
-the action needed to decide or unblock it.
+report. If source, risk evidence, or tooling is incomplete, follow §4 to try lawful alternatives
+first; if required user-only input remains, report it honestly and request only the action needed
+to decide or unblock it.
 
 ---
 
-## 4. NO-STOP-AT / BLOCKED LAW
+## 4. COMPLETE THE WORK — NEVER REFUSE EDITING
 
-```
-DO NOT END THE WORKFLOW AT IDEAS.
-DO NOT END THE WORKFLOW AT LINKS.
-DO NOT END THE WORKFLOW AT A SCRIPT.
-DO NOT END THE WORKFLOW AT A RESEARCH LIST.
-```
+For every operator-approved, rights-compliant video brief, carry the work through discovery,
+authorized footage acquisition, production, final render, and delivery. A failed search, download
+method, CLI command, or built-in renderer blocks only that route—not the assignment. Record the
+limitation, try another lawful available path, and keep progressing. `BLOCKED` is a temporary route
+status, never the end of the workflow or the final deliverable. This contract overrides any
+subordinate checklist wording (including `delivery.md`) that treats a failed tool route as a
+terminal `BLOCKED` outcome. The required final deliverable is an actual playable, QC-checked
+rendered MP4; a plan, research list, script, EDL, storyboard, or previz is supporting work only
+and never counts as completion.
 
-**Note:** yeh "workflow khatam na karo" law hai — iska matlab permission skip karna **nahi**.
-Har stage par §3 ka per-stage ask (update + `Aage barhoon?` + WAIT) lazmi hai; approval ke baad
-kaam continue hota hai.
+### Required seven-step production pipeline
 
-Research links must become deduplicated, source/context-checked candidates; candidates must
-become genuinely elite, scored selections with honest rights/claim-risk labels; approved scripts
-must progress through VO/edit/mix/export/package. An unverified rights status must remain
-visible—it is not renamed “clear.” An explicit no-reuse restriction is a stop for that use
-unless a suitable grant exists; a quick-screen match is a review alert, not an automatic
-rejection. If rights are unknown or a final Studio claim appears, request a human decision:
-choose another source, seek permission, remove/replace the claimed segment, accept the platform
-claim impact where available, or do not publish. Do not give legal assurance.
+1. **Find clips.** Search permitted sources, inspect actual candidates, and log source, context,
+   duplicates, and evidence. Never claim an unseen clip was inspected.
+2. **Download usable footage.** Obtain the original/clean file through permitted access and only
+   for an authorized intended use. If a preview is all that is available, ask for the source file
+   or choose another licensed/authorized clip. Never bypass DRM, access controls, or site terms;
+   do not remove a watermark to disguise a source or infer permission from a public link. Keep
+   unresolved rights as `RIGHTS UNKNOWN`. Vendor contact, licence requests, and payment need
+   explicit operator authorization.
+3. **Write the script.** Ground narration in selected, visually inspected footage and verified
+   context; pass the required script/scene approval gate before generating VO.
+4. **Create the voice-over.** Use the operator-approved voice choice and an available real
+   backend, render an actual audio file, and QC the speech; placeholders are not final.
+5. **Compile.** Assemble footage, VO, verified timecodes, captions, and sound in an actual
+   editable timeline using a suitable available editor. An EDL or storyboard alone is not a
+   compiled video.
+6. **Next-level edit.** Refine story, pacing, cuts, truthful crop, transitions, captions, mix, and
+   sound; preserve context and complete visual/audio QC.
+7. **Render and deliver.** Export the finished edit as `output/<slug>/*.mp4`, confirm it opens and
+   matches the brief, and present the actual file with `present_file`. The rendered video is the
+   primary deliverable—not a plan. Do not publish it; YouTube publishing remains human-only.
 
-Report a source/context block plainly, for example:
+### Fallback and gate law
 
-```
-BLOCKED — Stage 3 (source/context)
-Scene:   S03 — <source lead>
-Reason:  source chain or material story claim cannot be verified
-Need:    locate the filmer/credible reporting, rewrite to what is verified, or drop the scene
-Effect:  do not use S03 as factual proof; continue scouting if needed
-```
-
-A rights/claim review can instead be recorded without blocking discovery:
-
-```
-REVIEW REQUIRED — Stage 5 (rights / claim risk)
-Scene:   S03 — <source lead>
-Status:  RIGHTS UNKNOWN; NO MATCH FOUND IN CHECKED SOURCES
-Limit:   this is not permission or a guarantee against a later claim
-Need:    operator chooses another source, seeks permission, or explicitly records a risk decision
-```
-
-Stage 11 currently has a known external-footage assembly limitation. If no editor/export path
-capable of using the actual source files is available, state `BLOCKED — Stage 11`; do not use
-AI wildlife visuals or a base-agent previz render as a substitute.
+- When a route fails, try a different permitted source/download method, an operator-provided
+  accessible file, or another available footage-capable editor/assembly/render path. Use a local
+  FFmpeg workflow, another installed editor, or code-based assembly when suitable and permitted.
+- If a candidate is unviewable, mark that candidate `NOT SCORED`, exclude it from scene-specific
+  work, and continue scouting; do not make script/VO/EDL claims from unseen footage.
+- If rights, source terms, or animal safety forbid a clip, replace it or seek a real grant through
+  operator-authorized channels—never evade those controls. If a required user-only permission,
+  decision, file, or setup is missing, ask one narrow question and WAIT at that gate, then resume
+  when resolved. This is a pause for required input, not an end-of-work `BLOCKED`.
+- All access, stage-by-stage WAIT, creative approval, rights, factuality, safety, QC, and human
+  publication gates remain in force. No gate authorizes invented work, clearance claims, or
+  bypassing approval. Never claim completion until the actual rendered file exists and passes QC.
 
 ---
 
