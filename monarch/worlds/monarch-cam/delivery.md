@@ -1,8 +1,10 @@
 # MONARCH CAM — DELIVERY
 
-Stage 13. A complete production delivery contains all seventeen items below. If the real
-external-footage edit/export path is unavailable, mark production `BLOCKED` and state which
-research/planning artefacts are complete; never present a partial package as a finished video.
+Stage 13. A complete production delivery contains all seventeen items below. If the built-in
+external-footage edit/export path is unavailable, follow `WORLD.md` §4 and use a lawful alternate
+editor/render route. A failed tool route is not a terminal `BLOCKED` outcome; pause only for a
+required human approval/input, then resume. Never present a partial package or plan as a finished
+video.
 
 ---
 
@@ -63,11 +65,13 @@ ANALYSE CHANNEL CONTEXT
   → DELIVER & PRE-PUBLISH CHECK
 ```
 
-The only legitimate stop mid-chain is a declared `BLOCKED` stage (`WORLD.md` §4)—reported
-plainly, with what is needed to unblock it, never papered over with substitute footage.
-Unresolved rights are not disguised as clear; present the status and get an explicit human
-decision before moving that scene into production. A discovery search does not wait for a
-licence or an Analytics refresh.
+Per-stage approval gates may pause the work for the operator's decision; they do not end the
+assignment. A failed source, API, player, editor, or renderer route is temporary: follow
+`WORLD.md` §4, try lawful alternatives, and continue. Mark an unviewable candidate `NOT SCORED`;
+that does not make Stage 4 or the pipeline `BLOCKED`. If an essential operator-owned file,
+permission, or decision is missing after alternatives are tried, ask for that specific input and
+resume when supplied. Keep rights unknown honestly, never substitute unauthorized footage, and
+never hand over planning artefacts as the final video.
 
 ---
 
@@ -93,11 +97,11 @@ voice-over, or “no match” result turns unverified rights into clearance.
 Tool limitation: the current `monarch qc-render` syntax is `monarch qc-render <video.mp4>
 <board.json>` and only checks a render against Monarch's scene board. `monarch render <dir>`
 can render the base agent's own `make-video` previz frames and audio; it does **not** assemble
-external wildlife clips. Do not use that previz MP4 as deliverable #1. For this world, verify
-the final real-footage edit in an actual editing/export tool and run a separate human review;
-Stage 11 is blocked until such an export path exists. If the operator asks for the final video,
-state this limitation first, in one short line — never present a previz or AI visuals as the
-finished video.
+external wildlife clips. Do not use that previz MP4 as deliverable #1. Use an available, lawful
+footage-capable editor/export route and run a separate human review; inability of the built-in
+renderer is not a Stage 11 stop. If an available route fails, follow `WORLD.md` §4 and try another.
+If operator-owned setup, permission, or a source file is truly required, ask for that specific
+input and resume after the gate. Never present a previz or AI visuals as the finished video.
 
 ---
 

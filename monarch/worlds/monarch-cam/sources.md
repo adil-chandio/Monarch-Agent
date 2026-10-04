@@ -217,9 +217,10 @@ final edit. Score each line 0–10 and record a timestamp plus one sentence of e
   least 8/10, no score below 7/10, and all factual/safety/source gates passed.
 - Unknown is not a 5. If you have not inspected the footage, mark the score `PROVISIONAL` or
   `NOT SCORED`.
-- No score, shortlist, or review claim without actual visual inspection. A clip that cannot be
-  viewed is `NOT SCORED` — try another candidate from permitted sources, and only then ask once
-  for an accessible upload/source.
+- No score, shortlist, or review claim without actual visual inspection. If the agent cannot play
+  a clip, mark that candidate `NOT SCORED`—this blocks scoring that candidate only, not Stage 4 or
+  the pipeline. Try another permitted, viewable candidate or an authorized local file/player;
+  only after those alternatives fail ask once for an accessible upload/source. Never invent scores.
 - Never write scene-specific script/VO/EDL from unseen footage, and never present an EDL with
   `TBD` timecodes as a complete edit.
 - The scores are evidence-backed editorial judgements, not a claim that the clip will go viral.
