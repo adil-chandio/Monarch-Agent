@@ -1,7 +1,17 @@
-# Full workflow (do not skip)
+# Full overall Monarch workflow (do not skip)
 
-1. **monarch activate 💀**
-2. **Intake (4):** channel or niche · ratio · short/long · language. STOP.
+## Entry and workflow choice
+
+- Generic natural-language `monarch activate` first shows the two-option workflow selector in
+  `BOOT.md`; choose **Monarch Activate 💀** for this overall workflow or **Monarch Cam** for the
+  wildlife world. The selector stops and waits before any intake/setup questions.
+- Direct overall shortcut: **`monarch activate 💀`**. Direct Cam shortcut:
+  **`monarch cam activate`**.
+- The terminal `monarch activate <key>` is a separate CLI access command.
+
+## Overall workflow after selection
+
+1. **Intake (4):** channel or niche · ratio · short/long · language. STOP.
 3. **Forensic:** YouTube scrape + high-search/low-competition keywords + winner DNA.
 4. **Ideas:** 10 gated + TOP 1 with reasons. STOP. Pick.
 5. **Script forensic** of winning retention, then our script — authored as `.fountain`, gated by
