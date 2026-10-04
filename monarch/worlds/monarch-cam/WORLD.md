@@ -38,13 +38,19 @@ replace any safety, evidence, human approval, QC, WAIT, or human-publishing gate
 1. Confirm access key under the existing Monarch law.
 2. Read in order: `identity.md` → `analytics.md` → `audience.md` → `rules.md` →
    `sources.md` → `claim-risk.md` → `packaging.md` → `delivery.md`.
-3. List `assignments/` and load the active brief. If none is active, ask the operator for one;
-   **do not invent a topic**.
-4. After the explicit trigger has passed the access check and this context is loaded, say
-   **MONARCH CAM — WORLD ACTIVE**.
-5. Start Stage 1. No greeting, no generic intake questions for facts fixed by this world.
-   Use the active assignment for topic/length; if none exists, ask for a brief. Still ask for
+3. Ask the three Cam entry questions in simple Roman Urdu and **STOP / WAIT**:
+   **topic** (kya banana hai?) · **ratio** (9:16 ya 16:9?) · **length** (kitne seconds/minutes?).
+   The briefs in `assignments/` are **provisional** — a brief is not a chosen topic.
+4. If the operator asks for ideas instead, give **10 ideas** and WAIT for the pick. Never choose
+   the topic, ratio, or length for the operator.
+5. After the answers, say **MONARCH CAM — WORLD ACTIVE** and start Stage 1 with the confirmed
+   topic/ratio/length (or the operator-selected idea). No greeting, no generic intake questions
+   for facts fixed by this world, and no stage work before the operator answers. Still ask for
    missing evidence that is genuinely required to proceed.
+6. **Har stage ke baad RUKO:** short update do (easy Roman Urdu, max 5 bullets), phir agle stage
+   ki ijaazat maango (`Aage barhoon?`) aur WAIT karo. Bina ijaazat agla stage, naya file, ya naya
+   tool-run shuru mat karo. Koi bhi choice (topic, ratio, length, idea, scene, script, title,
+   voice) khud mat pick karo — har cheez operator se poochho.
 
 ---
 
@@ -54,21 +60,28 @@ Every stage produces the named artefact. A tool command can assist but does not 
 stage is complete. Never claim a tool did work it cannot do. The supplied channel snapshot is
 context, not a mandatory refresh/import step. Use fresh Studio data only when the operator
 supplies or asks for it; the footage search must not wait on analytics. Later stages use the
-assignment brief and actual source files.
+confirmed brief and actual source files.
+
+**Stages 1–6 research lives in ONE file:** `output/<slug>/project_notes.md`, with one section per
+stage (`## 1. …` through `## 6. …`). Do **not** create six separate reports. No clip score,
+shortlist, or review claim without actual visual inspection — unwatched footage is `NOT SCORED`.
+
+**Path law:** this is the **repo root** `output/<slug>/project_notes.md` — *not* `monarch/output/`.
+Create the slug folder once and keep every stage's section inside that single file.
 
 | # | Stage | Required artefact | Tooling / honest limitation |
 |---|---|---|---|
-| 1 | ANALYSE CHANNEL CONTEXT | `output/<slug>/01_channel_analysis.md` | Start from the supplied channel snapshot and audience context. `monarch learn ingest <csv_file>` imports Studio CSV/TSV performance rows; `monarch learn log` lists logged rows. `monarch vitals <render-dir>` is a per-video post-launch sheet, not a private channel-wide analytics fetch. A fresh import is optional unless requested/relevant. |
-| 2 | DISCOVER & LOG REAL FOOTAGE | `output/<slug>/02_footage_candidates.md` with exact queries, lanes, counts actually reviewed, candidates, duplicates, and coverage limits | `monarch search <query>` (YouTube), `monarch wsearch <query>`, `monarch rsearch <query>`, `monarch scrape <url>` may assist where permitted; tools/network can fail. Public links are leads only. Do not bypass access controls or automate against a site whose terms prohibit it. |
-| 3 | TRACE SOURCE & CONTEXT | `output/<slug>/03_footage_ledger.md` with lead/repost → upstream source → filmer/rightsholder chain, dates, place, context, and evidence | `monarch scrape <url>` / `monarch transcript <id>` may assist. Manually verify the original/context where possible; an earliest found post is not automatically the original. Never infer ownership from a repost. |
-| 4 | SCORE FOOTAGE QUALITY | `output/<slug>/04_scene_scores.md` — 10 evidence-backed scores + mean; shortlist only ≥8.5/10 with critical floors | Score manually from the actual moment and intended crop. `monarch fit <line> --n N` checks script/timing fit, **not** footage quality. Keep rights/claim risk out of the creative score. |
-| 5 | QUICK CLAIM-RISK / RIGHTS SCREEN | Candidate-card status and check log per `claim-risk.md`; record rights evidence separately | A quick public search can flag a known repost, restriction, or match; it cannot clear a clip or query all Content ID references. `NO MATCH FOUND` is not permission or claim-free status. |
-| 6 | SELECT ELITE SCENES | `output/<slug>/06_scene_selection.md` + evidence-backed storyline spine and explicit source/risk labels | `monarch gate-idea --title ... --hook ... --itch ... --visual ...` can gate the premise; a human confirms the selected source clips and their remaining uncertainty. |
-| 7 | WRITE SCRIPT | `output/<slug>/screenplay.fountain` + numbered, timed scene board | `monarch maths --seconds 60`, `monarch screen-script`, `monarch script-fountain`, `monarch humanize`. Natural English, factual narration, exact clip linkage; no unsupported motive, chronology, or location. |
+| 1 | ANALYSE CHANNEL CONTEXT | `output/<slug>/project_notes.md` → `## 1. Channel context` | Start from the supplied channel snapshot and audience context. `monarch learn ingest <csv_file>` imports Studio CSV/TSV performance rows; `monarch learn log` lists logged rows. `monarch vitals <render-dir>` is a per-video post-launch sheet, not a private channel-wide analytics fetch. A fresh import is optional unless requested/relevant. |
+| 2 | DISCOVER & LOG REAL FOOTAGE | `output/<slug>/project_notes.md` → `## 2. Footage candidates`: exact queries, lanes, counts actually reviewed, candidates, duplicates, and coverage limits | `monarch search <query>` (YouTube), `monarch wsearch <query>`, `monarch rsearch <query>`, `monarch scrape <url>` may assist where permitted; tools/network can fail. Public links are leads only. Do not bypass access controls or automate against a site whose terms prohibit it. |
+| 3 | TRACE SOURCE & CONTEXT | `output/<slug>/project_notes.md` → `## 3. Source & context ledger`: lead/repost → upstream source → filmer/rightsholder chain, dates, place, context, and evidence | `monarch scrape <url>` / `monarch transcript <id>` may assist. Manually verify the original/context where possible; an earliest found post is not automatically the original. Never infer ownership from a repost. |
+| 4 | SCORE FOOTAGE QUALITY | `output/<slug>/project_notes.md` → `## 4. Scene scores`: 10 evidence-backed scores + mean; shortlist only ≥8.5/10 with critical floors. Unwatched footage is `NOT SCORED`, never scored or shortlisted. | Score manually from the actual moment and intended crop. `monarch fit <line> --n N` checks script/timing fit, **not** footage quality. Keep rights/claim risk out of the creative score. If a clip is not viewable, write `NOT SCORED`, try another candidate from permitted sources, and only then ask once for an accessible upload/source. |
+| 5 | QUICK CLAIM-RISK / RIGHTS SCREEN | `output/<slug>/project_notes.md` → `## 5. Rights / claim-risk screen`: candidate-card status and check log per `claim-risk.md`; record rights evidence separately | A quick public search can flag a known repost, restriction, or match; it cannot clear a clip or query all Content ID references. `NO MATCH FOUND` is not permission or claim-free status. |
+| 6 | SELECT ELITE SCENES | `output/<slug>/project_notes.md` → `## 6. Scene selection` + evidence-backed storyline spine and explicit source/risk labels | `monarch gate-idea --title ... --hook ... --itch ... --visual ...` can gate the premise; a human confirms the selected source clips and their remaining uncertainty. |
+| 7 | WRITE SCRIPT | `output/<slug>/screenplay.fountain` + numbered, timed scene board | `monarch maths --seconds 60`, `monarch screen-script`, `monarch script-fountain`, `monarch humanize`. Natural English, factual narration, exact clip linkage; no unsupported motive, chronology, or location. Scene-specific script comes only from visually inspected, selected footage — never from unseen clips. |
 | 8 | CREATE VOICE-OVER | `output/<slug>/vo.wav` (normalize/copy backend output into this deliverable) | `monarch voiceover --script-file ... --out ...` only with an approved real voice backend. Placeholder/mumble audio is never final. |
-| 9 | EDIT | `output/<slug>/09_edl.md` — exact source in/out, sequence, captions, and sound notes | `monarch video-storyboard` / `monarch make-video` produce **previz/animatic**, not an edit of external wildlife footage. The current CLI has no general external-footage assembly path; use an actual editor and record its EDL. |
+| 9 | EDIT | `output/<slug>/09_edl.md` — exact source in/out, sequence, captions, and sound notes | `monarch video-storyboard` / `monarch make-video` produce **previz/animatic**, not an edit of external wildlife footage. The current CLI has no general external-footage assembly path; use an actual editor and record its EDL. Every row needs verified source timecodes from inspected footage; a `TBD` row is not a complete edit. |
 | 10 | MIX AUDIO | `output/<slug>/mix.wav` (VO/SFX/music plan and final mix) | `monarch sfx --kind ...` / `monarch mix --vo ... --duration 60 --out ...` may assist if the inputs fit. Check original clip audio and finish/verify in an editor or DAW as needed. |
-| 11 | RENDER | Final `output/<slug>/*.mp4`, real footage, target 9:16, 1080×1920, 30fps | **Current engine blocker:** `monarch render <dir>` renders the base `make-video` previz frames + audio; it does not assemble imported wildlife clips. Do not call a previz MP4 the final deliverable. Use a real footage-capable editor/export path or report Stage 11 blocked. |
+| 11 | RENDER | Final `output/<slug>/*.mp4`, real footage, target 9:16, 1080×1920, 30fps | **Current engine blocker:** `monarch render <dir>` renders the base `make-video` previz frames + audio; it does not assemble imported wildlife clips. Do not call a previz MP4 the final deliverable. Use a real footage-capable editor/export path or report Stage 11 blocked. If the operator asks for the final video, say this limitation first, in one short line. |
 | 12 | PACKAGE | `output/<slug>/12_package.md` with title, alternatives, copy, and conversion path | `monarch package <render-dir> --shorts --title ...` generates a launch kit for a compatible render directory; inspect it and supplement tags, hashtags, and platform-specific captions. |
 | 13 | DELIVER & PRE-PUBLISH CHECK | All 17 items in `delivery.md` + completed `output/<slug>/17_upload_checklist.md` | A human handles YouTube Studio upload/checks and the final publish decision. The CLI command `monarch upload <file>` is a file/release transfer, **not** YouTube publishing. Studio checks can take time and are not final rights clearance. |
 
@@ -78,15 +91,59 @@ footage, private analytics, licences, or platform checks were processed when the
 
 ---
 
-## 3. APPROVAL GATES — STOP AND WAIT HERE
+## 3. APPROVAL GATES — STOP AND WAIT AT EVERY STEP
 
 The base Monarch WAIT law still applies. **Continue after approval; do not terminate the whole
 workflow at a research list, idea, or script.** A wait gate is a human quality-control point,
 not an excuse to abandon the assignment.
 
+### Per-stage permission law (Cam)
+
+- **Har stage ke baad ruko.** Short update in easy Roman Urdu (max 5 bullets), then ask
+  permission for the next stage and WAIT. The named gates A–E below are mandatory quality gates,
+  but the ask applies to **every** stage — Stage 1 se pehle bhi aur har stage ke baad bhi.
+- **Never self-start:** do not begin Stage 1, open a search, write a file, or run a stage tool
+  until the operator has answered the entry questions and approved that step.
+- **Never self-pick:** topic, ratio, length, idea, scene, script line, VO voice, title, cover
+  text — har choice operator ki hai. Agent sirf options + apni recommendation de sakta hai, pick
+  nahi kar sakta.
+- **Ask, then wait:** `Aage barhoon?` / `Ijaazat?` — aur operator ka jawab aane tak ruk jao.
+  Unclear jawab par sirf wahi sawal dohrayo, khud aage mat barho.
+- **Stopping to ask is not "ending the workflow":** research list/idea/script ke baad workflow
+  khatam nahi karna — magar agle stage se pehle ijaazat lena lazmi hai.
+
+Example asks (chhote, Roman Urdu):
+
+```
+Stage 1 ke baad:  "Channel context ready — footage search shuru karun?"
+Stage 2 ke baad:  "X candidates mile — source/context trace karun?"
+Stage 3 ke baad:  "Source/rights status yeh hai — scoring karun?"
+Stage 4 ke baad:  "Scores yeh — claim-risk screen karun?"
+Stage 5 ke baad:  "Labels yeh — Gate A ke liye selection dikhaun?"
+Stage 7 ke baad:  "Script ready — VO banau?"
+Stage 8 ke baad:  "VO ready — edit/EDL banau?"
+```
+
+### Reply language & length (Cam)
+
+- Saari baat-cheet, updates aur sawal **easy Roman Urdu (Urdu–English mix)** mein — short aur
+  saaf. Sirf final deliverables (narration script, captions, titles/copy) English mein.
+- Milestone update = **max 5 bullets**; koi bara paragraph, long chat dump, ya tool log nahi.
+- Results chat mein bhi do (sirf file bana kar chup mat ho jao), magar chhote mein.
+
+- **Question discipline:** at each gate ask only what that stage's decision needs. Never batch
+  destination URL, editor, VO, or disclosure questions into Gate A; a missing destination URL is
+  not an early blocker.
+- **“Aage barho” / “continue”** approves only the current creative gate — never missing intake,
+  unchosen options, rights approval, vendor contact, or publication permission. It never sets
+  `OPERATOR APPROVED WITH RISK NOTED`; that status requires the operator's explicit
+  acknowledgement of a **named** risk.
+- **Gate A requires inspection:** candidates presented at Gate A must have been visually watched.
+  Unwatched footage is `NOT SCORED` — never scored, shortlisted, or described as reviewed.
 - **Gate A — after Stage 6:** show selected highest-scoring scenes, score evidence, source/context
   confidence, rights and claim-risk labels, unresolved questions, and storyline spine/title
-  promise. Wait for `perfect | improve`. Do not script before approval.
+  promise. Wait for `perfect | improve`. Do not script before approval, and do not ask future-stage
+  questions (destination URL/editor/VO/disclosure) here.
 - **Gate B — after Stage 7:** present the Fountain script + numbered timecoded board. Wait for
   `perfect | improve`. Do not produce final VO/edit from an unapproved script.
 - **Gate C — after Stage 9:** present storyboard/EDL and VO recommendation. Wait for explicit
@@ -98,9 +155,10 @@ not an excuse to abandon the assignment.
   `approve | redo`. Then hand over to the human uploader. The human runs YouTube Studio Checks
   on the intended final draft and makes the publish decision; the agent never publishes.
 
-Between approval gates, run the stages in order without stopping for a decorative update.
-If source, risk evidence, or tooling is incomplete, report it honestly and request only the
-action needed to decide or unblock it.
+Run the stages in order and stop at **every** stage for a short update + permission (per-stage
+law above). A stop is one short Roman Urdu message with the result and one question — not a long
+report. If source, risk evidence, or tooling is incomplete, report it honestly and request only
+the action needed to decide or unblock it.
 
 ---
 
@@ -112,6 +170,10 @@ DO NOT END THE WORKFLOW AT LINKS.
 DO NOT END THE WORKFLOW AT A SCRIPT.
 DO NOT END THE WORKFLOW AT A RESEARCH LIST.
 ```
+
+**Note:** yeh "workflow khatam na karo" law hai — iska matlab permission skip karna **nahi**.
+Har stage par §3 ka per-stage ask (update + `Aage barhoon?` + WAIT) lazmi hai; approval ke baad
+kaam continue hota hai.
 
 Research links must become deduplicated, source/context-checked candidates; candidates must
 become genuinely elite, scored selections with honest rights/claim-risk labels; approved scripts

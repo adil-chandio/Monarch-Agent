@@ -10,6 +10,12 @@ This is a per-video brief, not permanent channel identity. Keep the brand, both 
 analytics baseline in the world-level files. The filename and working title are not evidence
 that a bear “learned” a door or that a location is “ours.”
 
+This brief is **provisional and not auto-selected**. Before any stage work, the Cam entry
+questions still apply — the agent asks **topic · ratio · length** in simple Roman Urdu and waits;
+if ideas are requested, it gives 10 ideas and waits for the pick. The agent never chooses topic,
+ratio, or length from this file. Stages 1–6 research stays in one `output/<slug>/project_notes.md`
+with per-stage sections — not six separate reports.
+
 ---
 
 ## The promise
@@ -64,12 +70,17 @@ claims. Record written licence/permission evidence if available, but do not bloc
 creative discovery just because it has not yet been obtained. Run the quick screen in
 `claim-risk.md`; no match is not clearance. Present unresolved rights/claim status to the
 operator before selection and record the decision. Do not remove a watermark or bypass a site's
-access controls.
+access controls. Analysis and planning may continue while rights are unknown, but the status is
+written as `RIGHTS UNKNOWN` — and no vendor contact, licence request, or payment happens without
+the operator's explicit authorization.
 
 No quality score or rights status is presumed. Apply the 10-criterion scorecard in
 `sources.md`; shortlist only a final mean of at least 8.5/10, the stated critical floors, and
-all source/context/safety gates. Rights and claim-risk are separate labels, not score
-components. If a scene has a known no-reuse restriction or a detected claim without evidence
+all source/context/safety gates. Score only what was actually watched: a clip that cannot be
+viewed is `NOT SCORED` — try another permitted candidate, and only then ask once for an
+accessible upload/source. Never write scene-specific script/VO/EDL from unseen footage, and
+never present `TBD` timecodes as a complete edit. Rights and claim-risk are separate labels,
+not score components. If a scene has a known no-reuse restriction or a detected claim without evidence
 covering the intended use, do not use it by default. If nothing passes the creative threshold,
 keep searching or report that no A+ moment was found—never fill with AI wildlife or misleading
 reposts.
@@ -131,7 +142,9 @@ Possible cover text: `BEAR INSIDE?` or `DOOR OPENED`—only if the frame honestl
 
 A/B titles and pinned comment should point to an existing, relevant Monarch Cam video or
 playlist. If no destination exists, do not fabricate a URL; flag the missing destination and
-propose the next content asset.
+propose the next content asset. The missing destination URL is **not** a Gate A blocker: ask
+only the current gate's question, and do not batch destination URL/editor/VO/disclosure
+questions into Gate A.
 
 See `packaging.md` for the no-”Part 2” rule and connected-video system.
 
@@ -150,3 +163,19 @@ YouTube Studio Checks and makes the publish decision.
 policy. Do not pre-fill “no” just because the brief asks for real footage. If any visuals,
 voices, or events are synthetically generated or materially altered, identify them and evaluate
 the current disclosure requirement explicitly.
+
+---
+
+## Gate and reply discipline for this assignment
+
+- **Har stage ke baad ruko:** short Roman Urdu update (max 5 bullets) + `Aage barhoon?` → WAIT.
+  Bina ijaazat next stage/file/tool nahi. Yeh brief khud se start nahi hota — pehle Cam entry
+  questions (topic · ratio · length) ke jawab lo.
+- **“Aage barho” / “continue”** approves only the current creative gate — not missing intake,
+  unchosen options, rights approval, vendor contact, or publication permission. It never sets
+  `OPERATOR APPROVED WITH RISK NOTED`; that status needs the operator's explicit acknowledgement
+  of a **named** risk.
+- Replies are concise simple Roman Urdu; milestone updates max 5 bullets; results chat mein bhi.
+  No long dumps, tool logs, duplicate/scratch files, or separate licence-request files.
+- `monarch render` produces a previz — not the final MP4 from this imported footage. Say the
+  limitation first, in one short line, before any final-video promise.

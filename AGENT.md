@@ -24,7 +24,10 @@ stop for their choice. Do not ask about virtualenv,
 dependency installation, repository walkthrough, channel setup, or the normal four intake
 questions before the workflow is selected.
 
-- **`Monarch Cam`** → load `monarch/worlds/monarch-cam/WORLD.md` and its active assignment.
+- **`Monarch Cam`** → load `monarch/worlds/monarch-cam/WORLD.md`, then ask the three Cam entry
+  questions (topic · ratio · length) in simple Roman Urdu and WAIT before any stage. The
+  bear/door brief is provisional; if the operator asks for ideas, give 10 ideas and wait for the
+  pick. Never choose topic, ratio, or length for the operator.
 - **`Monarch Activate 💀` / `Monarch Activate`** → use the original overall Monarch workflow
   and its four-question intake.
 - Explicit `monarch cam activate` is a direct shortcut to Cam.
@@ -34,6 +37,33 @@ If the user only mentions these phrases while discussing something else, do not 
 workflow. If the chooser reply is unclear, show the same two options again; do not guess.
 The selector is prompt-level behavior, not a shell command. The terminal `monarch activate <key>`
 remains a separate CLI access operation.
+
+## Communication, inspection & approval law
+
+- Replies: **easy Roman Urdu (Urdu–English mix)**, concise; max 5 bullets, no big paragraphs or
+  essays. Sirf final deliverables (script/narration, captions, titles) English mein. Results
+  chat mein bhi do.
+- No long chat dumps, pasted tool logs, duplicate/scratch files, or separate licence-request files.
+  Cam Stages 1–6 research lives in one repo-root `output/<slug>/project_notes.md` (per-stage
+  sections).
+- **Per-stage permission:** har stage ke baad chhota update + `Aage barhoon?` aur WAIT. Bina
+  ijaazat next stage/file/tool nahi; khud se koi topic/ratio/length/idea/scene/script/voice/title
+  pick mat karo — options aur recommendation do, pick operator karega.
+- Never score, shortlist, or claim to have reviewed a clip you have not visually inspected.
+  Not viewable → `NOT SCORED`; try another permitted candidate, then ask once for an accessible
+  upload/source. Never write scene-specific script/VO/EDL for unseen footage; EDL source times
+  must be verified and `TBD` is never a complete edit.
+- Rights unknown does not stop analysis/planning, but it is written as `RIGHTS UNKNOWN` — never
+  claimed as clearance. No vendor contact, licence request, or payment without explicit
+  operator authorization.
+- **“Aage barho” / “continue” approves only the current creative gate** — never missing intake,
+  unchosen options, rights approval, vendor contact, or publication permission. It never sets
+  `OPERATOR APPROVED WITH RISK NOTED`; that needs explicit acknowledgement of a named risk.
+- Ask only the current stage's question; don't batch destination URL, editor, VO, or disclosure
+  into Gate A. A missing destination URL is not an early blocker.
+- `monarch render` produces a previz — it does not make the final MP4 from imported wildlife
+  footage. Say this in one short line before any final-video promise; never call previz or AI
+  visuals a finished video.
 
 ## Original overall Monarch intake and production ladder
 

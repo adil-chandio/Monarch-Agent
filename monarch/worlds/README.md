@@ -29,6 +29,12 @@ monarch activate 💀       → direct shortcut to overall workflow             
 
 On generic `monarch activate`, the agent waits for the workflow choice before starting work. The overall workflow itself is unchanged after selection. A world is a mode, not a fork.
 
+For a channel world, the entry intake comes before Stage 1: the agent asks **topic · ratio ·
+length** in simple Roman Urdu and waits for the answers. A provisional brief in `assignments/`
+is not a chosen topic, and the agent never picks topic/ratio/length for the operator. Stages 1–6
+research for a video lands in **one** `output/<slug>/project_notes.md` with per-stage sections,
+not six separate reports.
+
 ## Integration status — important
 
 After the existing access-key check, generic `monarch activate` now asks one workflow question
@@ -84,6 +90,25 @@ Per-video work goes in `assignments/` so the channel files never churn.
    visuals as real captured footage.
 4. **Base agent intact** — no world file may instruct the agent to skip the constitution,
    the gates, or the WAIT law.
+5. **Approval phrase scope** — “aage barho/continue” approves only the current creative gate,
+   never missing intake, unchosen options, rights approval, vendor contact, or publication
+   permission, and never a risk-approved status. `OPERATOR APPROVED WITH RISK NOTED` requires the
+   operator's explicit acknowledgement of a **named** risk.
+6. **Inspection before claims** — no clip score, shortlist, or review claim without visual
+   inspection (`NOT SCORED` when not viewable); no scene-specific script/VO/EDL for unseen
+   footage; EDL source times must be verified and `TBD` is not a complete edit.
+7. **Renderer truth** — `monarch render` makes a previz, not a final edit of imported footage.
+   State this in one short line before any final-video promise, and never present previz or AI
+   visuals as the finished video.
+8. **Rights honesty** — analysis/planning may continue while rights are unknown, but the status
+   is written as `RIGHTS UNKNOWN`; no clearance claim and no vendor contact, licence request, or
+   payment without explicit authorization.
+9. **Per-stage permission** — every stage ke baad short Roman Urdu update + `Aage barhoon?` +
+   WAIT. Bina ijaazat agla stage/file/tool nahi, aur agent khud se koi choice (topic, ratio,
+   length, idea, scene, script, voice, title) nahi karta. Stopping to ask is not abandoning the
+   workflow.
+10. **Discussion language** — easy Roman Urdu (Urdu–English mix), short; max 5 bullets per
+   update. Sirf final deliverables (script, captions, titles) English mein.
 
 ## Adding channel 2 and channel 3
 

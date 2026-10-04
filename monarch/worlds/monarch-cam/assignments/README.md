@@ -8,4 +8,11 @@ folder; keep one-off titles, clip leads, scene order, and desired deliverables h
   recorded separately before an operator selects a scene.
 
 Before starting an assignment, check its status and source/risk notes. A brief is not evidence
-that assets are available, rights are cleared, or a task is already completed.
+that assets are available, rights are cleared, or a task is already completed — and a brief is
+**not a chosen topic**: the operator's Cam entry answers (topic · ratio · length) come first,
+then the agent waits.
+
+Stages 1–6 research for an assignment lives in one `output/<slug>/project_notes.md` with
+per-stage sections — do not split it into six reports. No clip score, shortlist, or review claim
+without visual inspection (`NOT SCORED` otherwise); no vendor contact, licence request, or
+payment without explicit operator authorization.

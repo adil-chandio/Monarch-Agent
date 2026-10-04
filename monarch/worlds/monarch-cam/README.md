@@ -25,6 +25,22 @@ original English storytelling, factual context, tension, humour, and surprising 
 | 9 | `delivery.md` | the 17 required deliverables and pre-publish QC/checklist |
 | 10 | `assignments/` | the current per-video brief(s) |
 
+## Entry intake — before Stage 1
+
+After access and world selection, the agent asks three things in simple Roman Urdu and **waits**:
+**topic · ratio · length**. The bear/door brief is provisional only; if the operator asks for
+ideas, give **10 ideas** and wait for the pick. Never choose topic, ratio, or length yourself.
+
+**Per-stage permission:** har stage ke baad ruko — short Roman Urdu update (max 5 bullets), phir
+`Aage barhoon?` aur WAIT. Agent khud se stage start ya choice pick nahi karta. Saari discussion
+easy Roman Urdu mein; sirf deliverables English mein.
+
+Stage 1–6 research is collected in one repo-root `output/<slug>/project_notes.md` (`monarch/output/`
+nahi) with per-stage sections — not six separate reports. No clip score, shortlist, or review
+claim without actual visual inspection (`NOT SCORED` otherwise). `monarch render` produces a
+previz; it does **not** produce the final MP4 from imported wildlife footage, so that limitation
+is stated in one short line before any final-video promise.
+
 ## One-paragraph version of this channel
 
 The supplied snapshot reports real discovery (2.1M all-time views, 3,833 subscribers) but weak
