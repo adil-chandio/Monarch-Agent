@@ -1,34 +1,38 @@
 # MONARCH CAM — AUDIENCE INTELLIGENCE
 
-Three **different** audience segments are reported in the operator-supplied snapshot. They
-are not interchangeable, and a video made for one may underperform for another. Identify
-which audience a brief targets in Stage 1, before any creative decision. The supplied audience
-figures have not been independently checked in this repo.
+The segments below come from an operator-supplied historical snapshot and have not been
+independently checked in this repository. They are useful **creative context and hypotheses**,
+not immutable audience laws or a promise about the next upload. Analytics are not a compulsory
+refresh/import step; use the supplied snapshot unless the operator provides or requests newer
+Studio evidence.
+
+Before making a creative choice, identify the brief's **primary pillar and intended viewer
+need**. Aim one piece at one clear viewing motive while keeping it understandable to other
+people who encounter it. Do not mix the two pillars into one video without a clear connection.
 
 ---
 
-## AUDIENCE 1 — BEAR / HUMAN-PROXIMITY (Engine A)
+## AUDIENCE 1 — BEAR / HUMAN-PROXIMITY (Pillar: Too Close: Wildlife in Human Space)
 
 | | |
 |---|---|
-| Gender | 83–89% male |
-| Age | strongly older — Bear Part 3: **95.4% age 55+** · Bear Original: **71.4% age 55+** |
-| Geographies | United States, Canada, Japan |
-| Device | **TV-heavy — 40.5–43% TV watch time** |
-| Relationship | **mostly non-subscribed viewers** |
+| Gender | 83–89% male in the supplied bear-video reports |
+| Age | older in those reports — Bear Part 3: **95.4% age 55+** · Bear Original: **71.4% age 55+** |
+| Geographies | United States, Canada, Japan in the reported examples |
+| Device | **TV-heavy on those long-form examples — 40.5–43% TV watch time** |
+| Relationship | mostly non-subscribed viewers in the reported examples |
 
-### Creative consequences (hard rules, not preferences)
+### Creative implications to test
 
-- natural, mature, **native-level English**
-- clear, **big** visual storytelling — it is watched on a television
-- **no tiny text**, no loud clutter, no forced slang, no hyperactive "Gen-Z" copy
-- **calm confidence beats fake drama**
-- big animals, big readable actions, clear real sound, human-space tension
-- every scene must be understandable from a living-room couch, at a distance, possibly
-  with the sound low
+- natural, mature, clear English;
+- big, readable visual storytelling and captions legible on both TV and mobile;
+- avoid tiny text, loud clutter, forced slang, and fake drama;
+- favour calm confidence, real sound, and human-space tension over exaggerated narration;
+- keep the animal/action understandable at a distance or with the sound low.
 
-**Design test:** squint at the frame. If the action is not readable, the scene fails for
-this audience no matter how good the clip is.
+**Design check:** reduce the preview and squint. If the central action is not readable, consider
+a clearer frame/crop or reject the scene. Do not crop away context merely to make the action
+look more dramatic.
 
 ---
 
@@ -45,72 +49,72 @@ this audience no matter how good the clip is.
 | Age 35–44 | 23% |
 | Age 45–54 | 16% |
 
-Broader and younger than Audience 1. This is the channel-level average — use it for
-brand/playlist decisions, not for individual video decisions.
+This is the supplied channel-level average, not a forecast for an individual video. Use it for
+brand/playlist context; use the intended pillar and available video-level evidence for a
+specific brief.
 
 ---
 
-## AUDIENCE 3 — INVISIBLE / DISCOVERY (Engine B)
+## AUDIENCE 3 — VISUAL DISCOVERY (Pillar: Nature's Hidden Tricks)
 
 | | |
 |---|---|
-| Core age | **25–44** (86–90% on benchmarked videos) |
-| Gender | more balanced, sometimes female-skewed |
-| Geographies | globally mixed — US, Philippines, India all significant |
-| Devices | mobile / tablet / TV all present |
-| Needs | **visual curiosity, not fake danger** |
+| Core age | **25–44** (86–90% on the supplied benchmark videos) |
+| Gender | more balanced, sometimes female-skewed in those examples |
+| Geographies | globally mixed — US, Philippines, India were significant in the reports |
+| Devices | mobile, tablet, and TV all present |
+| Needs | visual curiosity and a real reveal, not fake danger |
 
-### Creative consequences
+### Creative implications to test
 
-- the premise must survive **translation** — language-light, visually self-explanatory
-- the game must start before the click ("can you spot it?")
-- frequent small payoffs beat one big reveal
-- **no fear-based packaging** — this audience is not the bear audience
-- captions must work on a phone held at arm's length
+- premise should survive translation and be visually self-explanatory;
+- begin the “can you spot it?” game before the reveal, without a misleading thumbnail or edit;
+- offer clear small discoveries where the footage supports them;
+- avoid fear-based packaging; keep captions readable on a phone;
+- make the fact/reveal checkable, not a made-up puzzle answer.
 
 ---
 
 ## CROSS-AUDIENCE RULES
 
-1. **One video = one audience.** Do not write for the 55+ TV viewer and the 25–34 mobile
-   viewer in the same 60 seconds.
-2. **Language is always English** for all three (see `rules.md`).
-3. **Non-subscribed majority** is the reality → every video must earn the subscribe on its
-   own, and every video must hand the viewer to a next video (see `analytics.md`).
-4. **TV watch time is 40–60%** on the biggest winners → treat television as the primary
-   display, mobile as the secondary. This inverts normal Shorts advice.
+1. **One primary viewing motive per video.** A video should have one clear promise, but it can
+   remain accessible to more than one age, gender, or device group.
+2. **Final narration and on-screen copy are English** for all three segments (see `rules.md`).
+3. The supplied reports show many non-subscribed viewers. Give each video a satisfying standalone
+   promise and a relevant next-video path; do not force a subscribe plea into the story.
+4. Some historical winners had high TV watch time. That does not make TV the primary device for
+   every format. Shorts are vertical and often mobile-first; prioritize truthful action clarity
+   and readability across mobile, tablet, and TV instead of designing for one screen only.
 
 ---
 
-## SHORTS DIAGNOSIS
+## SHORTS DIAGNOSIS — A HYPOTHESIS, NOT A VERDICT
 
-Top historical Shorts confirm the same engines: animal action, animal proximity,
-elephant/buck movement, close human-animal moments, quick visual surprise.
-
-A recent Monarch Cam bear Short **failed** in its first 45–46 minutes:
+An operator-reported early snapshot for one Monarch Cam bear Short showed:
 
 | | |
 |---|---|
+| Elapsed time | about 45–46 minutes |
 | Views | 10 |
-| Rank by views | **10 of 10** among recent uploads |
+| Rank by views | 10 of 10 among recent uploads at that time |
 | Shorts Feed | 90% · YouTube Search 10% |
 | Engaged views | 1 |
-| Stayed to watch | **9.1%** |
-| Swiped away | **90.9%** |
-| Avg view duration | **0:17** on a ~0:47 Short |
+| Stayed to watch | 9.1% |
+| Swiped away | 90.9% |
+| Avg view duration | 0:17 on a roughly 0:47 Short |
 | Retention chart | not yet processed |
 
-### The single most important conclusion
+With only ten views and less than an hour of data, this is **too small and early to diagnose a
+packaging failure or a content failure**. Treat the swipe-away result as a reason to review the
+first frame, hook, and distribution context—not proof of the cause. Reassess after a meaningful
+sample and processed retention data become available.
 
-**The first-frame / first-seconds stop signal was weak.** 90.9% swipe-away is a packaging
-failure at second zero, not a content failure at second thirty.
+### Useful opening/edit checks for future Shorts
 
-### Therefore, for every future Short
-
-- do **not** begin with a generic bear clip
-- do **not** begin with title cards, logos, slow scenic shots, commentary before proof, or a
-  weak countdown setup
-- **start on the single most unbelievable visual frame**
-- the opening must instantly answer: *"why should I stop scrolling?"*
-- deliver a **bigger payoff every 8–15 seconds**
-- the strongest visual appears **first** — never held to the end without proof in between
+- avoid a generic bear shot, logo, title card, slow scenic shot, or commentary before the
+  promised visual evidence;
+- start on the clearest truthful action that signals the premise immediately—not automatically
+  the most shocking or dangerous frame;
+- keep the strongest verified moment visible early; do not withhold all proof until the end;
+- add new information or a payoff when the story supports it; do not force a “bigger” beat every
+  8–15 seconds or manufacture escalation through arbitrary cuts.

@@ -1,13 +1,15 @@
 # MONARCH CAM — PACKAGING & CONVERSION
 
-Stage 12. Packaging is the primary lever on this channel: Browse Features supplied 68–90% of
-traffic on every benchmarked winner (see `analytics.md`).
+Stage 12. Packaging is an important lever on this channel: the operator-supplied Analytics
+snapshot reports Browse Features supplied 68–90% of traffic on the benchmarked winners (see
+`analytics.md`). Treat that as historical context, not a guarantee about a new upload.
 
 ---
 
 ## THE PACKAGING LAW
 
-**Generic = dead.** A title must state the *specific* viral premise.
+**Generic = dead. Specific must also be true.** A title should state the actual, verified viral
+premise—not upgrade a sighting into an attack, infer motive, or promise more than the clip shows.
 
 Banned example (too generic, does not communicate the premise):
 
@@ -15,63 +17,70 @@ Banned example (too generic, does not communicate the premise):
 ✗ Bears Caught on Camera… Wait Till the Last One
 ```
 
-Strong directions:
+Possible directions for the bear-door brief, **only if the selected source supports the exact
+claim**:
 
 ```
-✓ Bears Have Learned How to Open Our Doors          (primary)
-✓ This Bear Knew Exactly How to Get Inside          (A/B)
-✓ Why Bears Keep Breaking Into Cars and Cabins      (A/B)
+✓ A Bear Opened This Car Door
+✓ This Bear Got Into a Car — Here's What the Clip Shows
+✓ Why Bears Check Cars for Food                    (requires reliable factual sourcing)
 ```
 
-Why the first one wins: subject + learned behaviour + **our** doors. It is a claim about
-intelligence and proximity, not a promise of a clip.
+“Learned,” “knew exactly,” “our doors,” and “keeps coming back” are **not approved default
+claims**. Use them only if the footage, source, and factual context support them. A strong title
+must be specific without attributing unverified motive, combining unrelated clips into one
+event, or pretending the location/door belongs to Monarch Cam.
 
-Also banned by base agent (`GENERIC_TITLE_BANS` in `monarch/schemas.py`): "top 10",
-"you won't believe", "gone wrong", "subscribe", "link in bio", year-stamp titles. Run every
-title through `monarch gate-title`.
+Also banned by the base agent (`GENERIC_TITLE_BANS` in `monarch/schemas.py`): “top 10,”
+“you won't believe,” “gone wrong,” “subscribe,” “link in bio,” and year-stamp titles. Run every
+title through `monarch gate-title`, then manually verify its factual promise against the final
+edit.
 
-## THE "PART N" BAN
+## THE “PART N” BAN
 
-From `analytics.md`: Part 2 of a proven winner had **better** completion (38.5% vs 34.9%) and
-**far worse** reach (1.2M vs 3.2M impressions). A sequel title creates entry friction and
-kills independent clickability.
+From `analytics.md`: Part 2 of a benchmarked winner had **better** completion (38.5% vs 34.9%)
+and **far fewer** impressions (1.2M vs 3.2M). A sequel title can create entry friction and
+reduce independent clickability.
 
-**Every upload needs a standalone irresistible promise.** Never "Part 2", "Part 3",
-"More of…", "The sequel".
+**Every upload needs a standalone promise.** Avoid “Part 2,” “Part 3,” “More of…,” and “The
+sequel” unless the operator explicitly chooses a serialized format with a clear reason.
 
 ## COVER TEXT
 
 Two to four words, readable on a phone at arm's length and on a TV across a room.
 
+Possible bear-brief text (use only if the selected frame makes it literally true):
+
 ```
-IT OPENED THE DOOR
+DOOR OPENED
 BEAR INSIDE?
 ```
 
-Rules: no arrows, no target circles, no rating UI, no clutter (see `rules.md`). The cover
-text must be *true* — it is the promise the video keeps.
+Rules: no arrows, target circles, rating UI, or clutter (see `rules.md`). Cover text is a
+promise the final video must keep.
 
 ## PINNED COMMENT
 
-Always routes the viewer to the connected long-form story or playlist:
+Route the viewer to a connected long-form story or playlist that actually exists:
 
 ```
-Full story: Why Bears Keep Coming Back to Human Homes → [link]
+Full story: <verified related story or playlist> → [link]
 ```
 
-Never "subscribe for more". Never empty.
+Avoid “subscribe for more” filler. If no relevant destination exists, do not invent a URL;
+flag the missing destination and propose the next content asset.
 
-## EVERY SHORT MUST LEAD SOMEWHERE
+## EVERY SHORT SHOULD LEAD SOMEWHERE
 
-Pick one, deliberately, and wire it in:
+Pick one relevant destination and wire it in:
 
-- a relevant long-form video
-- a relevant playlist
-- a relevant next Short
-- an end screen or description path where available
+- a related long-form video;
+- a relevant playlist;
+- a relevant next Short;
+- an end-screen or description path where available.
 
-End screens are a proven traffic source on this channel (14.3% on Bear Part 3) — they are
-never filler.
+End screens were a traffic source on Bear Part 3 in the supplied snapshot; that is useful
+channel context, not a guarantee. They are never filler.
 
 ## THE ACTUAL GOAL
 
@@ -80,15 +89,16 @@ Shorts discovery → connected wildlife story → returning viewers → subscrib
                   → evergreen recommendation system
 ```
 
-Views are the input, not the output. The channel's real problem is ~1.83 subs per 1,000
-views (`analytics.md`) — so a Short that gets views and leads nowhere has not done its job.
+Views are the input, not the output. The supplied snapshot reports ~1.83 subscribers per 1,000
+views (`analytics.md`); a Short that gets views and leads nowhere has not done its connection
+job.
 
 ## OTHER PLATFORMS
 
-- **TikTok caption** — native to TikTok, not a YouTube description copy-paste
-- **Instagram Reels caption** — native to Reels
-- **Hashtags** — platform-appropriate set, not a keyword dump
-- **Tags** — YouTube tags from the real premise and its search variants
+- **TikTok caption** — native to TikTok, not a YouTube description copy-paste.
+- **Instagram Reels caption** — native to Reels.
+- **Hashtags** — platform-appropriate set, not a keyword dump.
+- **Tags** — YouTube tags from the verified premise and its search variants.
 
 ## FINAL PACKAGE CHECK
 
@@ -98,4 +108,6 @@ monarch gate-title ...   # gate the titles
 monarch slop-audit ...   # catch generic/filler language
 ```
 
-If `gate-title` or `slop-audit` complains, the title changes. The gate is not advisory.
+A tool gate does not fact-check the footage. If `gate-title` or `slop-audit` complains, fix the
+copy, then verify the final title promise against the actual edit. Never change the facts to
+save a catchy title.

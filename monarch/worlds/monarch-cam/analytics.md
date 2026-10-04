@@ -2,15 +2,16 @@
 
 All numbers below are the snapshot the operator supplied and described as verified. They have
 **not been independently checked in this repo**. The snapshot date and source-export files
-were not included; capture both when refreshing it. Never relabel an operator-reported figure
-as independently verified.
+were not included; record both if the operator later refreshes it. Never relabel an
+operator-reported figure as independently verified.
 
-Stage 1 must compare against the latest YouTube Studio evidence manually. If the operator
-provides a Studio CSV/TSV, the actual importer is `monarch learn ingest <csv_file>` and
-`monarch learn log` shows records already in the learning log. `monarch vitals <render-dir>`
-is a **per-video post-launch sheet**, not a channel analytics fetch. There is no current CLI
-command here that fetches private Studio channel analytics automatically; do not claim it
-refreshed subscriber/viewer metrics.
+Analytics are **context, not a compulsory refresh/import step**. Stage 1 may use this supplied
+baseline; do not delay footage discovery to obtain a newer Studio export. If the operator
+provides or asks to analyze a Studio CSV/TSV, the actual importer is
+`monarch learn ingest <csv_file>` and `monarch learn log` shows records already in the learning
+log. `monarch vitals <render-dir>` is a **per-video post-launch sheet**, not a channel analytics
+fetch. There is no current CLI command here that fetches private Studio channel analytics
+automatically; do not claim it refreshed subscriber/viewer metrics.
 
 ---
 
@@ -178,16 +179,26 @@ a major distribution and monetisation risk.**
 
 ---
 
-## THE SEVEN LAWS THIS DATA PROVES
+## SEVEN HISTORICAL SIGNALS — HYPOTHESES, NOT CAUSAL LAWS
 
-1. **Specific premise beats generic premise.** Every winner had one readable promise.
-2. **"Part N" costs reach.** Never title a sequel as a sequel — give it its own promise.
-3. **Browse is the main engine** (68–90% of traffic on every winner) → packaging is the
-   primary lever, more than SEO.
-4. **End screens are a real traffic source** → every video ships with a deliberate end-screen
-   target, never "subscribe" filler.
-5. **Age restriction kills distribution and revenue** → no graphic harm, ever.
-6. **Completion hovers at 28–38%** → retention is the biggest open opportunity; structure
-   must escalate, not list.
-7. **Evergreen is achievable** (921 views/48h after 2+ years) → build recommendation
-   connections, not one-off spikes.
+These are observations from a small, operator-supplied set of historical videos. Packaging,
+subject, length, thumbnail, upload timing, distribution, and other factors may differ. Do not
+treat these correlations as proof of cause or as targets for a new Short.
+
+1. **Specific premises appeared on the reported winners.** Test a clear, truthful promise
+   against generic packaging; do not guarantee that specificity alone wins.
+2. **The supplied Part 2 examples had less reach than their originals.** Sequel wording may add
+   entry friction, but topic, packaging, timing, and distribution are confounders. Prefer a
+   standalone promise; treat “Part N” as a test, not a universal causal rule.
+3. **Browse Features accounted for 68–90% of traffic on these winners.** Packaging deserves
+   attention in this sample; do not assume Browse will dominate every new upload or ignore
+   discovery/search context.
+4. **End screens were a meaningful source on one reported Bear Part 3 (14.3%).** Use a relevant
+   destination where available; one video's result is not a guaranteed baseline.
+5. **One bear sequel was age-restricted.** The supplied note calls it a distribution/monetization
+   risk; avoid graphic harm and misleading framing, but do not claim age restriction alone
+   explains its performance.
+6. **Reported long-form completion ranged roughly 28–38% across these examples.** This is
+   descriptive, not a target for Shorts. Measure each format and length on its own evidence.
+7. **One video still received 921 views in 48 hours more than two years later.** Evergreen
+   discovery is possible; build useful connected-video paths without promising a long tail.
