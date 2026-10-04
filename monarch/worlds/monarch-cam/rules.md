@@ -76,7 +76,32 @@ make it look clean.
 
 The current render/preview tools create a **previz/animatic**; they do not assemble imported
 wildlife footage into a finished deliverable. Do not claim the production is complete without
-a real editor/export path and human review. See `WORLD.md` §4 and `delivery.md`.
+a real editor/export path and human review. If the operator asks for the final video, state this
+limitation first, in one short line — never present previz or AI visuals as the finished video.
+See `WORLD.md` §4 and `delivery.md`.
+
+## §INSPECTION BEFORE CLAIMS
+
+- Never write a clip score, shortlist, or review verdict for footage you have not visually
+  watched. A clip that cannot be viewed is `NOT SCORED`; try another candidate from permitted
+  sources, and only then ask **once** for an accessible upload/source.
+- Never write scene-specific script, VO, or EDL from unseen footage. EDL source timecodes must
+  be verified from inspected footage; `TBD` never counts as a complete edit.
+- Rights unknown does not stop analysis or planning — but it must be written as `RIGHTS UNKNOWN`
+  and never claimed as clearance. No vendor contact, licence request, or payment without the
+  operator's explicit authorization.
+
+## §APPROVAL PHRASE, QUESTIONS & REPLIES
+
+- “Aage barho” / “continue” approves **only the current creative gate** — never missing intake,
+  unchosen options, rights approval, vendor contact, or publication permission. It never sets
+  `OPERATOR APPROVED WITH RISK NOTED`; that status needs the operator's explicit acknowledgement
+  of a **named** risk.
+- Ask only the current stage's question. Never batch destination URL, editor, VO, or disclosure
+  questions into Gate A; a missing destination URL is not an early blocker.
+- Replies are concise simple Roman Urdu; milestone updates max 5 bullets; results chat mein bhi.
+- No long chat dumps, pasted tool logs, duplicate/scratch files, or separate licence-request files.
+  Stages 1–6 research lives in one `output/<slug>/project_notes.md` (per-stage sections).
 
 ---
 

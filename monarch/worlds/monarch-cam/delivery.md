@@ -10,12 +10,12 @@ research/planning artefacts are complete; never present a partial package as a f
 
 | # | Deliverable | Artefact |
 |---|---|---|
-| 1 | Final **60-second 1080×1920 9:16 MP4** | `output/<slug>/*.mp4` |
+| 1 | Final **60-second 1080×1920 9:16 MP4** | `output/<slug>/*.mp4` (real footage; base previz is not this file) |
 | 2 | Full **timecoded English narration script** | `output/<slug>/screenplay.fountain` + scene board |
 | 3 | **Voice-over audio file** | `output/<slug>/vo.wav` |
 | 4 | Final **VO / SFX / music mix** | `output/<slug>/mix.wav` |
-| 5 | **Footage source, context, rights, and claim-risk ledger** | `output/<slug>/03_footage_ledger.md` + check log |
-| 6 | **Edit decision list** with exact timestamps | `output/<slug>/09_edl.md` |
+| 5 | **Footage source, context, rights, and claim-risk ledger** | `output/<slug>/project_notes.md` (Stages 2–6 sections) + check log |
+| 6 | **Edit decision list** with exact **verified** source timecodes | `output/<slug>/09_edl.md` — `TBD` rows are not a complete edit |
 | 7 | **YouTube Shorts title** | in `12_package.md` |
 | 8 | **Two A/B title alternatives** | in `12_package.md` |
 | 9 | **Description** | in `12_package.md` |
@@ -29,6 +29,10 @@ research/planning artefacts are complete; never present a partial package as a f
 | 17 | **Synthetic / altered-content disclosure** — explicit yes or no, with the reason | in `17_upload_checklist.md` |
 
 Item 17 is never left blank and never “assumed not needed.” State the answer and the reason.
+
+Stages 1–6 research is kept in **one** `output/<slug>/project_notes.md` with per-stage sections —
+not six separate reports. No clip score, shortlist, or review claim without actual visual
+inspection (`NOT SCORED` otherwise), and no scene-specific script/VO/EDL for unseen footage.
 
 ---
 
@@ -91,7 +95,9 @@ Tool limitation: the current `monarch qc-render` syntax is `monarch qc-render <v
 can render the base agent's own `make-video` previz frames and audio; it does **not** assemble
 external wildlife clips. Do not use that previz MP4 as deliverable #1. For this world, verify
 the final real-footage edit in an actual editing/export tool and run a separate human review;
-Stage 11 is blocked until such an export path exists.
+Stage 11 is blocked until such an export path exists. If the operator asks for the final video,
+state this limitation first, in one short line — never present a previz or AI visuals as the
+finished video.
 
 ---
 

@@ -42,6 +42,33 @@ overall workflow. The overall workflow still begins with its four intake questio
 shortcuts: `monarch cam activate` for Cam; `monarch activate 💀` for the overall workflow.
 Do not start repository setup/dependency installation as part of this workflow choice.
 
+### Cam entry — ask, then wait
+
+After access is verified and Cam is selected, the agent asks three things in simple Roman Urdu
+and waits: **topic · ratio · length**. The bear/door brief in
+`monarch/worlds/monarch-cam/assignments/` is provisional — it is not a chosen topic. If you ask for ideas instead, you get **10 ideas** and the agent waits for
+your pick. The agent never chooses topic, ratio, or length itself, and Stages 1–6 research lands
+in one `output/<slug>/project_notes.md` (per-stage sections, not six separate reports).
+
+### Laws that always apply
+
+- Access key check first; the key is never repeated in any reply.
+- Short Roman Urdu replies; milestone updates max 5 bullets; results chat mein bhi.
+- No long dumps, tool logs, duplicate/scratch files, or separate licence-request files.
+- No clip score, shortlist, or review claim without visual inspection (`NOT SCORED` if it cannot
+  be viewed; try another permitted candidate, then ask once for an accessible upload/source).
+  No scene-specific script/VO/EDL for unseen footage; EDL source times must be verified and `TBD`
+  is never a complete edit.
+- `RIGHTS UNKNOWN` is written honestly; analysis/planning may continue, but no clearance claim,
+  and no vendor contact, licence request, or payment without explicit authorization.
+- **“Aage barho” / “continue”** approves only the current creative gate — not missing intake,
+  unchosen options, rights approval, vendor contact, or publication permission — and never sets
+  `OPERATOR APPROVED WITH RISK NOTED` (named risk + explicit acknowledgement required).
+- Ask only the current stage's question; destination URL, editor, VO, and disclosure are not
+  Gate A questions, and a missing destination URL is not an early blocker.
+- `monarch render` produces a **previz**, not the final MP4 from imported wildlife footage. The
+  agent says this limitation first, in one short line, before any final-video promise.
+
 Full law: `BOOT.md` · `AGENT.md` · `monarch/worlds/README.md`
 
 ### Terminal CLI

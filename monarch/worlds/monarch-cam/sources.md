@@ -113,7 +113,8 @@ but label a resurfaced clip as old/reused rather than “new.”
 
 ### Search log — required for every scout
 
-Save to `output/<slug>/02_footage_candidates.md`:
+Save to the Stage 2 section of `output/<slug>/project_notes.md` (single research file for
+Stages 1–6 — not six separate reports):
 
 | Field | Record |
 |---|---|
@@ -152,8 +153,9 @@ For each shortlisted moment:
 2. Reverse-search at least two or three distinctive frames from different points. Compare
    crops, watermarks, mirrors, subtitles, and upload dates; use results to find earlier versions,
    not to decide legal ownership automatically.
-3. Check the uploader’s account history and whether they plausibly filmed it. Contact the
-   apparent filmer/source where the story or identity remains material and unresolved.
+3. Check the uploader’s account history and whether they plausibly filmed it. Contacting the
+   apparent filmer/source requires the operator’s explicit authorization: without it, record the
+   open question instead of messaging anyone (no vendor contact, no licence request, no payment).
 4. Separate **filmed date** from **posted date**. Verify the claimed location if it affects the
    narration, species, behaviour, or story.
 5. Cross-check factual narration with a primary/authoritative source (e.g. wildlife agency,
@@ -215,6 +217,11 @@ final edit. Score each line 0–10 and record a timestamp plus one sentence of e
   least 8/10, no score below 7/10, and all factual/safety/source gates passed.
 - Unknown is not a 5. If you have not inspected the footage, mark the score `PROVISIONAL` or
   `NOT SCORED`.
+- No score, shortlist, or review claim without actual visual inspection. A clip that cannot be
+  viewed is `NOT SCORED` — try another candidate from permitted sources, and only then ask once
+  for an accessible upload/source.
+- Never write scene-specific script/VO/EDL from unseen footage, and never present an EDL with
+  `TBD` timecodes as a complete edit.
 - The scores are evidence-backed editorial judgements, not a claim that the clip will go viral.
 - If nothing passes, keep searching or report “no A+ candidate found.” **Do not promote a weak
   clip, pad with filler, or edit it to look more dramatic than it is.**
@@ -268,8 +275,16 @@ Use only these workflow labels; never use “copyright-free” based only on an 
 - `REJECTED` / `SHORTLISTED` / `OPERATOR APPROVED WITH RISK NOTED` — record who made the final
   decision and when.
 
+`OPERATOR APPROVED WITH RISK NOTED` is written only when the operator explicitly acknowledges a
+**named** risk. “Aage barho/continue” does not set it — that phrase approves only the current
+creative gate (never missing intake, unchosen options, rights approval, vendor contact, or
+publication permission).
+
 The assistant never signs a licence, makes a legal determination, or says a clip is guaranteed
-claim-free. See `claim-risk.md` for the one-minute screen and YouTube pre-publish check.
+claim-free. Analysis and planning may continue while rights are unknown, but the status stays
+`RIGHTS UNKNOWN` until evidence exists, and no vendor contact, licence request, or payment happens
+without explicit operator authorization. See `claim-risk.md` for the one-minute screen and
+YouTube pre-publish check.
 
 ---
 
@@ -290,4 +305,7 @@ question or leave a truthful next question; it does **not** have to be bigger, l
 violent, or more shocking than the opening.
 
 Gate A waits for operator approval of the actual candidate cards, score evidence, story spine,
-source/context confidence, and claim-risk labels. A link list alone does not pass the gate.
+source/context confidence, and claim-risk labels — for candidates that were actually visually
+inspected. A link list alone does not pass the gate. Ask only this gate's question: destination
+URL, editor, VO, and disclosure questions belong to later stages and are not batched here; a
+missing destination URL is not an early blocker.

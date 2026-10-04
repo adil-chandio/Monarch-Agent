@@ -20,6 +20,18 @@ Do not collapse these into one “copyright” answer:
 match.** Record the exact tool, file/version, date, status, and limits. Rights evidence and
 Content ID results are separate ledger fields.
 
+**Contact, licence and payment rule:** analysis and planning may continue while rights are
+unknown, but the status is written honestly as `RIGHTS UNKNOWN` — never as clearance. Do **not**
+contact a vendor, uploader, agency, or rightsholder, request a licence, or make any payment
+without the operator's explicit authorization. Record the label and the open question; the
+contact decision belongs to the human.
+
+**Inspection before a screen verdict:** a claim-risk label may be written from public pages and
+evidence, but never describe a clip as “reviewed” or give a visual verdict you did not actually
+watch. If the clip cannot be viewed, the visual part stays `NOT CHECKED` / `NOT SCORED`, the
+candidate goes back to permitted sources, and only then may the agent ask once for an accessible
+upload/source.
+
 ---
 
 ## One-minute lead screen — flag, don't clear
@@ -165,5 +177,6 @@ Quick screen run (sources/tools and date):
 Quick screen result: MATCH / NO MATCH FOUND IN CHECKED SOURCES / NOT CHECKED
 YouTube Studio Checks run on final draft? (yes/no; date/time):
 Studio result / claimant / timestamps / policy:
+Operator authorization for any vendor contact / licence request / payment: (none | granted + date)
 Remaining uncertainty and operator decision:
 ```
