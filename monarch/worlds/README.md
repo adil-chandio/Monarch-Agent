@@ -6,17 +6,20 @@ A **world** is one YouTube channel's complete operating system: its identity, it
 analytics, its audience, its creative law, its footage/rights standard, its packaging
 system and its per-video assignments.
 
-This is an **additive layer**. It does **not** replace, override or modify:
+This is an **additive layer**. A narrow prompt-level router in the root wake-up files selects
+a world only when its explicit activation phrase is used. It does not replace the normal
+Monarch flow or alter the underlying constitution, skills, role cards, or CLI:
 
-- `CLAUDE.md` / `BOOT.md` / `AGENT.md` — the normal Monarch wake-up
-- `monarch/constitution/` — the ten law files
-- `monarch/skills/` — the seven SKILL.md playbooks
-- `monarch/agents/` — the five role cards
-- `monarch/cli.py` — the 60 registered commands
+- `CLAUDE.md` / `BOOT.md` / `AGENT.md` — include an additive explicit-world route; the regular
+  `monarch activate` path remains unchanged
+- `monarch/constitution/` — the ten law files, unchanged
+- `monarch/skills/` — the seven SKILL.md playbooks, unchanged
+- `monarch/agents/` — the five role cards, unchanged
+- `monarch/cli.py` — the registered shell commands, unchanged
 
 ```
 monarch activate            → normal Monarch (4 intake questions, niche hunt)   [UNCHANGED]
-monarch cam activate        → MONARCH CAM documented trigger                    [NOT WIRED]
+monarch cam activate        → MONARCH CAM world via additive prompt router        [WIRED]
 <channel 2> activate        → channel 2 world                                    [PLANNED]
 <channel 3> activate        → channel 3 world                                    [PLANNED]
 ```
@@ -25,15 +28,16 @@ When no world is activated, Monarch behaves exactly as before. A world is a mode
 
 ## Integration status — important
 
-This turn added **Markdown workflow/reference files only**, as selected. `CLAUDE.md`, `BOOT.md`,
-`AGENT.md`, the Python CLI and existing skills are unchanged. Consequently, the phrase
-`monarch cam activate` is a **documented intent, not an automatically routed trigger** in the
-current agent or CLI. A world folder by itself cannot make the agent read it. Until the
-operator explicitly authorizes a small additive router in the agent entrypoint, load
-`monarch/worlds/monarch-cam/WORLD.md` explicitly when asking the agent to use this workflow.
+`monarch cam activate` is now an **explicit natural-language route** in `CLAUDE.md`, `BOOT.md`,
+and `AGENT.md`. After the existing access-key check, that phrase loads
+`monarch/worlds/monarch-cam/WORLD.md` and follows its pipeline. It skips only intake details fixed
+by the world and active assignment; if no assignment exists, the agent asks for a brief.
 
-There is no CLI command `monarch cam`; do not present this natural-language phrase as a
-working shell command.
+The normal `monarch activate` flow still asks its original four questions and is unchanged.
+The route does not bypass the constitution, human approval/WAIT gates, QC, or human YouTube
+publishing. This is prompt-level routing, not Python runtime code, and there is no shell/CLI
+command `monarch cam`. The entrypoint instructions must be present in the agent's loaded context
+for the natural-language trigger to work.
 
 ## Why a new folder and not `monarch/skills/` or `monarch/channels/`
 
@@ -57,8 +61,9 @@ monarch/worlds/<channel-slug>/
   identity.md      — brand promise, pillars, anti-identity
   analytics.md     — dated, source-labelled channel snapshot + historical winners + lessons
   audience.md      — who actually watches, and what that changes creatively
-  rules.md         — strict creative law + rights / reused-content law (fail-closed)
-  sources.md       — footage sourcing, scene scoring, the footage ledger
+  rules.md         — creative, factuality, safety, source, rights, and reused-content rules
+  sources.md       — footage discovery, source tracing, scene scoring, and the asset ledger
+  claim-risk.md    — optional specialist screen for platform claims and external-media risks
   packaging.md     — titles, cover text, description, tags, pinned comment, conversion paths
   delivery.md      — the exact 17-item deliverable list + the no-stop-at chain
   assignments/     — per-video task briefs (one file per video; channel files stay stable)

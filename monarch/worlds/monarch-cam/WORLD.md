@@ -6,28 +6,27 @@ current assignment.
 
 ---
 
-## 0. DOCUMENTED TRIGGER (NOT WIRED YET)
+## 0. WIRED ADDITIVE TRIGGER
 
-The intended natural-language activation phrase is:
+The natural-language activation phrase is:
 
 ```
 monarch cam activate
 ```
 
-**Integration status:** this addition is docs-only. The repo's root agent entrypoints and CLI
-were intentionally left unchanged, so the phrase is not automatically routed to this file
-yet. Until an additive router is explicitly approved, the operator must name/read
-`monarch/worlds/monarch-cam/WORLD.md` to select this workflow. There is no shell command
-`monarch cam`.
+**Integration status:** this explicit phrase is routed by the additive activation rules in
+`BOOT.md`, `AGENT.md`, and `CLAUDE.md`. It loads this world after the existing access check.
+This is an agent instruction, **not** a shell or CLI command; there is no `monarch cam`
+subcommand.
 
-If the access key has not been verified for this session, follow the standard access rule in
-`monarch/constitution/00_IDENTITY.md` first; refuse with Monarch's standard refusal message
-and stop. This world never weakens the access law.
+The existing access-key rule in `monarch/constitution/00_IDENTITY.md` applies before either
+route. If the key is not verified, use Monarch's standard refusal message and stop. The Cam
+route never bypasses the access law.
 
-This is **not** the base `monarch activate` trigger. That trigger and its four-question intake
-remain unchanged. When an approved router later recognizes this channel phrase, it may select
-the known channel and skip only asking for channel/niche; it must preserve the base safety,
-approval and WAIT gates.
+This is separate from the base `monarch activate` trigger. That trigger still asks the same four
+intake questions and follows the normal flow. The Cam route skips only details fixed by this
+world and the active assignment; it preserves the constitution, safety, evidence, approval,
+QC, WAIT, and human-publishing gates.
 
 ---
 
@@ -38,10 +37,11 @@ approval and WAIT gates.
    `sources.md` → `claim-risk.md` → `packaging.md` → `delivery.md`.
 3. List `assignments/` and load the active brief. If none is active, ask the operator for one;
    **do not invent a topic**.
-4. Since this is docs-only, say **WORLD CONTEXT LOADED — ROUTING NOT WIRED**. Only after a
-   router is approved should the response say `MONARCH CAM — WORLD ACTIVE`.
+4. After the explicit trigger has passed the access check and this context is loaded, say
+   **MONARCH CAM — WORLD ACTIVE**.
 5. Start Stage 1. No greeting, no generic intake questions for facts fixed by this world.
-   Still ask for missing evidence that is genuinely required to proceed.
+   Use the active assignment for topic/length; if none exists, ask for a brief. Still ask for
+   missing evidence that is genuinely required to proceed.
 
 ---
 
@@ -165,8 +165,8 @@ YouTube upload, and WAIT gates remain in force. A world may add gates, never wea
 
 ## 6. RETURN TO BASE MODE
 
-No persistent world-mode switch was implemented (docs-only scope). For unrelated work, use
-the existing normal `monarch activate` path. Select Monarch Cam only when the operator
-explicitly names this world/loads this contract. Do **not** use `monarch lock` to switch
-worlds: that locks the whole agent. A future router can add per-task selection without
-changing the normal intake.
+World selection is per activation request; it does not permanently switch the agent's runtime
+state. For unrelated work, use the existing normal `monarch activate` path. Select Monarch Cam
+only when the operator explicitly uses the `monarch cam activate` trigger. Do **not** use
+`monarch lock` to switch worlds: that locks the whole agent. The additive router must leave the
+normal intake unchanged.

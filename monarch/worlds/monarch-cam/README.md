@@ -1,9 +1,9 @@
 # WORLD: MONARCH CAM
 
-**Documented trigger phrase:** `monarch cam activate` (not yet wired to the entrypoint)
+**Activation phrase:** `monarch cam activate` (wired through the root agent instructions)
 **Slug:** `monarch-cam` · **Format target:** 9:16 vertical, 1080×1920, 30fps · **Language:** English (US/UK)
 **Created by:** Adil Chandio · Boss Contact: `workadilchandio@gmail.com`
-**Integration state:** docs-only; use explicit WORLD.md context unless a router is later approved.
+**Integration state:** additive prompt-level route in `BOOT.md`, `AGENT.md`, and `CLAUDE.md`; not a shell/CLI command. Existing access-key law still applies.
 
 > “Wildlife gets close. Monarch Cam tells viewers what they are really seeing.”
 
