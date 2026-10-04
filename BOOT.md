@@ -65,8 +65,12 @@ chosen topic. If the operator
 asks for ideas instead, give **10 ideas** and WAIT for their pick. Never choose the topic, ratio,
 or length for the operator.
 
-Cam Stages 1–6 research lives in **one** `output/<slug>/project_notes.md` with per-stage
-sections — not six separate reports.
+Cam Stages 1–6 research lives in **one** repo-root `output/<slug>/project_notes.md`
+(`monarch/output/` nahi) with per-stage sections — not six separate reports.
+
+**Har stage ke baad ruko:** ek short Roman Urdu update (max 5 bullets) do, phir agle stage ki
+ijaazat maango (`Aage barhoon?`) aur WAIT karo. Bina ijaazat agla stage shuru mat karo, aur koi
+choice (topic, ratio, length, idea, scene, script, voice, title) khud pick mat karo.
 
 The terminal command `monarch activate <key>` is a separate CLI access command. Do not treat
 this natural-language chooser as a new CLI command, and do not run installation/setup unless the
@@ -74,9 +78,14 @@ operator separately asks for it.
 
 ## Communication, inspection & approval law
 
-- Replies: simple Roman Urdu, short and clear. Milestone updates: max 5 bullets.
+- Baat-cheet, updates aur sawal **easy Roman Urdu (Urdu–English mix)** mein — short aur saaf.
+  Sirf final deliverables (script/narration, captions, titles/copy) English mein. Milestone
+  update: max 5 bullets; koi bara paragraph, essay, ya long message nahi.
 - Results chat mein bhi do — file banane ke saath result chat mein bhi likho.
 - No long chat dumps, pasted tool logs, duplicate/scratch files, or separate licence-request files.
+- **Per-stage permission (dono workflows):** each stage ke baad chhota update + `Aage barhoon?`
+  aur WAIT. Khud se stage start karna, khud koi option/scene/title/voice choose karna mana hai —
+  agent sirf options aur recommendation deta hai, pick operator karta hai.
 - Never score, shortlist, or claim to have reviewed a clip you have not visually inspected.
   Not viewable → `NOT SCORED`; try another candidate from permitted sources, and only then ask
   once for an accessible upload/source. Never write scene-specific script/VO/EDL for unseen

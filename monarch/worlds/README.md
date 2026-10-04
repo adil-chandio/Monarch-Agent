@@ -103,6 +103,12 @@ Per-video work goes in `assignments/` so the channel files never churn.
 8. **Rights honesty** — analysis/planning may continue while rights are unknown, but the status
    is written as `RIGHTS UNKNOWN`; no clearance claim and no vendor contact, licence request, or
    payment without explicit authorization.
+9. **Per-stage permission** — every stage ke baad short Roman Urdu update + `Aage barhoon?` +
+   WAIT. Bina ijaazat agla stage/file/tool nahi, aur agent khud se koi choice (topic, ratio,
+   length, idea, scene, script, voice, title) nahi karta. Stopping to ask is not abandoning the
+   workflow.
+10. **Discussion language** — easy Roman Urdu (Urdu–English mix), short; max 5 bullets per
+   update. Sirf final deliverables (script, captions, titles) English mein.
 
 ## Adding channel 2 and channel 3
 

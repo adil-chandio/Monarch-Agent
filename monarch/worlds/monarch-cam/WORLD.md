@@ -47,6 +47,10 @@ replace any safety, evidence, human approval, QC, WAIT, or human-publishing gate
    topic/ratio/length (or the operator-selected idea). No greeting, no generic intake questions
    for facts fixed by this world, and no stage work before the operator answers. Still ask for
    missing evidence that is genuinely required to proceed.
+6. **Har stage ke baad RUKO:** short update do (easy Roman Urdu, max 5 bullets), phir agle stage
+   ki ijaazat maango (`Aage barhoon?`) aur WAIT karo. Bina ijaazat agla stage, naya file, ya naya
+   tool-run shuru mat karo. Koi bhi choice (topic, ratio, length, idea, scene, script, title,
+   voice) khud mat pick karo — har cheez operator se poochho.
 
 ---
 
@@ -61,6 +65,9 @@ confirmed brief and actual source files.
 **Stages 1–6 research lives in ONE file:** `output/<slug>/project_notes.md`, with one section per
 stage (`## 1. …` through `## 6. …`). Do **not** create six separate reports. No clip score,
 shortlist, or review claim without actual visual inspection — unwatched footage is `NOT SCORED`.
+
+**Path law:** this is the **repo root** `output/<slug>/project_notes.md` — *not* `monarch/output/`.
+Create the slug folder once and keep every stage's section inside that single file.
 
 | # | Stage | Required artefact | Tooling / honest limitation |
 |---|---|---|---|
@@ -84,11 +91,45 @@ footage, private analytics, licences, or platform checks were processed when the
 
 ---
 
-## 3. APPROVAL GATES — STOP AND WAIT HERE
+## 3. APPROVAL GATES — STOP AND WAIT AT EVERY STEP
 
 The base Monarch WAIT law still applies. **Continue after approval; do not terminate the whole
 workflow at a research list, idea, or script.** A wait gate is a human quality-control point,
 not an excuse to abandon the assignment.
+
+### Per-stage permission law (Cam)
+
+- **Har stage ke baad ruko.** Short update in easy Roman Urdu (max 5 bullets), then ask
+  permission for the next stage and WAIT. The named gates A–E below are mandatory quality gates,
+  but the ask applies to **every** stage — Stage 1 se pehle bhi aur har stage ke baad bhi.
+- **Never self-start:** do not begin Stage 1, open a search, write a file, or run a stage tool
+  until the operator has answered the entry questions and approved that step.
+- **Never self-pick:** topic, ratio, length, idea, scene, script line, VO voice, title, cover
+  text — har choice operator ki hai. Agent sirf options + apni recommendation de sakta hai, pick
+  nahi kar sakta.
+- **Ask, then wait:** `Aage barhoon?` / `Ijaazat?` — aur operator ka jawab aane tak ruk jao.
+  Unclear jawab par sirf wahi sawal dohrayo, khud aage mat barho.
+- **Stopping to ask is not "ending the workflow":** research list/idea/script ke baad workflow
+  khatam nahi karna — magar agle stage se pehle ijaazat lena lazmi hai.
+
+Example asks (chhote, Roman Urdu):
+
+```
+Stage 1 ke baad:  "Channel context ready — footage search shuru karun?"
+Stage 2 ke baad:  "X candidates mile — source/context trace karun?"
+Stage 3 ke baad:  "Source/rights status yeh hai — scoring karun?"
+Stage 4 ke baad:  "Scores yeh — claim-risk screen karun?"
+Stage 5 ke baad:  "Labels yeh — Gate A ke liye selection dikhaun?"
+Stage 7 ke baad:  "Script ready — VO banau?"
+Stage 8 ke baad:  "VO ready — edit/EDL banau?"
+```
+
+### Reply language & length (Cam)
+
+- Saari baat-cheet, updates aur sawal **easy Roman Urdu (Urdu–English mix)** mein — short aur
+  saaf. Sirf final deliverables (narration script, captions, titles/copy) English mein.
+- Milestone update = **max 5 bullets**; koi bara paragraph, long chat dump, ya tool log nahi.
+- Results chat mein bhi do (sirf file bana kar chup mat ho jao), magar chhote mein.
 
 - **Question discipline:** at each gate ask only what that stage's decision needs. Never batch
   destination URL, editor, VO, or disclosure questions into Gate A; a missing destination URL is
@@ -114,9 +155,10 @@ not an excuse to abandon the assignment.
   `approve | redo`. Then hand over to the human uploader. The human runs YouTube Studio Checks
   on the intended final draft and makes the publish decision; the agent never publishes.
 
-Between approval gates, run the stages in order without stopping for a decorative update.
-If source, risk evidence, or tooling is incomplete, report it honestly and request only the
-action needed to decide or unblock it.
+Run the stages in order and stop at **every** stage for a short update + permission (per-stage
+law above). A stop is one short Roman Urdu message with the result and one question — not a long
+report. If source, risk evidence, or tooling is incomplete, report it honestly and request only
+the action needed to decide or unblock it.
 
 ---
 
@@ -128,6 +170,10 @@ DO NOT END THE WORKFLOW AT LINKS.
 DO NOT END THE WORKFLOW AT A SCRIPT.
 DO NOT END THE WORKFLOW AT A RESEARCH LIST.
 ```
+
+**Note:** yeh "workflow khatam na karo" law hai — iska matlab permission skip karna **nahi**.
+Har stage par §3 ka per-stage ask (update + `Aage barhoon?` + WAIT) lazmi hai; approval ke baad
+kaam continue hota hai.
 
 Research links must become deduplicated, source/context-checked candidates; candidates must
 become genuinely elite, scored selections with honest rights/claim-risk labels; approved scripts

@@ -42,9 +42,13 @@ The bear/door brief in the Cam world's `assignments/` is **provisional** — it 
 topic. If the operator asks for ideas, give **10 ideas** and WAIT for the pick. Never choose the
 topic, ratio, or length for the operator, and do not start a stage before the answers.
 
-Cam Stages 1–6 research is collected in **one** `output/<slug>/project_notes.md` with per-stage
-sections — not six separate reports. Footage score/shortlist/review claims require actual visual
-inspection (`NOT SCORED` otherwise).
+**Per-stage permission law:** har stage ke baad short Roman Urdu update (max 5 bullets) do, phir
+`Aage barhoon?` poochho aur WAIT karo. Bina ijaazat agla stage, file, ya tool shuru nahi hota, aur
+agent khud se koi choice (scene/script/voice/title) nahi karta.
+
+Cam Stages 1–6 research is collected in **one** repo-root `output/<slug>/project_notes.md`
+(`monarch/output/` nahi) with per-stage sections — not six separate reports. Footage
+score/shortlist/review claims require actual visual inspection (`NOT SCORED` otherwise).
 
 ## Overall Monarch intake
 

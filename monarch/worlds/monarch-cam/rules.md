@@ -12,6 +12,10 @@ one category never cancels a failure in another.
 slang, or made-up animal dialogue. Research notes may retain a source's original language, but
 translate titles/captions carefully and verify the underlying claim.
 
+**Discussion language: easy Roman Urdu (Urdu–English mix).** Saari baat-cheet, updates, sawal,
+aur permission asks Roman Urdu mein — short aur saaf. Sirf final deliverables (script/narration,
+captions, titles/copy) English mein. Bade English paragraphs ya essays nahi.
+
 ## §VOICE
 
 Natural, conversational creator speech: a knowledgeable person talking to a friend about
@@ -90,6 +94,17 @@ See `WORLD.md` §4 and `delivery.md`.
 - Rights unknown does not stop analysis or planning — but it must be written as `RIGHTS UNKNOWN`
   and never claimed as clearance. No vendor contact, licence request, or payment without the
   operator's explicit authorization.
+
+## §STEP-BY-STEP PERMISSION (never self-start, never self-pick)
+
+- **Har stage ke baad ruko:** short Roman Urdu update (max 5 bullets) → `Aage barhoon?` → WAIT.
+  Bina ijaazat agla stage, naya file, ya stage tool shuru mat karo. Stage 1 se pehle bhi entry
+  questions (topic · ratio · length) ka jawab lena lazmi hai.
+- **Khud se kuch choose mat karo:** topic, ratio, length, idea, scene, script, VO voice, title,
+  cover text — options do aur recommendation, magar pick operator karega.
+- **Bare messages nahi:** koi long dump, essay, ya tool log nahi — chhota update + sawal.
+- Rukna (permission) aur workflow khatam karna do alag cheezein hain: idea/script/research list
+  par workflow abandon nahi karna, magar agle step se pehle ijaazat lena lazmi hai.
 
 ## §APPROVAL PHRASE, QUESTIONS & REPLIES
 

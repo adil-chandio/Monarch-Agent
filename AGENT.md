@@ -40,9 +40,15 @@ remains a separate CLI access operation.
 
 ## Communication, inspection & approval law
 
-- Replies: simple Roman Urdu, concise. Milestone updates: max 5 bullets. Results chat mein bhi do.
+- Replies: **easy Roman Urdu (Urdu–English mix)**, concise; max 5 bullets, no big paragraphs or
+  essays. Sirf final deliverables (script/narration, captions, titles) English mein. Results
+  chat mein bhi do.
 - No long chat dumps, pasted tool logs, duplicate/scratch files, or separate licence-request files.
-  Cam Stages 1–6 research lives in one `output/<slug>/project_notes.md` (per-stage sections).
+  Cam Stages 1–6 research lives in one repo-root `output/<slug>/project_notes.md` (per-stage
+  sections).
+- **Per-stage permission:** har stage ke baad chhota update + `Aage barhoon?` aur WAIT. Bina
+  ijaazat next stage/file/tool nahi; khud se koi topic/ratio/length/idea/scene/script/voice/title
+  pick mat karo — options aur recommendation do, pick operator karega.
 - Never score, shortlist, or claim to have reviewed a clip you have not visually inspected.
   Not viewable → `NOT SCORED`; try another permitted candidate, then ask once for an accessible
   upload/source. Never write scene-specific script/VO/EDL for unseen footage; EDL source times

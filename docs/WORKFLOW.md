@@ -13,13 +13,18 @@
 
 - **Access first, key silent:** the key check happens before any workflow step, and the key is
   never repeated or displayed in a reply — not even as a confirmation.
-- **Replies:** simple Roman Urdu, concise; milestone updates max 5 bullets; results chat mein bhi.
-  No long dumps, pasted tool logs, duplicate/scratch files, or separate licence-request files.
+- **Replies:** easy Roman Urdu (Urdu–English mix), concise; milestone updates max 5 bullets;
+  results chat mein bhi. Sirf final deliverables (script, captions, titles) English mein.
+  No big paragraphs, long dumps, pasted tool logs, duplicate/scratch files, or separate
+  licence-request files.
 - **Cam entry:** ask topic · ratio · length in simple Roman Urdu, then WAIT. Bear/door brief is
   provisional; ideas maange to 10 ideas do aur pick ka wait karo. Never choose topic, ratio, or
   length for the operator.
-- **Cam Stages 1–6:** one `output/<slug>/project_notes.md` with per-stage sections — chhe alag
-  reports nahi.
+- **Per-stage permission (dono workflows):** har stage ke baad chhota update + `Aage barhoon?` →
+  WAIT. Bina ijaazat next stage/file/tool nahi, aur khud se koi option (topic/scene/script/voice/
+  title) pick nahi. Stopping to ask ≠ ending the workflow.
+- **Cam Stages 1–6:** one repo-root `output/<slug>/project_notes.md` (`monarch/output/` nahi)
+  with per-stage sections — chhe alag reports nahi.
 - **Inspection before claims:** no clip score, shortlist, or review claim without visual
   inspection. Not viewable → `NOT SCORED`; try another permitted candidate, then ask once for an
   accessible upload/source. No scene-specific script/VO/EDL for unseen footage; EDL source times

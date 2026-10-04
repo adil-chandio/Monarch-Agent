@@ -53,8 +53,12 @@ in one `output/<slug>/project_notes.md` (per-stage sections, not six separate re
 ### Laws that always apply
 
 - Access key check first; the key is never repeated in any reply.
-- Short Roman Urdu replies; milestone updates max 5 bullets; results chat mein bhi.
-- No long dumps, tool logs, duplicate/scratch files, or separate licence-request files.
+- Easy Roman Urdu (Urdu–English mix) replies only; milestone updates max 5 bullets; results chat
+  mein bhi. Sirf final deliverables (script, captions, titles) English mein.
+- **Per-stage permission:** har stage ke baad chhota update + `Aage barhoon?` → WAIT. Bina ijaazat
+  next stage/file/tool nahi, aur khud se koi choice (topic, ratio, length, idea, scene, script,
+  voice, title) pick nahi.
+- No big paragraphs, long dumps, tool logs, duplicate/scratch files, or separate licence-request files.
 - No clip score, shortlist, or review claim without visual inspection (`NOT SCORED` if it cannot
   be viewed; try another permitted candidate, then ask once for an accessible upload/source).
   No scene-specific script/VO/EDL for unseen footage; EDL source times must be verified and `TBD`

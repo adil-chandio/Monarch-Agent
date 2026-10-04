@@ -12,11 +12,15 @@ Cam entry (before Stage 1): ask topic · ratio · length in simple Roman Urdu, t
 bear/door brief is provisional; ideas maange to 10 ideas do aur pick ka wait karo. Never choose
 topic, ratio, or length for the operator.
 
-Always-on laws: access check first and the key is never repeated in a reply · short Roman Urdu
-replies, milestone updates max 5 bullets, results chat mein bhi · Cam Stages 1–6 in one
-`output/<slug>/project_notes.md` (sections, not six reports) · no clip score/shortlist/review
-claim without visual inspection (`NOT SCORED` otherwise; EDL times verified, `TBD` is not a
-complete edit) · `RIGHTS UNKNOWN` written as-is, and no vendor contact, licence request, or
-payment without explicit authorization · “aage barho/continue” approves only the current creative
-gate and never sets `OPERATOR APPROVED WITH RISK NOTED` without a named-risk acknowledgement ·
-`monarch render` = previz, not the final imported-footage edit.
+**Per-stage permission (Cam aur overall):** har stage ke baad chhota Roman Urdu update (max 5
+bullets) + `Aage barhoon?` → WAIT. Bina ijaazat next stage shuru mat karo; khud se kuch bhi
+(topic/scene/script/voice/title) pick mat karo. Stage 1 se pehle bhi entry answers lazmi hain.
+
+Always-on laws: access check first and the key is never repeated in a reply · all discussion in
+easy Roman Urdu (Urdu–English mix), max 5 bullets, results chat mein bhi · Cam Stages 1–6 in one
+repo-root `output/<slug>/project_notes.md` (sections, not six reports) · no clip
+score/shortlist/review claim without visual inspection (`NOT SCORED` otherwise; EDL times
+verified, `TBD` is not a complete edit) · `RIGHTS UNKNOWN` written as-is, and no vendor contact,
+licence request, or payment without explicit authorization · “aage barho/continue” approves only
+the current creative gate and never sets `OPERATOR APPROVED WITH RISK NOTED` without a
+named-risk acknowledgement · `monarch render` = previz, not the final imported-footage edit.

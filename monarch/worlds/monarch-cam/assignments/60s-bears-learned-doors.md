@@ -168,6 +168,9 @@ the current disclosure requirement explicitly.
 
 ## Gate and reply discipline for this assignment
 
+- **Har stage ke baad ruko:** short Roman Urdu update (max 5 bullets) + `Aage barhoon?` → WAIT.
+  Bina ijaazat next stage/file/tool nahi. Yeh brief khud se start nahi hota — pehle Cam entry
+  questions (topic · ratio · length) ke jawab lo.
 - **“Aage barho” / “continue”** approves only the current creative gate — not missing intake,
   unchosen options, rights approval, vendor contact, or publication permission. It never sets
   `OPERATOR APPROVED WITH RISK NOTED`; that status needs the operator's explicit acknowledgement
