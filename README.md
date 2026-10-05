@@ -58,6 +58,8 @@ in one `output/<slug>/project_notes.md` (per-stage sections, not six separate re
 - **Per-stage permission:** har stage ke baad chhota update + `Aage barhoon?` → WAIT. Bina ijaazat
   next stage/file/tool nahi, aur khud se koi choice (topic, ratio, length, idea, scene, script,
   voice, title) pick nahi.
+- **Cam skill integration:** use the existing stage-mapped skill/role cards in `WORLD.md` §2A
+  just-in-time; `make-short` previz is not the final real-footage video.
 - **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
   QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights, safety,
   and publishing gates still apply.

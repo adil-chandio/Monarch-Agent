@@ -47,7 +47,10 @@ replace any safety, evidence, human approval, QC, WAIT, or human-publishing gate
    topic/ratio/length (or the operator-selected idea). No greeting, no generic intake questions
    for facts fixed by this world, and no stage work before the operator answers. Still ask for
    missing evidence that is genuinely required to proceed.
-6. **Har stage ke baad RUKO:** short update do (easy Roman Urdu, max 5 bullets), phir agle stage
+6. Before each approved stage, load only its matching existing skill/role card from §2A and use
+   it as a subroutine. This Cam contract wins if a skill conflicts; skills cannot turn a missing
+   API key or video-player limitation into a terminal `BLOCKED` or make a previz the final video.
+7. **Har stage ke baad RUKO:** short update do (easy Roman Urdu, max 5 bullets), phir agle stage
    ki ijaazat maango (`Aage barhoon?`) aur WAIT karo. Bina ijaazat agla stage, naya file, ya naya
    tool-run shuru mat karo. Koi bhi choice (topic, ratio, length, idea, scene, script, title,
    voice) khud mat pick karo — har cheez operator se poochho.
@@ -84,6 +87,26 @@ Create the slug folder once and keep every stage's section inside that single fi
 | 11 | RENDER | Final `output/<slug>/*.mp4`, real footage, target 9:16, 1080×1920, 30fps | **Built-in CLI limitation:** `monarch render <dir>` renders the base `make-video` previz frames + audio; it does not assemble imported wildlife clips. A CLI limitation blocks that route only: use a real footage-capable editor/export path (for example, an available FFmpeg/editor workflow), verify the MP4, and follow §4 fallbacks if it fails. Never call a previz the final deliverable or stop at `BLOCKED`. If asked, state the built-in limitation briefly, then continue via an alternative. |
 | 12 | PACKAGE | `output/<slug>/12_package.md` with title, alternatives, copy, and conversion path | `monarch package <render-dir> --shorts --title ...` generates a launch kit for a compatible render directory; inspect it and supplement tags, hashtags, and platform-specific captions. |
 | 13 | DELIVER & PRE-PUBLISH CHECK | All 17 items in `delivery.md` + completed `output/<slug>/17_upload_checklist.md` | A human handles YouTube Studio upload/checks and the final publish decision. The CLI command `monarch upload <file>` is a file/release transfer, **not** YouTube publishing. Studio checks can take time and are not final rights clearance. |
+
+### 2A. EXISTING MONARCH SKILL MAP — USE AT THE MATCHING CAM STAGE
+
+These are the existing seven skill cards and role cards; load them **just in time** after the
+stage is approved. Reuse them—do not add another skill directory. This world remains the source
+of truth for Cam, and a skill's own stop/gate never replaces the per-stage `Aage barhoon?` law.
+
+| Cam stage | Existing skill / reference | How it plugs in (and its boundary) |
+|---|---|---|
+| 1–2: channel/market research and discovery | `monarch/skills/forensic-hunt/SKILL.md`; optional `monarch/skills/deep-forensic/SKILL.md`; `monarch/agents/forensic_analyst_F0_M2.md` | Reuse query planning, page-fetch/transcript-ingest fallback, outlier and audience-language research when relevant. Deep-forensic's 15–20 competitor-video dossier is optional niche research, not a prerequisite for each assignment and not footage clearance. A missing API key blocks that command only; use permitted web/page/official-source search. Never ask for keys in chat. |
+| 2–6: real-footage evidence | `sources.md`, `claim-risk.md`, `rules.md` | These Cam references—not competitor skills—govern clip discovery, upstream tracing, visual inspection, scoring, rights and selection. A public lead or transcript is not a viewed clip or permission. |
+| 7: script | `monarch/skills/make-short/SKILL.md`; `monarch/agents/script_doctor_M3.md`; `docs/FOUNTAIN_M3.md` | Reuse maths, Fountain, numbered scenes and the script gate, grounding every visual beat in inspected selected footage. `make-short` can produce a storyboard/animatic; its synthetic/previz frames never replace Cam footage or count as the final video. |
+| 8: voice-over | `monarch voiceover`; `monarch/visual/voiceover/spec.md`; `docs/GPU_VOICE_UPGRADES.md` | Create and QC a real VO file only after the script and voice are approved. Placeholder/mumble audio is not final. |
+| 9–11: edit, mix and render | `monarch/visual/edit/grammar.md`; `monarch/skills/sfx-design/SKILL.md`; `monarch/agents/sfx_designer_M5.md`; `monarch/video/concat_bridge.py`; `monarch/skills/upload-day/SKILL.md` | Use real source timecodes, the role→cue map (including the 0.3s silence-sting rule), VO-first ducked mix and upload-day QC/HAAN checks. `concat_bridge.py` emits a recipe for generated `make-video` frames; it does **not** assemble imported wildlife footage. Use a lawful footage-capable editor/export route for Cam and deliver its actual rendered MP4. |
+| 12: package | `monarch/skills/thumbnail-pack/SKILL.md`; `monarch/skills/metadata-seo/SKILL.md`; `monarch/agents/thumbnail_strategist_M6.md`; `monarch/agents/seo_packer_P3.md` | Build 2–3 focused thumbnail briefs and at least 8 T1–T8 title candidates; gate the pairing and click debt against the actual cut, then write the description/tags. Never promise an unseen payoff. |
+| 13: delivery | `monarch/skills/upload-day/SKILL.md` | Run final QC, request the required render approval, present the MP4 and hand publishing to the human (privacy default `private`). After 48–72h, log real Studio metrics, distill only with enough repeated samples, and save session memory—never invent analytics. |
+
+`forensic-hunt` and `deep-forensic` support research; `make-short` supports the script/previz
+layer; SFX, packaging and upload-day cards support their named later stages. None can waive
+inspection, rights, human approvals, or the requirement for a real Cam-footage export.
 
 The command names above are registered in the current CLI, but a command may only assist one
 part of a stage. Verify output against the artefact. Do not invent commands or claim external

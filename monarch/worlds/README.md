@@ -13,7 +13,7 @@ Monarch workflow and does not alter the underlying constitution, skills, role ca
 - `CLAUDE.md` / `BOOT.md` / `AGENT.md` — offer a workflow selector; the overall workflow's
   original four-question intake remains unchanged after it is selected
 - `monarch/constitution/` — the ten law files, unchanged
-- `monarch/skills/` — the seven SKILL.md playbooks, unchanged
+- `monarch/skills/` — reuse the same seven SKILL.md playbooks through the world's stage map; do not add directories
 - `monarch/agents/` — the five role cards, unchanged
 - `monarch/cli.py` — the registered shell commands, unchanged
 

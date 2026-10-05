@@ -16,6 +16,8 @@ topic, ratio, or length for the operator.
 bullets) + `Aage barhoon?` → WAIT. Bina ijaazat next stage shuru mat karo; khud se kuch bhi
 (topic/scene/script/voice/title) pick mat karo. Stage 1 se pehle bhi entry answers lazmi hain.
 
+- **Cam skill integration:** use the existing stage-mapped skill/role cards in `WORLD.md` §2A
+  just-in-time; `make-short` previz is not the final real-footage video.
 - **COMPLETE THE WORK — NEVER REFUSE EDITING:** Keep moving through lawful alternatives to a
   QC-checked rendered MP4; never stop at a plan or `BLOCKED`. Required approvals, rights, safety,
   and publishing gates still apply.

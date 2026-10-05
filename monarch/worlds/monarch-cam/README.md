@@ -14,7 +14,7 @@ original English storytelling, factual context, tension, humour, and surprising 
 
 | # | File | What it gives you |
 |---|---|---|
-| 1 | `WORLD.md` | activation contract, 13-stage pipeline, tooling limits, and approval gates |
+| 1 | `WORLD.md` | activation contract, 13-stage pipeline, stage-mapped skill/role cards, tooling limits, and approval gates |
 | 2 | `identity.md` | brand promise, the two content pillars, and anti-identity |
 | 3 | `analytics.md` | operator-supplied snapshot and benchmarks; analytics are context, not a compulsory refresh |
 | 4 | `audience.md` | three distinct audiences and the creative consequences |

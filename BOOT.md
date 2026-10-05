@@ -67,6 +67,8 @@ or length for the operator.
 
 Cam Stages 1–6 research lives in **one** repo-root `output/<slug>/project_notes.md`
 (`monarch/output/` nahi) with per-stage sections — not six separate reports.
+- **Cam skill integration:** use the existing stage-mapped skill/role cards in `WORLD.md` §2A
+  just-in-time; `make-short` previz is not the final real-footage video.
 
 **Har stage ke baad ruko:** ek short Roman Urdu update (max 5 bullets) do, phir agle stage ki
 ijaazat maango (`Aage barhoon?`) aur WAIT karo. Bina ijaazat agla stage shuru mat karo, aur koi
