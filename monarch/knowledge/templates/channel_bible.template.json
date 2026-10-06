@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "record_type": "monarch_channel_bible",
+  "status": "DRAFT",
+  "channel_id": "",
+  "approved_by_operator": false,
+  "approved_at": null,
+  "last_reviewed_at": null,
+  "identity": {
+    "channel_name": "",
+    "mission": "",
+    "viewer_promise": "",
+    "content_pillars": [],
+    "anti_identity": [],
+    "evidence_refs": []
+  },
+  "audience": {
+    "primary_viewer": "",
+    "viewer_need": "",
+    "language_and_locale": "",
+    "known_segments": [],
+    "evidence_refs": []
+  },
+  "formats": [],
+  "brand": {
+    "voice": "",
+    "visual_style_a": {
+      "status": "EXISTING_CANONICAL_WORKFLOW_UNCHANGED",
+      "canonical_files": []
+    },
+    "visual_style_b": {
+      "enabled_only_when_requested": true,
+      "canonical_files": [
+        "monarch/skills/premium-2d-motion-edit/SKILL.md",
+        "monarch/skills/premium-2d-motion-edit/ENGINE_REFERENCE.md"
+      ]
+    },
+    "audio": {
+      "vo_mode": "",
+      "voice_lock": "",
+      "mix_delivery_spec": "",
+      "asmr_width_required": false
+    }
+  },
+  "hard_constraints": [],
+  "rights_and_safety": {
+    "source_policy": "",
+    "asset_clearance_policy": "",
+    "operator_gates": []
+  },
+  "analytics_baselines": [],
+  "approved_examples": [],
+  "learning_records": [],
+  "provenance": {
+    "field_sources": [],
+    "owner": "",
+    "notes": "Do not fill from guesswork. Keep public observations, operator-supplied facts, and authorized analytics distinct."
+  }
+}

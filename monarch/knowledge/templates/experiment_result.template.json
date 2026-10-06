@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "record_type": "monarch_native_experiment_result",
+  "platform": "YouTube Studio",
+  "test_id": "",
+  "video_id": "",
+  "title": "",
+  "test_type": "thumbnail",
+  "variants": ["A", "B"],
+  "outcome": "inconclusive",
+  "winner_variant": null,
+  "decision_metric": "watch_time",
+  "window_start": null,
+  "window_end": null,
+  "source": "operator-transcribed YouTube Studio result",
+  "source_result_verified": false,
+  "verification_note": "Monarch stores the operator-transcribed outcome; it does not query or verify YouTube Studio.",
+  "notes": "",
+  "recorded_at": "YYYY-MM-DDTHH:MM:SSZ"
+}

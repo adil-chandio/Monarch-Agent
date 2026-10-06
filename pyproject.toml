@@ -5,7 +5,7 @@ requires-python = ">=3.10"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "Pillow", "imageio-ffmpeg"]
 
 [project.scripts]
 monarch = "monarch.cli:main"
