@@ -26,6 +26,9 @@ EXPECTED_SKILLS = {
     "metadata-seo",
     "upload-day",
     "deep-forensic",
+    "premium-2d-motion-edit",  # additive; the seven original cards stay intact
+    "executive-producer",  # additive cross-stage manager
+    "knowledge-steward",  # additive cited-learning and evaluation skill
 }
 
 
@@ -57,7 +60,7 @@ def _registered_commands() -> set[str]:
     return set(re.findall(r'sub\.add_parser\(\s*"([a-z0-9-]+)"', CLI_SRC))
 
 
-def test_six_skills_exist():
+def test_registered_skills_exist():
     found = {p.parent.name for p in SKILLS_DIR.glob("*/SKILL.md")}
     assert found == EXPECTED_SKILLS
 
@@ -98,6 +101,9 @@ def test_skills_mention_their_gates():
         "metadata-seo": ["gate-title"],
         "upload-day": ["monarch memory save"],
         "deep-forensic": ["transcript-ingest", "gate-idea"],
+        "premium-2d-motion-edit": ["Style B", "y=180…1500", "4.5:1"],
+        "executive-producer": ["central manager", "WAIT", "actual encoded delivery"],
+        "knowledge-steward": ["evidence classes", "inconclusive", "NOT MEASURED"],
     }
     for skill, needles in checks.items():
         text = (SKILLS_DIR / skill / "SKILL.md").read_text(encoding="utf-8")
@@ -105,23 +111,28 @@ def test_skills_mention_their_gates():
             assert needle in text, f"{skill}: must mention {needle!r}"
 
 
-def test_five_agent_cards_exist():
+def test_existing_specialists_and_additive_manager_card_exist():
     cards = sorted(AGENTS_DIR.glob("*.md"))
-    assert len(cards) == 5
+    assert len(cards) == 6
     assert {c.stem for c in cards} == {
         "forensic_analyst_F0_M2",
         "script_doctor_M3",
         "sfx_designer_M5",
         "thumbnail_strategist_M6",
         "seo_packer_P3",
+        "executive_producer",
     }
 
 
-def test_agent_cards_map_to_real_states():
+def test_agent_cards_map_to_real_states_or_explicit_manager_scope():
     for path in AGENTS_DIR.glob("*.md"):
         fm = _frontmatter(path)
-        assert fm.get("state") in STATES, f"{path}: unknown state {fm.get('state')!r}"
-        assert fm.get("handoff") in STATES, f"{path}: unknown handoff {fm.get('handoff')!r}"
+        if path.stem == "executive_producer":
+            assert fm.get("state") == "ALL_WORKFLOW_STATES"
+            assert fm.get("handoff") == "ALL_WORKFLOW_STATES"
+        else:
+            assert fm.get("state") in STATES, f"{path}: unknown state {fm.get('state')!r}"
+            assert fm.get("handoff") in STATES, f"{path}: unknown handoff {fm.get('handoff')!r}"
         assert fm.get("mission"), f"{path}: mission required"
 
 

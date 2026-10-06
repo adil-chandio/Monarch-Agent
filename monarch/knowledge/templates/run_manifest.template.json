@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "record_type": "monarch_run_manifest",
+  "run_id": "RUN-YYYYMMDD-0001",
+  "status": "IN_PROGRESS",
+  "created_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "updated_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "brief": {
+    "user_goal": "",
+    "channel_id": "",
+    "channel_or_niche": "",
+    "world": "",
+    "format": "",
+    "aspect_ratio": "",
+    "intake_complete": false,
+    "style": "",
+    "language_and_locale": "",
+    "requested_duration_s": null,
+    "approved_timing_contract_ref": "",
+    "hard_constraints": [],
+    "unknowns": []
+  },
+  "workflow": {
+    "current_state": "I0_intake",
+    "next_state": null,
+    "wait_gate": "",
+    "wait_owner": "operator",
+    "operator_approval_status": "NOT_REQUESTED"
+  },
+  "artifacts": [
+    {
+      "id": "ART-001",
+      "name": "",
+      "path_or_url": "",
+      "status": "PLANNED",
+      "owner_role": "",
+      "reviewer_role": "",
+      "depends_on": [],
+      "acceptance_checks": [],
+      "checks": [],
+      "evidence_refs": [],
+      "sha256": null,
+      "notes": ""
+    }
+  ],
+  "handoffs": [],
+  "risks_and_blockers": [],
+  "release": {
+    "required_files_complete": false,
+    "required_qa_passed": false,
+    "rights_status": "UNKNOWN",
+    "user_gate_status": "PENDING",
+    "human_upload_status": "NOT_STARTED",
+    "release_decision": "BLOCKED",
+    "residual_risks": []
+  }
+}

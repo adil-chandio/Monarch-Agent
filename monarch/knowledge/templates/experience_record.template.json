@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "LEARNING-0001",
+  "channel_id": "",
+  "video_id": "",
+  "format": "unknown",
+  "created_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "hypothesis": {
+    "statement": "",
+    "evidence_refs": [],
+    "scope": "",
+    "falsifier": ""
+  },
+  "prediction": {
+    "metric": "",
+    "expected_direction_or_range": "",
+    "basis": "",
+    "confidence": "low"
+  },
+  "observation": {
+    "data_source": "",
+    "window_start": null,
+    "window_end": null,
+    "sample_or_exposure": null,
+    "metrics": {},
+    "limitations": []
+  },
+  "experiment": {
+    "native_test_id": null,
+    "native_result": "NOT_RUN",
+    "winner_variant": null,
+    "decision_metric": null
+  },
+  "outcome": "inconclusive",
+  "interpretation": "",
+  "recommended_update": "",
+  "approved_for_channel_memory": false,
+  "approved_by_operator": null
+}

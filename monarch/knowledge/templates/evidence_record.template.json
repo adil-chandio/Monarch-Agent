@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "id": "EVIDENCE-0001",
+  "claim": "",
+  "class": "UNKNOWN",
+  "source_url": "",
+  "publisher": "",
+  "published_at": null,
+  "checked_at": "YYYY-MM-DD",
+  "scope": "",
+  "supporting_excerpt_or_metric_definition": "",
+  "limitations": [],
+  "confidence": "low",
+  "confidence_basis": "",
+  "review_due": null,
+  "decision_use": ""
+}

@@ -8,14 +8,20 @@ system and its per-video assignments.
 
 This is an **additive layer**. A prompt-level workflow selector in the root wake-up files
 routes the user only after access verification. It offers Monarch Cam or the original overall
-Monarch workflow and does not alter the underlying constitution, skills, role cards, or CLI:
+Monarch workflow without rewriting the constitution, the seven original skills, or the five
+state-bound specialist role cards. Separate additive layers now provide Style B, a cross-stage
+Manager, cited knowledge/evaluation, and offline retention-curve import:
 
 - `CLAUDE.md` / `BOOT.md` / `AGENT.md` — offer a workflow selector; the overall workflow's
   original four-question intake remains unchanged after it is selected
 - `monarch/constitution/` — the ten law files, unchanged
-- `monarch/skills/` — the seven SKILL.md playbooks, unchanged
-- `monarch/agents/` — the five role cards, unchanged
-- `monarch/cli.py` — the registered shell commands, unchanged
+- `monarch/skills/` — seven original cards remain unchanged; `premium-2d-motion-edit`,
+  `executive-producer`, and `knowledge-steward` are additive
+- `monarch/agents/` — five state-bound specialist cards remain unchanged; the new
+  Executive Producer card coordinates across states without replacing them
+- `monarch/knowledge/` — cited evidence rules, capability limits, templates and evaluation cases
+- `monarch/cli.py` — the workflow selector itself adds no command; retention import and
+  operator-transcribed experiment logging are separate, additive learning commands
 
 ```
 monarch activate            → ask workflow selector; wait for choice                [WIRED]
@@ -48,18 +54,19 @@ The terminal `monarch activate <key>` remains the separate CLI access operation;
 `monarch cam` CLI command. The agent must have these updated entrypoint instructions in its
 loaded context for the workflow selector to appear.
 
-## Why a new folder and not `monarch/skills/` or `monarch/channels/`
+## Why a world is separate from skills and channels
 
-- `monarch/skills/` is **pinned by test** — `tests/test_skills_cards.py` asserts
-  `found == EXPECTED_SKILLS` (exactly those seven directories). Adding an eighth skill
-  directory breaks the existing suite. Worlds must not break the base agent.
+- `monarch/skills/` contains reusable workflow cards. The seven original cards stay
+  unchanged; `premium-2d-motion-edit`, `executive-producer`, and `knowledge-steward`
+  are additive cards. Registry tests pin the intentional set so accidental additions
+  or removals are caught.
 - `monarch/channels/` already means something narrower: render config only
   (`id, niche, aspect, language, accent_color, vo_mode, character_lock, voice_lock` —
   see `monarch/schemas.py` → `class Channel`). A world is identity + strategy + law,
   a different layer.
 
-So worlds live in their own namespace and reference the existing systems instead of
-touching them.
+Worlds live in their own namespace; reusable skills and channel worlds remain separate
+layers.
 
 ## World layout (standard for all 3 channels)
 

@@ -1,0 +1,22 @@
+# Monarch capability map — do not train agents to hallucinate tools
+
+**Repository inspection date:** 2026-10-06. This is a code/documentation audit, not a promise that every optional dependency or external service is available in a given run. Check `monarch doctor` and the actual artifact before claiming an operation succeeded.
+
+| Capability | What is present | Boundary / honest status |
+|---|---|---|
+| Manager / specialist coordination | Additive `monarch/agents/executive_producer.md`, `monarch/skills/executive-producer/SKILL.md`, and the run-manifest template define ownership, status, evidence handoffs and gate-preserving review | This is the manager's agent workflow contract, not a hidden multi-agent runtime, background job service, or new state machine. The existing five specialist cards remain intact. |
+| Skill cards | `monarch/skills/*/SKILL.md`, plus technical references | A card can specify a workflow without implementing a tool or renderer. The additive `knowledge-steward` card teaches process; it is not an autonomous service. |
+| Channel config | `monarch/channels/*.yaml` and `monarch.core.channels.load_channel` | This is a small render/channel config (`id`, niche, aspect, language, accent, VO and character locks), not the full approved Channel Bible. The new JSON template does not replace it. |
+| Existing performance ingest | `monarch/pipelines/performance.py` imports Studio CSV/TSV aggregate fields; `monarch/core/learn.py` logs APV/views/subscribers/cohort/runtime/date and creates provisional median-split observations | No automatic YouTube OAuth data fetch; no time-indexed retention curve or native A/B result in this existing path. Do not diagnose exact drop-off seconds from APV. |
+| Retention export ingest (additive) | `monarch learn retention ingest` accepts an operator-supplied CSV with recognized elapsed-time and audience-watch-ratio headers; `monarch learn retention report` reports the logged curve and largest adjacent declines | Offline import only. It does not connect to YouTube, confirm account permissions, verify data provenance, or explain why a curve changed. `audienceWatchRatio` can exceed 1 due to rewatches. A reported bucket time is approximate. |
+| Native experiment-result record (additive) | `monarch learn experiment record/log` stores an operator-transcribed YouTube Studio result, variants, date window and outcome; it blocks assigning a winner to `performed_same` or `inconclusive` | Record keeping only. It does not launch tests, fetch results, authenticate, verify the screenshot/source, calculate significance or infer an outcome. Preserve Studio's native outcome; an absent record is not proof no test ran. |
+| Existing video audit | `monarch/video/audit.py` checks available render/package artifacts and can inspect an optional CTR-band CSV | It does not import YouTube-native experiment watch-time-share results or an Analytics API retention curve. A CTR scan is not an A/B test. |
+| Main renderer | The registered `monarch render` path works only for its supported make-video/previz artifacts as documented in the selected workflow | Do not describe it as a general imported-footage editor or as the new premium Style-B renderer. Verify the exact input and MP4 path. |
+| Style B | `monarch/skills/premium-2d-motion-edit/SKILL.md` and `ENGINE_REFERENCE.md` define the Python+PIL frame-production contract and QA evidence | These files are workflow/technical requirements, not proof that the complete Style-B renderer and dedicated audio-mix CLI already exist. `monarch/visual/edit/cut.py` is not a general NLE/editor. |
+| Human approval / upload | Existing approval ladder, HAAN and human publishing rules | Nothing in the new knowledge system publishes a video or clears rights. No skill may bypass operator gates. |
+
+## Capability honesty checklist
+
+Before each handoff, confirm: (1) tool/command exists in `monarch/cli.py` or an inspected implementation, (2) required dependency/auth/source is present, (3) tool actually ran, (4) output artifact exists at the reported path, (5) checks were run on that artifact. If any answer is no, report the precise blocker and mark the capability `NOT AVAILABLE`, `NOT RUN` or `NOT MEASURED`.
+
+Do not add keys, private analytics or generated test media to Git. Optional YouTube Analytics data must be supplied through an authorized account/export; the importer cannot grant access.

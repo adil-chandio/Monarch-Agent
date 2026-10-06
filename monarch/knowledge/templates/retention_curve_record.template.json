@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "record_type": "monarch_retention_curve",
+  "video_id": "",
+  "title": "",
+  "duration_s": null,
+  "source": "",
+  "source_authorization_verified": false,
+  "authorization_note": "Monarch does not verify the export owner's authorization.",
+  "imported_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "points": [
+    {
+      "elapsed_ratio": 0.01,
+      "audience_watch_ratio": 0.95,
+      "relative_retention_performance": null
+    },
+    {
+      "elapsed_ratio": 1.0,
+      "audience_watch_ratio": 0.20,
+      "relative_retention_performance": null
+    }
+  ],
+  "interpretation_note": "Template example values only. audience_watch_ratio may exceed 1 when viewers replay a segment; points do not identify exact viewer events or causes."
+}

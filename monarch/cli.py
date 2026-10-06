@@ -380,7 +380,7 @@ def main(argv: list[str] | None = None) -> int:
     mr.add_argument("path", nargs="?", default="", help="memory json (default .monarch/memory.json)")
 
     # Learn — close the L16 loop with real-world performance data
-    lr = sub.add_parser("learn", help="Log uploaded-video metrics and distill lessons")
+    lr = sub.add_parser("learn", help="Log performance, retention and experiment data; distill lessons")
     lr_sub = lr.add_subparsers(dest="learn_cmd", required=True)
     lrec = lr_sub.add_parser("record")
     lrec.add_argument("--topic", required=True)
@@ -411,6 +411,58 @@ def main(argv: list[str] | None = None) -> int:
     ldis.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
     llog = lr_sub.add_parser("log", help="Show every logged video")
     llog.add_argument("--file", default="", help="log path (default .monarch/performance.jsonl)")
+
+    # Retention curves — offline import of an operator-supplied Analytics export
+    lret = lr_sub.add_parser("retention", help="Import/report time-indexed retention curves (no API fetch)")
+    lret_sub = lret.add_subparsers(dest="retention_cmd", required=True)
+    lret_ing = lret_sub.add_parser("ingest", help="validate and append one video's CSV curve")
+    lret_ing.add_argument("csv_file", help="CSV/TSV export path, or - for stdin")
+    lret_ing.add_argument("--video-id", required=True)
+    lret_ing.add_argument("--title", required=True)
+    lret_ing.add_argument("--duration-s", type=float, required=True)
+    lret_ing.add_argument(
+        "--source", default="operator-supplied YouTube Analytics export",
+        help="source label only; provenance and authorization are not verified",
+    )
+    lret_ing.add_argument("--file", default="", help="log path (default .monarch/retention_curves.jsonl)")
+    lret_ing.add_argument("--json", action="store_true")
+    lret_rep = lret_sub.add_parser("report", help="summarize largest adjacent curve declines")
+    lret_rep.add_argument("--video-id", required=True)
+    lret_rep.add_argument("--file", default="", help="log path (default .monarch/retention_curves.jsonl)")
+    lret_rep.add_argument("--top-drops", type=int, default=5)
+    lret_rep.add_argument("--json", action="store_true")
+
+    # Native YouTube Studio experiment results — operator-transcribed, never inferred
+    lexp = lr_sub.add_parser("experiment", help="Record/list native Studio A/B outcomes (no API fetch)")
+    lexp_sub = lexp.add_subparsers(dest="experiment_cmd", required=True)
+    lexp_rec = lexp_sub.add_parser("record", help="store the outcome shown in YouTube Studio")
+    lexp_rec.add_argument("--test-id", required=True)
+    lexp_rec.add_argument("--video-id", required=True)
+    lexp_rec.add_argument("--title", required=True)
+    lexp_rec.add_argument(
+        "--test-type", required=True,
+        choices=["thumbnail", "title", "title_and_thumbnail"],
+    )
+    lexp_rec.add_argument(
+        "--outcome", required=True,
+        choices=["winner", "preferred", "performed_same", "inconclusive", "in_progress", "not_run"],
+    )
+    lexp_rec.add_argument("--variant", action="append", required=True,
+                          help="variant label (repeat 2–3 times)")
+    lexp_rec.add_argument("--winner-variant", default="")
+    lexp_rec.add_argument("--start-date", default="", help="optional test start date (YYYY-MM-DD)")
+    lexp_rec.add_argument("--end-date", default="", help="optional test end date (YYYY-MM-DD)")
+    lexp_rec.add_argument(
+        "--source", default="operator-transcribed YouTube Studio result",
+        help="source label only; Studio result is not verified by Monarch",
+    )
+    lexp_rec.add_argument("--notes", default="")
+    lexp_rec.add_argument("--file", default="", help="log path (default .monarch/experiments.jsonl)")
+    lexp_rec.add_argument("--json", action="store_true")
+    lexp_log = lexp_sub.add_parser("log", help="show recorded Studio outcomes")
+    lexp_log.add_argument("--video-id", default="", help="optional video ID filter")
+    lexp_log.add_argument("--file", default="", help="log path (default .monarch/experiments.jsonl)")
+    lexp_log.add_argument("--json", action="store_true")
 
     # Agent-Reach integration — doctor + multi-platform search
     dr = sub.add_parser("doctor", help="Environment + upstream-tool readiness (L1/G2, fail-closed)")
@@ -1448,6 +1500,149 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "learn":
         from monarch.core import learn
+
+        if args.learn_cmd == "retention":
+            from monarch.core.retention import (
+                RETENTION_FILE,
+                RetentionCurve,
+                load_retention_curves,
+                record_retention_curve,
+                retention_report,
+            )
+
+            if args.retention_cmd == "ingest":
+                from monarch.pipelines.retention import csv_records
+
+                try:
+                    points = csv_records(
+                        _read(args.csv_file),
+                        video_id=args.video_id,
+                        title=args.title,
+                        duration_s=args.duration_s,
+                        source=args.source,
+                    )
+                    curve = RetentionCurve(
+                        video_id=args.video_id,
+                        title=args.title,
+                        duration_s=args.duration_s,
+                        points=tuple(points),
+                        source=args.source,
+                    )
+                    path = record_retention_curve(curve, args.file or RETENTION_FILE)
+                except (ValueError, OSError) as e:
+                    print("FAIL", e)
+                    return 2
+                if args.json:
+                    print(json.dumps(curve.to_dict(), indent=2))
+                else:
+                    print(
+                        f"INGESTED retention curve for {curve.video_id} — "
+                        f"{len(curve.points)} point(s), {curve.duration_s:g}s -> {path}"
+                    )
+                    print("  provenance and export authorization are NOT VERIFIED by Monarch")
+                return 0
+
+            try:
+                curves = load_retention_curves(args.file or RETENTION_FILE)
+                matches = [curve for curve in curves if curve.video_id == args.video_id]
+                if not matches:
+                    print(
+                        f"NOT MEASURED — no retention curve for {args.video_id!r} "
+                        f"in {args.file or RETENTION_FILE}"
+                    )
+                    return 2
+                report = retention_report(matches[-1], top_drops=args.top_drops)
+            except (ValueError, OSError) as e:
+                print("FAIL", e)
+                return 2
+            if args.json:
+                print(json.dumps(report, indent=2))
+            else:
+                print(
+                    f"RETENTION CURVE | {report['video_id']} | {report['title']}\n"
+                    f"duration={report['duration_s']:g}s | points={report['point_count']} | "
+                    f"source={report['source']}"
+                )
+                print(
+                    "audienceWatchRatio: "
+                    f"first={report['first_audience_watch_ratio']:g}, "
+                    f"last={report['last_audience_watch_ratio']:g}"
+                )
+                for index, drop in enumerate(report["largest_adjacent_declines"], 1):
+                    print(
+                        f"  {index}. approx {drop['from_time_s_approx']:g}s -> "
+                        f"{drop['to_time_s_approx']:g}s | ratio decline "
+                        f"{drop['decline_in_ratio_units']:g}"
+                    )
+                if not report["largest_adjacent_declines"]:
+                    print("  no adjacent declines found")
+                print("NOT A CAUSAL DIAGNOSIS: see interpretation notes; provenance is not verified.")
+            return 0
+
+        if args.learn_cmd == "experiment":
+            from monarch.core.experiments import (
+                EXPERIMENT_FILE,
+                NativeExperimentResult,
+                load_experiment_results,
+                record_experiment_result,
+            )
+
+            if args.experiment_cmd == "record":
+                try:
+                    result = NativeExperimentResult(
+                        test_id=args.test_id,
+                        video_id=args.video_id,
+                        title=args.title,
+                        test_type=args.test_type,
+                        variants=tuple(args.variant),
+                        outcome=args.outcome,
+                        winner_variant=args.winner_variant,
+                        window_start=args.start_date,
+                        window_end=args.end_date,
+                        source=args.source,
+                        notes=args.notes,
+                    )
+                    path = record_experiment_result(result, args.file or EXPERIMENT_FILE)
+                except (ValueError, OSError) as e:
+                    print("FAIL", e)
+                    return 2
+                if args.json:
+                    print(json.dumps(result.to_dict(), indent=2))
+                else:
+                    print(
+                        f"RECORDED Studio result | {result.test_id} | {result.video_id} | "
+                        f"{result.outcome} -> {path}"
+                    )
+                    print("  Studio outcome is operator-transcribed and NOT VERIFIED by Monarch")
+                return 0
+
+            try:
+                results = load_experiment_results(
+                    args.file or EXPERIMENT_FILE,
+                    video_id=args.video_id,
+                )
+            except (ValueError, OSError) as e:
+                print("FAIL", e)
+                return 2
+            if args.json:
+                print(json.dumps([result.to_dict() for result in results], indent=2))
+            elif not results:
+                print("(no native experiment results recorded)")
+            else:
+                for result in results:
+                    variants = ", ".join(result.variants)
+                    winner = f" | winner={result.winner_variant}" if result.winner_variant else ""
+                    window = (
+                        f" | {result.window_start or '?'}..{result.window_end or '?'}"
+                        if result.window_start or result.window_end else ""
+                    )
+                    print(
+                        f"{result.recorded_at} | {result.video_id} | {result.test_id} | "
+                        f"{result.test_type} | Studio={result.outcome}{winner} | "
+                        f"variants={variants}{window}"
+                    )
+                print("Studio outcomes are operator-transcribed; provenance is NOT VERIFIED by Monarch")
+            return 0
 
         if args.learn_cmd == "record":
             try:

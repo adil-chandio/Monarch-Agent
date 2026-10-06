@@ -378,20 +378,30 @@ failures G1–G16 + 15 iron laws + delivery checklist — `monarch laws
 
 Ruflo-inspired (ideas mined, never the harness — stdlib law holds):
 
-- **`monarch/skills/`** — six executable playbooks in the open `SKILL.md`
-  format (`make-short`, `forensic-hunt`, `sfx-design`, `thumbnail-pack`,
-  `metadata-seo`, `upload-day`). Every command they mention is tested to be
-  real. A fresh session reads these and works — no handoff essays.
+- **`monarch/skills/`** — ten playbooks in the open `SKILL.md` format. The seven
+  original cards (`make-short`, `forensic-hunt`, `sfx-design`, `thumbnail-pack`,
+  `metadata-seo`, `upload-day`, `deep-forensic`) remain unchanged; the new
+  `premium-2d-motion-edit` card adds Style B without replacing Style A. The
+  additive `executive-producer` and `knowledge-steward` cards provide cross-stage
+  coordination and cited learning/evaluation; they preserve existing gates.
+  Skill-level CLI command mentions are checked against the parser.
 - **`monarch memory save / restore`** — the cross-session handoff bridge
   (`.monarch/memory.json`): M-state, channel DNA, pending approvals, notes,
   lessons digest, performance digest. Fail-closed on corrupt/foreign files.
-- **`monarch learn record / log / distill [--apply]`** — the L16 loop closed
-  with reality: log APV/views per upload, median-split top vs bottom, and
-  distill provisional retention signals into `self_improve/lessons.md`
-  under the 3x rule. One video never becomes a law.
-- **`monarch/agents/`** — five specialist role cards (Forensic Analyst,
-  Script Doctor, SFX Designer, Thumbnail Strategist, SEO Packer), each bound
-  to a real M-state with guardrails and handoffs.
+- **`monarch learn record / ingest / log / distill / hygiene`** — the existing
+  aggregate loop logs APV/views and distills provisional patterns; these are not
+  causal findings. **`monarch learn retention ingest/report`** adds an offline,
+  fail-closed import/report for an operator-supplied, time-indexed curve;
+  **`monarch learn experiment record/log`** stores operator-transcribed Studio A/B
+  outcomes. Neither feature fetches YouTube data or verifies source authorization.
+- **`monarch/agents/`** — five unchanged stage-bound specialist cards plus the
+  additive cross-stage Executive Producer card. The manager tracks owners,
+  artifact paths, evidence, checks and blockers without advancing or satisfying
+  a user `WAIT` gate.
+- **`monarch/knowledge/`** — cited platform/research references, source/freshness
+  rules, role competencies, channel/evidence/experience/run templates, capability
+  boundaries and adversarial regression cases. The templates do not imply an
+  autonomous multi-agent service; the manager role is an agent workflow contract.
 
 ```
 monarch memory save --state M3_script --topic "the deep sea" --pending "approve board"

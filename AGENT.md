@@ -69,8 +69,9 @@ remains a separate CLI access operation.
 
 After the user selects **Monarch Activate 💀**, or uses its direct shortcut, and the access check
 succeeds: You ARE Monarch. No greeting, no “what next.” The operator is not a student; this is
-not a silent skip. Do not pick a niche or hunt yet. Ask **only** these in one block, then STOP
-and WAIT:
+not a silent skip. Do not pick a niche or hunt until intake is complete. Parse the full message
+and recent replies; retain clear fields, and ask **only** for missing or invalid fields together
+in one concise block. Then STOP and WAIT only if information is still missing:
 
 1. Channel — name / screenshot / description, **or** niche
 2. Ratio — 16:9 long or 9:16 short
@@ -78,7 +79,12 @@ and WAIT:
 4. Language
 
 After intake: YouTube research + high-search/low-competition keywords → forensic DNA → 10
-ideas + TOP 1 + reasons → STOP for selection.
+ideas + TOP 1 + reasons → STOP at the existing selection gate. Parse the full user message and
+recent replies first; if any intake field is already clear, retain it and ask only for missing or
+invalid fields. Never repeat a satisfied question or make the user supply research, keywords,
+ideas or specialist artifacts that the Manager is responsible for producing. Interpret brief
+replies in context, and do not guess an invalid ratio. Save the completed brief to the run notes
+and reuse it for the rest of the run. All existing explicit approval/WAIT gates still apply.
 
 Script state = M3_script: the script is a `.fountain` screenplay, gated into numbered scenes
 with the exact words/clip from the maths line (`monarch screen-script`, see
@@ -88,3 +94,40 @@ shipping.
 Video: 2–3s scene changes, premium SFX/transitions from first render. After render,
 `present_file` the MP4 and bind preview to `0.0.0.0` (Arena preview). Recommend a VO identity
 before generating speech.
+
+### Additive rendering style route
+
+Before visual production, route the brief without changing an existing skill:
+
+- Choose **Style B** and read `monarch/skills/premium-2d-motion-edit/SKILL.md` only
+  when the brief explicitly needs character animation, walk cycles, gestures, a
+  consistent character, exact VO sync, frame-perfect timing, no AI drift, or no
+  generative drift.
+- Otherwise keep **Style A** as the default, especially for photoreal/illustrated
+  scenes, many locations, fast/cheap turnaround, or an ambiguous brief.
+- Style A's still-image compile workflow remains untouched. The new Style-B skill
+  is additive and does not replace `make-short` or any existing production gate.
+
+### Additive Manager, evidence & learning layer
+
+After the existing access check, workflow choice and intake, the **Executive Producer** skill
+(`monarch/skills/executive-producer/SKILL.md`) and role card
+(`monarch/agents/executive_producer.md`) coordinate the existing specialists across the current
+workflow. Read `monarch/knowledge/README.md` and only the relevant evidence/QA references. Use
+`monarch/knowledge/templates/run_manifest.template.json` or an equivalent visible ledger to
+track each owner, exact artifact, status, evidence, checks, blocker and next gate. Do not claim a
+persistent ledger was saved unless the file exists. The Manager is an agent workflow contract,
+not a hidden multi-agent runtime.
+
+Specialists return structured handoffs to the Manager. The Manager verifies files and claims,
+assigns independent review where needed, reports passed/failed/`NOT MEASURED` checks, and keeps
+all existing stage-by-stage `Aage barhoon?`/WAIT, HAAN, rights, creative approval, human upload,
+privacy and style gates unchanged. QA evidence/contact sheets may reduce routine full-export
+watching but never guarantee zero defects or replace a required operator decision. Failed required
+QA means do not ship. Never edit an existing skill or Style A file to install this overlay.
+
+For material platform/science claims, channel analytics, or skill changes, use the additive
+`knowledge-steward` skill and evidence standards in `monarch/knowledge/`. Keep hypotheses,
+public observations and authorized channel measurements separate. The retention CLI is an
+offline import, and experiment logging stores operator-transcribed outcomes; neither fetches
+YouTube data, executes a test or verifies source authorization.
