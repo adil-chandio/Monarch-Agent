@@ -29,6 +29,7 @@ EXPECTED_SKILLS = {
     "premium-2d-motion-edit",  # additive; the seven original cards stay intact
     "executive-producer",  # additive cross-stage manager
     "knowledge-steward",  # additive cited-learning and evaluation skill
+    "self-improvement",  # additive same-turn correction + durable L16 loop
 }
 
 
@@ -104,6 +105,7 @@ def test_skills_mention_their_gates():
         "premium-2d-motion-edit": ["Style B", "y=180…1500", "4.5:1"],
         "executive-producer": ["central manager", "WAIT", "actual encoded delivery"],
         "knowledge-steward": ["evidence classes", "inconclusive", "NOT MEASURED"],
+        "self-improvement": ["Same-turn repair loop", "read it as speech", "timer", "requested runtime", "3x rule"],
     }
     for skill, needles in checks.items():
         text = (SKILLS_DIR / skill / "SKILL.md").read_text(encoding="utf-8")
@@ -158,7 +160,27 @@ def test_agent_cards_map_to_real_states_or_explicit_manager_scope():
 
 
 def test_lessons_file_exists_for_the_loop():
-    assert (REPO / "monarch" / "self_improve" / "lessons.md").is_file()
+    lessons = REPO / "monarch" / "self_improve" / "lessons.md"
+    assert lessons.is_file()
+    text = lessons.read_text(encoding="utf-8")
+    assert "robotic_spoken_script_after_operator_tone_feedback" in text
+    assert "timer_effect_without_setup_or_elapsed_time" in text
+
+
+def test_self_improvement_skill_is_routed_and_truthful():
+    skill = SKILLS_DIR / "self-improvement" / "SKILL.md"
+    agent = (REPO / "AGENT.md").read_text(encoding="utf-8")
+    text = skill.read_text(encoding="utf-8")
+    assert skill.is_file()
+    assert "monarch/skills/self-improvement/SKILL.md" in agent
+    assert "same turn" in text
+    assert "two-minute timer cannot ring" in text
+    assert "plausible early progress" in text
+    assert "monarch.core.lessons.record" in text
+    assert "`perfect | improve`" in text
+    assert "never reopen approval for an unchanged artifact already approved" in text
+    assert "model-weight training" in text
+    assert "zero defects" in text
 
 
 def test_gitignore_covers_session_state():

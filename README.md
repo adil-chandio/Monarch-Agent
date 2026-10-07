@@ -378,12 +378,13 @@ failures G1–G16 + 15 iron laws + delivery checklist — `monarch laws
 
 Ruflo-inspired (ideas mined, never the harness — stdlib law holds):
 
-- **`monarch/skills/`** — ten playbooks in the open `SKILL.md` format. The seven
+- **`monarch/skills/`** — eleven playbooks in the open `SKILL.md` format. The seven
   original cards (`make-short`, `forensic-hunt`, `sfx-design`, `thumbnail-pack`,
   `metadata-seo`, `upload-day`, `deep-forensic`) remain unchanged; the new
   `premium-2d-motion-edit` card adds Style B without replacing Style A. The
-  additive `executive-producer` and `knowledge-steward` cards provide cross-stage
-  coordination and cited learning/evaluation; they preserve existing gates.
+  additive `executive-producer`, `knowledge-steward`, and `self-improvement` cards
+  provide cross-stage coordination, cited learning/evaluation, and same-turn feedback
+  correction with traceable L16 lessons; they preserve existing gates.
   Skill-level CLI command mentions are checked against the parser.
 - **`monarch memory save / restore`** — the cross-session handoff bridge
   (`.monarch/memory.json`): M-state, channel DNA, pending approvals, notes,

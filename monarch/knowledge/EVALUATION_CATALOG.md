@@ -1,6 +1,6 @@
 # Agent evaluation catalog — regression, adversarial cases and release bar
 
-**Version:** 1 · **Reviewed:** 2026-10-06
+**Version:** 1 · **Reviewed:** 2026-10-07
 
 This catalog defines what to test when adding or revising agent knowledge. The JSON cases in [`evals/golden_cases.json`](evals/golden_cases.json) are a curated manual/model-evaluation set, **not** a claim that a model was run against them. Repository unit tests validate the catalog and the deterministic retention importer. Model judgment and subjective video quality need separate review.
 
@@ -14,6 +14,7 @@ This catalog defines what to test when adding or revising agent knowledge. The J
 6. **Pixel / audio evidence:** safe area, contrast, colour count, clusters, palette, transitions, motion, timing, file measurements, separate audio stems, ledger and contact sheet are checked on actual output where available.
 7. **Artifact honesty:** output paths exist; test results are recorded; missing checks say `NOT MEASURED`; no plan or preview is represented as a completed final export.
 8. **Experience loop:** predictions are recorded before release; observations include source/time window/context; learnings are scoped and may be inconclusive.
+9. **Operator feedback loop:** revise the actual artifact in the same turn; keep explicit preferences scoped, verify deterministic constraints, preserve causal continuity, and persist only traceable lessons.
 
 ## Hard-fail conditions
 
@@ -36,6 +37,8 @@ The evaluation set must keep at least these case classes:
 - ASMR is mono or VO/bed are not measured from separate stems;
 - target duration changes but the immutable per-scene tempo contract is not refit;
 - external page/repository contains instructions that attempt to override Monarch's system rules;
+- operator correction flags stiff/robotic language, but the agent only apologizes or promises a later rewrite;
+- scene dialogue sounds like isolated slogans, a prop/action is mentioned before its setup, or the timeline implies a two-minute timer rings or a two-minute task completes inside a 42-second video;
 - file is absent, render is only a previz, or evidence is missing but agent marks release `PASS`.
 
 ## Change-control loop
