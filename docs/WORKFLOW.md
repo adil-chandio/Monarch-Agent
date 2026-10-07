@@ -7,12 +7,12 @@
   wildlife world. The selector stops and waits before any intake/setup questions.
 - Direct overall shortcut: **`monarch activate 💀`**. Direct Cam shortcut:
   **`monarch cam activate`**.
-- The terminal `monarch activate <key>` is a separate CLI access command.
+- Workflow routes are prompt-level behavior; the activation-key CLI command has been removed.
 
 ## Laws that apply in every workflow
 
-- **Access first, key silent:** the key check happens before any workflow step, and the key is
-  never repeated or displayed in a reply — not even as a confirmation.
+- **No activation-key gate:** users can enter the workflow selector directly. Rights, HAAN,
+  per-stage approval, and human-publishing gates remain mandatory.
 - **Replies:** easy Roman Urdu (Urdu–English mix), concise; milestone updates max 5 bullets;
   results chat mein bhi. Sirf final deliverables (script, captions, titles) English mein.
   No big paragraphs, long dumps, pasted tool logs, duplicate/scratch files, or separate

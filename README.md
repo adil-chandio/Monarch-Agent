@@ -1,27 +1,10 @@
 # Monarch
 
-Faceless YouTube OS for **Arena Agent Mode**.  
-**Created by Adil Chandio** | Contact: [workadilchandio@gmail.com](mailto:workadilchandio@gmail.com)
+Faceless YouTube OS for **Arena Agent Mode**.
+**Created by Adil Chandio**
 
----
-
-## 🔒 Security & Access Activation
-
-Monarch Agent is protected with a private activation key. If anyone clones or runs Monarch without activation, access is denied with:
-
-> *"Me Monarch Agent muje Adil chandio ne banaya ha to apko mujhe access run Karne ke Liye key chaiye Yahan chat me key dalen Aage key NAHI ha to apko mere boss se milegi unka contact Gmail: workadilchandio@gmail.com"*
-
-### How to Unlock / Activate:
-```bash
-# 1. Via CLI activation command:
-monarch activate DoitMon@rch
-
-# 2. Or set environment variable:
-export MONARCH_ACCESS_KEY="DoitMon@rch"
-
-# 3. Or pass inline with any command:
-monarch --key DoitMon@rch status
-```
+Monarch no longer requires an activation key. Workflow, rights, HAAN, creative-approval, and
+human-publishing gates remain unchanged.
 
 ---
 
@@ -29,7 +12,7 @@ monarch --key DoitMon@rch status
 
 ### Agent workflow (natural-language)
 
-After the existing access check, say `monarch activate`. The agent first asks one question in
+Say `monarch activate` to start the workflow selector. The agent first asks one question in
 simple Roman Urdu and waits:
 
 > Kaunsa workflow chalana hai?
@@ -44,7 +27,7 @@ Do not start repository setup/dependency installation as part of this workflow c
 
 ### Cam entry — ask, then wait
 
-After access is verified and Cam is selected, the agent asks three things in simple Roman Urdu
+After Cam is selected, the agent asks three things in simple Roman Urdu
 and waits: **topic · ratio · length**. The bear/door brief in
 `monarch/worlds/monarch-cam/assignments/` is provisional — it is not a chosen topic. If you ask for ideas instead, you get **10 ideas** and the agent waits for
 your pick. The agent never chooses topic, ratio, or length itself, and Stages 1–6 research lands
@@ -52,7 +35,7 @@ in one `output/<slug>/project_notes.md` (per-stage sections, not six separate re
 
 ### Laws that always apply
 
-- Access key check first; the key is never repeated in any reply.
+- No activation-key gate; all remaining workflow and safety gates still apply.
 - Easy Roman Urdu (Urdu–English mix) replies only; milestone updates max 5 bullets; results chat
   mein bhi. Sirf final deliverables (script, captions, titles) English mein.
 - **Per-stage permission:** har stage ke baad chhota update + `Aage barhoon?` → WAIT. Bina ijaazat
@@ -77,8 +60,7 @@ Full law: `BOOT.md` · `AGENT.md` · `monarch/worlds/README.md`
 
 ### Terminal CLI
 
-`monarch activate <key>` is a separate CLI command for unlocking the local agent; it does not
-show the natural-language workflow selector. This selector applies when talking to the agent.
+Workflow phrases are natural-language routes; they are not CLI commands.
 
 ```
 python -m monarch status

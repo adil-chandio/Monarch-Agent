@@ -44,9 +44,9 @@ keep temporary video instructions out of the permanent identity/rules files.
 
 - `README.md` — display name, documented trigger, status (wired vs docs-only), file reading
   order, one-paragraph brief.
-- `WORLD.md` — activation contract, access-key rule, boot sequence, actual workflow stages,
-  truthful tools/limitations, approval gates, deactivation. Do not claim a natural-language
-  trigger is wired unless the root agent entrypoint has an approved router.
+- `WORLD.md` — activation contract, boot sequence, actual workflow stages, truthful
+  tools/limitations, and approval gates. Do not claim a natural-language trigger is wired unless
+  the root agent entrypoint has an approved router.
 - `identity.md` — brand promise, pillars, anti-identity, brand system.
 - `analytics.md` — dated evidence, diagnoses, benchmarks and **the lesson each proves**.
 - `audience.md` — segments linked to evidence and actionable creative implications.
@@ -66,6 +66,6 @@ limitation plainly — do not sneak a router into a different folder and claim i
 
 ## The global Monarch laws still apply
 
-Every world inherits the access key, constitution, HAAN/approval gates, human-only YouTube
-publishing and fail-closed behaviour. A niche-specific world may add restrictions, never
-weaken the base laws.
+Every world inherits the constitution, HAAN/approval gates, human-only YouTube publishing, and
+fail-closed behaviour. No activation-key gate applies. A niche-specific world may add restrictions,
+never weaken the base laws.

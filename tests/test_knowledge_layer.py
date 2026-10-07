@@ -97,7 +97,7 @@ def test_manager_contract_keeps_human_gates_and_is_not_a_hidden_runtime():
     assert "run_manifest.template.json" in skill
 
 
-def test_agent_entrypoints_integrate_manager_after_access_without_weakening_waits():
+def test_agent_entrypoints_integrate_manager_without_access_gate_or_weakening_waits():
     boot = (REPO / "BOOT.md").read_text(encoding="utf-8")
     agent = (REPO / "AGENT.md").read_text(encoding="utf-8")
     for text in (boot, agent):
@@ -105,7 +105,9 @@ def test_agent_entrypoints_integrate_manager_after_access_without_weakening_wait
         assert "monarch/agents/executive_producer.md" in text
         assert "knowledge/README.md" in text
         assert "WAIT" in text
-    assert "After the existing access check" in boot
+    assert "no longer has an activation-key lock" in boot.lower()
+    intake = (REPO / "monarch/constitution/09_INTAKE.md").read_text(encoding="utf-8").lower()
+    assert "no activation-key validation is required" in intake
     assert "ask only for missing or" in boot
     assert "invalid fields, together in one concise block" in boot
     assert "not an autonomous multi-agent runtime" in boot

@@ -13,14 +13,14 @@ This is an additive control-plane skill for the current agent workflow. The Mana
 
 ## Authority boundary
 
-- Keep the active constitution, channel world, access check, 12-state workflow, security rules and all existing `WAIT`, HAAN, rights, creative approval and human-upload gates.
+- Keep the active constitution, channel world, 12-state workflow, security rules and all existing `WAIT`, HAAN, rights, creative approval and human-upload gates; no activation-key gate applies.
 - Style A remains unchanged. Route to Style B only when the user explicitly chooses it; Style B uses the existing Python+Pillow contract in `monarch/skills/premium-2d-motion-edit/SKILL.md` and its `ENGINE_REFERENCE.md`.
 - The EP may assign, inspect, question, return for revision and summarize. It cannot satisfy a user approval by internal consensus, publish, clear rights, change the requested duration/style, or waive failed checks.
 - Do not claim that a task is delegated to a distinct runtime agent unless such a runtime actually exists. Where only role instructions are available, route work among role prompts and keep the artifact owner/reviewer explicit.
 
 ## Start each run
 
-1. Complete the existing access check and active workflow's intake. Parse the whole message and recent turns; retain every clear answer, interpret short replies against the question just asked, and ask only for missing or invalid fields in one concise follow-up. Never re-ask an answered field or make the user supply research, ideas, specialist artifacts or QA the Manager can produce. Do not guess an invalid ratio or other gated choice. Do not request credentials in chat or write secrets into run state.
+1. Complete workflow selection and active workflow intake. Parse the whole message and recent turns; retain every clear answer, interpret short replies against the question just asked, and ask only for missing or invalid fields in one concise follow-up. Never re-ask an answered field or make the user supply research, ideas, specialist artifacts or QA the Manager can produce. Do not guess an invalid ratio or other gated choice. Do not request credentials in chat or write secrets into run state.
 2. Read the selected channel/world's canonical context, applicable style skill, current run state and pending approvals. Load only relevant knowledge references from `monarch/knowledge/README.md`. If an older role card states an unverified growth or neuroscience mechanism as fact, do not edit the card; scope it as a creative heuristic unless the current source standard verifies the precise claim, and route factual questions to an independent reviewer.
 3. Create or update a run manifest using `monarch/knowledge/templates/run_manifest.template.json` (or an equivalent visible handoff if persistent manifests are unavailable). Record the user's exact goal/constraints, selected channel/format/style, approved duration/timing, current workflow state, pending gate and explicit unknowns. Once intake is complete, reuse this brief throughout the run; update it only when the user changes a choice.
 4. Assign each required artifact one owner, one expected path/format, a reviewer and the acceptance criteria. Keep a dependency/status ledger. Avoid spawning an agent for work that can be handled safely by an existing specialist.

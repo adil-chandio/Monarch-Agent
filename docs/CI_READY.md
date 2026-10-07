@@ -30,8 +30,6 @@ jobs:
         run: pip install pytest imageio-ffmpeg numpy
       - name: Suite
         run: python -m pytest tests/ -q
-        env:
-          MONARCH_ACCESS_KEY: "DoitMon@rch"
 ```
 
 **Verified:** yeh exact dep-set fresh venv me 430 passed (CI-parity

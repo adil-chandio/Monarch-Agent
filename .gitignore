@@ -8,5 +8,4 @@ vendor/**/*.mov
 outputs/
 output/
 *.log
-.monarch_key
 .monarch/

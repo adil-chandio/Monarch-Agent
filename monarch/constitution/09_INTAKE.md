@@ -1,7 +1,7 @@
 # Workflow choice and activation intake (mandatory)
 
-Access-key validation always happens first. Never show a workflow menu or load a world before
-access is verified.
+No activation-key validation is required. Show the workflow menu directly when the user wakes
+Monarch; continue to preserve all existing approval and safety gates.
 
 ## Generic agent wake
 
@@ -26,13 +26,13 @@ Do not choose a workflow for the user. If the answer is unclear, repeat only the
 - `monarch activate 💀` or chooser selection **Monarch Activate 💀 / Monarch Activate** → use
   the original overall Monarch workflow and ask the four intake questions below.
 
-These are natural-language agent routes. The terminal command `monarch activate <key>` is a
-separate CLI access operation.
+These are natural-language agent routes, not CLI commands. The activation-key CLI operation has
+been removed.
 
 ## Monarch Cam entry intake (before Stage 1)
 
-After Cam is selected (chooser or `monarch cam activate`) and access is verified, ask only these
-in simple Roman Urdu, then STOP and WAIT:
+After Cam is selected (chooser or `monarch cam activate`), ask only these in simple Roman Urdu,
+then STOP and WAIT:
 
 1. Topic — kya banana hai?
 2. Ratio — 9:16 ya 16:9?

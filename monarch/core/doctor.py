@@ -8,7 +8,6 @@ clock); canon/workspace failures are FAIL and the exit code says so.
 
 from __future__ import annotations
 
-import os
 import shutil
 from pathlib import Path
 
@@ -48,10 +47,6 @@ def run_checks(repo_root: str | Path) -> list[dict]:
     except ImportError:
         add("pytest", "WARN", "not installed - pip install pytest before suites")
 
-    key = os.environ.get("MONARCH_ACCESS_KEY")
-    add("access-key", "PASS" if key else "WARN",
-        "MONARCH_ACCESS_KEY set in env (value never printed)" if key
-        else "MONARCH_ACCESS_KEY not in env - commands will prompt")
     return checks
 
 

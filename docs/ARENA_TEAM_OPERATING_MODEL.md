@@ -50,12 +50,12 @@ A role may report work complete only when the artifact exists and required check
 
 ## Operator gates that never move
 
-- Complete the existing access check, workflow choice, and intake before production.
+- Complete the workflow choice and intake before production; no activation-key check is required.
 - Keep the selected topic, ratio, runtime, style, idea, script, voice, title, and publication decisions with the operator wherever the workflow requires a choice.
 - Respect every existing `WAIT`, `HAAN`, rights, creative-approval, privacy, style, and human-upload rule. Internal consensus and QA do not count as approval.
 - `Aage barhoon?`/`continue` approves only the current creative gate. It does not authorize missing intake, unclear rights, vendor contact/payment, or publishing.
 - A public asset, fingerprint no-match, preview, plan, or unsupported source is not a licence or final-deliverable proof. `monarch render` must be described according to its actual supported input and output; do not call a previz a final edit of imported footage.
-- Do not put activation keys, API tokens, `.env` contents, private viewer-level analytics, or unlicensed media in GitHub, Linear, or Notion. Authorized channel exports remain in the existing ignored/private workflow.
+- Do not put secrets, API tokens, `.env` contents, private viewer-level analytics, or unlicensed media in GitHub, Linear, or Notion. Authorized channel exports remain in the existing ignored/private workflow.
 
 ## Linear issue contract
 

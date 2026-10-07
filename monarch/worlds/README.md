@@ -1,13 +1,10 @@
 # Monarch WORLDS — channel operating systems
 
-**Created by Adil Chandio** | Boss Contact: `workadilchandio@gmail.com` | Access Key: `DoitMon@rch`
-
-A **world** is one YouTube channel's complete operating system: its identity, its real
-analytics, its audience, its creative law, its footage/rights standard, its packaging
-system and its per-video assignments.
+A **world** is one YouTube channel's complete operating system: identity, analytics, audience,
+creative law, footage/rights standard, packaging, and per-video assignments.
 
 This is an **additive layer**. A prompt-level workflow selector in the root wake-up files
-routes the user only after access verification. It offers Monarch Cam or the original overall
+routes the user directly; there is no activation-key gate. It offers Monarch Cam or the original overall
 Monarch workflow without rewriting the constitution, the seven original skills, or the five
 state-bound specialist role cards. Separate additive layers now provide Style B, a cross-stage
 Manager, cited knowledge/evaluation, same-turn feedback correction, and offline retention-curve import:
@@ -43,16 +40,10 @@ not six separate reports.
 
 ## Integration status — important
 
-After the existing access-key check, generic `monarch activate` now asks one workflow question
-in simple Roman Urdu and waits: **Monarch Cam** or **Monarch Activate 💀**. Selecting Cam loads
-`monarch/worlds/monarch-cam/WORLD.md`; selecting the overall workflow leads into its original
-four-question intake. `monarch cam activate` and `monarch activate 💀` remain direct shortcuts.
+The generic `monarch activate` workflow selector runs directly; no activation-key check applies.
+It asks one workflow question in simple Roman Urdu and waits: **Monarch Cam** or **Monarch Activate 💀**.
+The terminal activation-key command has been removed; these are prompt-level routes only.
 The selector does not start repository setup or dependency installation.
-
-This is prompt-level routing in `CLAUDE.md`, `BOOT.md`, and `AGENT.md`, not Python runtime code.
-The terminal `monarch activate <key>` remains the separate CLI access operation; there is no
-`monarch cam` CLI command. The agent must have these updated entrypoint instructions in its
-loaded context for the workflow selector to appear.
 
 ## Why a world is separate from skills and channels
 
@@ -90,8 +81,8 @@ Per-video work goes in `assignments/` so the channel files never churn.
 
 ## The unbreakable laws that apply to every world
 
-1. **Access key** — `DoitMon@rch` is still required. A world activation without the key is
-   denied with the standard Monarch refusal. No world weakens `00_IDENTITY.md`.
+1. **No activation lock** — workflow routes are available directly. Every world still obeys the
+   shared constitution, rights rules, approval gates, and human-only publishing law.
 2. **Human YouTube publishing** — the agent never publishes. `monarch upload` transfers a local file/release asset; it is not YouTube publishing.
 3. **Real over synthetic** — a world may not invent data, invent footage, or present AI
    visuals as real captured footage.

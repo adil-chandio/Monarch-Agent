@@ -14,14 +14,10 @@ The natural-language activation phrase is:
 monarch cam activate
 ```
 
-**Integration status:** this explicit phrase is routed by the additive activation rules in
-`BOOT.md`, `AGENT.md`, and `CLAUDE.md`. It loads this world after the existing access check.
-This is an agent instruction, **not** a shell or CLI command; there is no `monarch cam`
+**Integration status:** this explicit phrase is routed by the prompt-level rules in
+`BOOT.md`, `AGENT.md`, and `CLAUDE.md`; it loads this world directly. No activation-key gate
+applies. This is an agent instruction, **not** a shell or CLI command; there is no `monarch cam`
 subcommand.
-
-The existing access-key rule in `monarch/constitution/00_IDENTITY.md` applies before either
-route. If the key is not verified, use Monarch's standard refusal message and stop. The Cam
-route never bypasses the access law.
 
 The generic `monarch activate` trigger first shows the workflow selector in
 `monarch/constitution/09_INTAKE.md`. Choosing **Monarch Cam** loads this world; the explicit
@@ -35,15 +31,14 @@ replace any safety, evidence, human approval, QC, WAIT, or human-publishing gate
 
 ## 1. BOOT SEQUENCE (when this world is explicitly selected)
 
-1. Confirm access key under the existing Monarch law.
-2. Read in order: `identity.md` → `analytics.md` → `audience.md` → `rules.md` →
+1. Read in order: `identity.md` → `analytics.md` → `audience.md` → `rules.md` →
    `sources.md` → `claim-risk.md` → `packaging.md` → `delivery.md`.
-3. Ask the three Cam entry questions in simple Roman Urdu and **STOP / WAIT**:
+2. Ask the three Cam entry questions in simple Roman Urdu and **STOP / WAIT**:
    **topic** (kya banana hai?) · **ratio** (9:16 ya 16:9?) · **length** (kitne seconds/minutes?).
    The briefs in `assignments/` are **provisional** — a brief is not a chosen topic.
-4. If the operator asks for ideas instead, give **10 ideas** and WAIT for the pick. Never choose
+3. If the operator asks for ideas instead, give **10 ideas** and WAIT for the pick. Never choose
    the topic, ratio, or length for the operator.
-5. After the answers, say **MONARCH CAM — WORLD ACTIVE** and start Stage 1 with the confirmed
+4. After the answers, say **MONARCH CAM — WORLD ACTIVE** and start Stage 1 with the confirmed
    topic/ratio/length (or the operator-selected idea). No greeting, no generic intake questions
    for facts fixed by this world, and no stage work before the operator answers. Still ask for
    missing evidence that is genuinely required to proceed.
@@ -224,15 +219,15 @@ AI wildlife visuals or a base-agent previz render as a substitute.
 | Footage | base previz pipeline | real footage; search log, source/context ledger, separate rights/claim-risk screen |
 | Export | base previz renderer | needs a real external-footage edit/export path; current CLI cannot assemble it |
 
-Access protection, base constitution, script approval, HAAN, QC, packaging approval, human
-YouTube upload, and WAIT gates remain in force. A world may add gates, never weaken them.
+Base constitution, script approval, HAAN, QC, packaging approval, human YouTube upload, and WAIT
+gates remain in force. A world may add gates, never weaken them.
 
 ---
 
 ## 6. RETURN TO BASE MODE
 
-World selection is per activation request; it does not permanently switch the agent's runtime
-state. For unrelated work, use `monarch activate` and choose **Monarch Activate 💀**, or use
+World selection is per request; it does not permanently switch the agent's runtime state. For
+unrelated work, use `monarch activate` and choose **Monarch Activate 💀**, or use
 `monarch activate 💀` as the direct overall-workflow shortcut. Select Monarch Cam from the same
-menu or use `monarch cam activate` directly. Do **not** use `monarch lock` to switch worlds:
-that locks the whole agent. The overall four-question intake remains unchanged after selection.
+menu or use `monarch cam activate` directly. The overall four-question intake remains unchanged
+after selection.

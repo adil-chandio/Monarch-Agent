@@ -240,17 +240,13 @@ def test_doctor_fail_closed_on_broken_root(tmp_path, capsys):
     assert rc == 1 and "FAIL" in out and "canon-docs" in out
 
 
-def test_doctor_json_never_leaks_key_value(capsys, monkeypatch):
-    monkeypatch.setenv("MONARCH_ACCESS_KEY", "DoitMon@rch")
+def test_doctor_json_has_no_activation_check(capsys):
     repo = Path(__file__).resolve().parents[1]
     rc = main(["doctor", "--repo-root", str(repo), "--json"])
     out = capsys.readouterr().out
     assert rc == 0
-    assert "DoitMon@rch" not in out         # the key is never printed
     payload = json.loads(out)
-    checks = payload["env"]
-    key_row = next(c for c in checks if c["check"] == "access-key")
-    assert key_row["status"] == "PASS"
+    assert all(c["check"] != "access-key" for c in payload["env"])
 
 
 def test_cli_laws_still_works(capsys):

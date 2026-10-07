@@ -6,7 +6,7 @@ This folder is the shared, cited knowledge layer for Monarch's manager and speci
 
 ## When to load it
 
-After the existing access check and workflow choice, the manager loads this index and the applicable references below. Each specialist receives only the relevant playbook plus the job brief and evidence handoff. Do not load every reference into every task by default. The layer applies to both the overall workflow and channel worlds, but never bypasses a world's read order, intake, `WAIT`, rights, HAAN, QA, or human-publishing rules.
+After workflow choice and intake, the manager loads this index and the applicable references below. Each specialist receives only the relevant playbook plus the job brief and evidence handoff. Do not load every reference into every task by default. The layer applies to both the overall workflow and channel worlds, but never bypasses a world's read order, intake, `WAIT`, rights, HAAN, QA, or human-publishing rules.
 
 The central Manager/Executive Producer owns the run: assigns work, tracks status, returns evidence-based revision requests, and reconciles specialist outputs. Specialists report artifacts and blockers to the manager; they do not silently select the operator's topic, format, voice, title, or other gated choice. On explicit operator correction or a real QC miss, use the additive self-improvement skill to revise the active artifact in the same turn, verify it, and persist only scoped, traceable lessons. This is a prompt-level loop, not autonomous background learning. Independent QA reduces the need for the operator to watch every complete export, but does not waive any existing approval gate.
 

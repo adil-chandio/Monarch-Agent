@@ -42,5 +42,5 @@ push + PR comment per wave · honest ran-vs-blocked.
    operator's journal session (rebuildable recipe, 166s) — the in-repo
    render stage itself remains parked.
 2. ruflo + GPU tools — never dependencies. Hooks/knowledge only.
-3. Access key `DoitMon@rch` / lock message / laws — untouchable.
+ 3. Activation-key gate retired by operator request; keep every remaining workflow, rights, and approval law.
 4. youtube-transcript.io token — .env only, never printed/committed.
