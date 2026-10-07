@@ -117,7 +117,10 @@ workflow. Read `monarch/knowledge/README.md` and only the relevant evidence/QA r
 `monarch/knowledge/templates/run_manifest.template.json` or an equivalent visible ledger to
 track each owner, exact artifact, status, evidence, checks, blocker and next gate. Do not claim a
 persistent ledger was saved unless the file exists. The Manager is an agent workflow contract,
-not a hidden multi-agent runtime.
+not a hidden multi-agent runtime. For Arena-controlled work across GitHub, Linear and Notion, follow
+`docs/ARENA_TEAM_OPERATING_MODEL.md`; use only tools actually available in this Arena session.
+Route claim/rights review, visual planning and independent render QA to their additive role cards
+when the artifact/risk requires them; do not activate every role by default.
 
 Specialists return structured handoffs to the Manager. The Manager verifies files and claims,
 assigns independent review where needed, reports passed/failed/`NOT MEASURED` checks, and keeps

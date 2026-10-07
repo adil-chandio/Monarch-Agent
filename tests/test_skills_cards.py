@@ -111,17 +111,38 @@ def test_skills_mention_their_gates():
             assert needle in text, f"{skill}: must mention {needle!r}"
 
 
-def test_existing_specialists_and_additive_manager_card_exist():
+def test_specialists_reviewers_and_additive_manager_cards_exist():
     cards = sorted(AGENTS_DIR.glob("*.md"))
-    assert len(cards) == 6
+    assert len(cards) == 9
     assert {c.stem for c in cards} == {
         "forensic_analyst_F0_M2",
         "script_doctor_M3",
         "sfx_designer_M5",
         "thumbnail_strategist_M6",
         "seo_packer_P3",
+        "fact_rights_reviewer",
+        "visual_motion_director",
+        "independent_qa_reviewer",
         "executive_producer",
     }
+
+
+def test_additive_reviewer_roles_keep_evidence_and_gate_boundaries():
+    expectations = {
+        "fact_rights_reviewer": ["RIGHTS UNKNOWN", "OFFICIAL_PLATFORM", "vendor", "WAIT"],
+        "visual_motion_director": ["Style A", "HAAN", "previz", "NOT MEASURED"],
+        "independent_qa_reviewer": ["NOT MEASURED", "M5c_video_qc", "never approves", "actual artifact"],
+    }
+    for role, needles in expectations.items():
+        text = (AGENTS_DIR / f"{role}.md").read_text(encoding="utf-8")
+        for needle in needles:
+            assert needle.casefold() in text.casefold(), f"{role}: must mention {needle!r}"
+
+
+def test_arena_operating_model_preserves_control_surface_boundaries():
+    text = (REPO / "docs" / "ARENA_TEAM_OPERATING_MODEL.md").read_text(encoding="utf-8")
+    for needle in ["Arena Agent", "GitHub", "Linear", "Notion", "hidden/background agents", "human-upload"]:
+        assert needle.casefold() in text.casefold()
 
 
 def test_agent_cards_map_to_real_states_or_explicit_manager_scope():

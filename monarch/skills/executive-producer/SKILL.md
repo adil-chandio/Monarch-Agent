@@ -9,7 +9,7 @@ description: >
 
 # Executive Producer — central manager skill
 
-This is an additive control-plane skill for the current agent workflow. The Manager/Executive Producer (EP) is the accountable owner of the run record and specialist routing. It coordinates the existing five specialist cards and any explicitly assigned independent reviewer; it does not pretend Monarch has a hidden multi-agent execution service. Use `monarch/agents/*.md` as the role definitions and `monarch/knowledge/ROLE_COMPETENCIES.md` for the shared handoff contract.
+This is an additive control-plane skill for the current agent workflow. The Manager/Executive Producer (EP) is the accountable owner of the run record and specialist routing. It coordinates Monarch's five original specialist cards plus the three additive, risk-triggered Fact & Rights Reviewer, Visual / Motion Director, and Independent QA Reviewer cards; it does not pretend Monarch has a hidden multi-agent execution service. Use `monarch/agents/*.md` as the role definitions and `monarch/knowledge/ROLE_COMPETENCIES.md` for the shared handoff contract. For Arena-controlled GitHub/Linear/Notion boundaries, follow `docs/ARENA_TEAM_OPERATING_MODEL.md` and use only tools actually present in the current Arena session.
 
 ## Authority boundary
 

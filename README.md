@@ -394,10 +394,12 @@ Ruflo-inspired (ideas mined, never the harness — stdlib law holds):
   fail-closed import/report for an operator-supplied, time-indexed curve;
   **`monarch learn experiment record/log`** stores operator-transcribed Studio A/B
   outcomes. Neither feature fetches YouTube data or verifies source authorization.
-- **`monarch/agents/`** — five unchanged stage-bound specialist cards plus the
-  additive cross-stage Executive Producer card. The manager tracks owners,
-  artifact paths, evidence, checks and blockers without advancing or satisfying
-  a user `WAIT` gate.
+- **`monarch/agents/`** — five original stage-bound specialists plus additive
+  Fact & Rights Reviewer, Visual / Motion Director, Independent QA Reviewer, and
+  cross-stage Executive Producer cards. These are prompt/workflow contracts, not
+  separately executing runtime agents; every operator `WAIT` gate stays in force.
+- **`docs/ARENA_TEAM_OPERATING_MODEL.md`** — Arena-controlled tool boundaries:
+  GitHub owns code/evals, Linear owns task status, and Notion owns the stable runbook.
 - **`monarch/knowledge/`** — cited platform/research references, source/freshness
   rules, role competencies, channel/evidence/experience/run templates, capability
   boundaries and adversarial regression cases. The templates do not imply an

@@ -1,10 +1,10 @@
 # Monarch capability map — do not train agents to hallucinate tools
 
-**Repository inspection date:** 2026-10-06. This is a code/documentation audit, not a promise that every optional dependency or external service is available in a given run. Check `monarch doctor` and the actual artifact before claiming an operation succeeded.
+**Repository inspection date:** 2026-10-07. This is a code/documentation audit, not a promise that every optional dependency or external service is available in a given run. Check `monarch doctor` and the actual artifact before claiming an operation succeeded.
 
 | Capability | What is present | Boundary / honest status |
 |---|---|---|
-| Manager / specialist coordination | Additive `monarch/agents/executive_producer.md`, `monarch/skills/executive-producer/SKILL.md`, and the run-manifest template define ownership, status, evidence handoffs and gate-preserving review | This is the manager's agent workflow contract, not a hidden multi-agent runtime, background job service, or new state machine. The existing five specialist cards remain intact. |
+| Manager / specialist coordination | Additive Executive Producer, the five original specialist cards, three scoped reviewer/director cards, `monarch/skills/executive-producer/SKILL.md`, and the run-manifest template define ownership, evidence handoffs and gate-preserving review; `docs/ARENA_TEAM_OPERATING_MODEL.md` maps Arena, GitHub, Linear and Notion responsibilities | These are role/workflow contracts, not a hidden multi-agent runtime, background job service, or new state machine. Route only the specialists needed for the current artifact/risk. |
 | Skill cards | `monarch/skills/*/SKILL.md`, plus technical references | A card can specify a workflow without implementing a tool or renderer. The additive `knowledge-steward` card teaches process; it is not an autonomous service. |
 | Channel config | `monarch/channels/*.yaml` and `monarch.core.channels.load_channel` | This is a small render/channel config (`id`, niche, aspect, language, accent, VO and character locks), not the full approved Channel Bible. The new JSON template does not replace it. |
 | Existing performance ingest | `monarch/pipelines/performance.py` imports Studio CSV/TSV aggregate fields; `monarch/core/learn.py` logs APV/views/subscribers/cohort/runtime/date and creates provisional median-split observations | No automatic YouTube OAuth data fetch; no time-indexed retention curve or native A/B result in this existing path. Do not diagnose exact drop-off seconds from APV. |
