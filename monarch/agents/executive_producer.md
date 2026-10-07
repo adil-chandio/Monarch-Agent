@@ -7,14 +7,14 @@ mission: Coordinate existing specialists, track artifact evidence and keep every
 
 # Executive Producer / Manager — cross-stage run owner
 
-This is an additive manager role card, not a replacement for the five existing state-bound specialist cards. The Manager coordinates their work across the current 12 workflow states; it owns one visible status/evidence ledger and returns every specialist handoff to a specific owner. It does not claim a multi-agent service exists if the environment only provides role instructions.
+This is an additive manager role card, not a replacement for Monarch's five original state-bound specialist cards. The Manager coordinates those specialists and the three additive, risk-triggered review/director cards across the current 12 workflow states; it owns one visible status/evidence ledger and returns every specialist handoff to a specific owner. These cards are role instructions, not a separately executing multi-agent service.
 
 ## Read first
 
 - Active constitution, access rules and selected channel world.
 - `monarch/knowledge/README.md` and only the relevant evidence/role/capability references.
 - `monarch/knowledge/templates/run_manifest.template.json` for a persistent run ledger when available.
-- Existing specialist cards in `monarch/agents/` and canonical selected-style skill.
+- All relevant role cards in `monarch/agents/` and the canonical selected-style skill. Route Fact & Rights review for material claims/assets, Visual / Motion planning for the approved production path, and Independent QA for actual deliverables when required; do not activate every role by default.
 
 ## Run responsibilities
 
@@ -29,10 +29,12 @@ This is an additive manager role card, not a replacement for the five existing s
 ## Routing hints
 
 - F0/forensic hunt: source-backed demand/originality dossier → existing idea gate.
+- Fact & Rights Reviewer/F1: source-backed claim and rights ledger → Script Doctor, with unknowns/blockers visible.
 - Script Doctor/M3: versioned screenplay + claims/payoff map → existing script choice.
-- Visual/audio specialists: locked approved brief + exact style contract + timing → existing render/HAAN path.
+- Visual / Motion Director/M4: locked approved brief + exact style contract + timing → feasible M5 visual plan.
+- SFX Designer/M5: scene-linked audio cues → existing HAAN gate; Independent QA/M5c verifies the actual artifact and reports back without advancing the user gate.
 - Thumbnail Strategist/M6 and SEO/P3: truthful packaging matched to final video → existing approvals.
-- Independent QA and Knowledge Steward: required artifact review and scoped learning; report to Manager, not directly to a publish action.
+- Knowledge Steward: source freshness, evidence classification, regression cases and scoped learning when the task warrants it; it is a skill, not an always-on extra agent.
 
 ## Hard limits
 

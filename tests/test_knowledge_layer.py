@@ -78,6 +78,9 @@ def test_golden_cases_are_unique_and_cover_critical_regressions():
         "STYLE-A-IMMUTABLE-01",
         "STYLE-B-CONSTRAINTS-01",
         "USER-GATE-01",
+        "SCRIPT-FEEDBACK-CONTINUITY-01",
+        "SCRIPT-FEEDBACK-SAME-TURN-01",
+        "SCRIPT-M3-NATURAL-FLOW-EDGE-01",
     } <= set(ids)
 
 

@@ -29,6 +29,7 @@ EXPECTED_SKILLS = {
     "premium-2d-motion-edit",  # additive; the seven original cards stay intact
     "executive-producer",  # additive cross-stage manager
     "knowledge-steward",  # additive cited-learning and evaluation skill
+    "self-improvement",  # additive same-turn correction + durable L16 loop
 }
 
 
@@ -104,6 +105,7 @@ def test_skills_mention_their_gates():
         "premium-2d-motion-edit": ["Style B", "y=180…1500", "4.5:1"],
         "executive-producer": ["central manager", "WAIT", "actual encoded delivery"],
         "knowledge-steward": ["evidence classes", "inconclusive", "NOT MEASURED"],
+        "self-improvement": ["Same-turn repair loop", "read it as speech", "timer", "requested runtime", "3x rule"],
     }
     for skill, needles in checks.items():
         text = (SKILLS_DIR / skill / "SKILL.md").read_text(encoding="utf-8")
@@ -111,17 +113,38 @@ def test_skills_mention_their_gates():
             assert needle in text, f"{skill}: must mention {needle!r}"
 
 
-def test_existing_specialists_and_additive_manager_card_exist():
+def test_specialists_reviewers_and_additive_manager_cards_exist():
     cards = sorted(AGENTS_DIR.glob("*.md"))
-    assert len(cards) == 6
+    assert len(cards) == 9
     assert {c.stem for c in cards} == {
         "forensic_analyst_F0_M2",
         "script_doctor_M3",
         "sfx_designer_M5",
         "thumbnail_strategist_M6",
         "seo_packer_P3",
+        "fact_rights_reviewer",
+        "visual_motion_director",
+        "independent_qa_reviewer",
         "executive_producer",
     }
+
+
+def test_additive_reviewer_roles_keep_evidence_and_gate_boundaries():
+    expectations = {
+        "fact_rights_reviewer": ["RIGHTS UNKNOWN", "OFFICIAL_PLATFORM", "vendor", "WAIT"],
+        "visual_motion_director": ["Style A", "HAAN", "previz", "NOT MEASURED"],
+        "independent_qa_reviewer": ["NOT MEASURED", "M5c_video_qc", "never approves", "actual artifact"],
+    }
+    for role, needles in expectations.items():
+        text = (AGENTS_DIR / f"{role}.md").read_text(encoding="utf-8")
+        for needle in needles:
+            assert needle.casefold() in text.casefold(), f"{role}: must mention {needle!r}"
+
+
+def test_arena_operating_model_preserves_control_surface_boundaries():
+    text = (REPO / "docs" / "ARENA_TEAM_OPERATING_MODEL.md").read_text(encoding="utf-8")
+    for needle in ["Arena Agent", "GitHub", "Linear", "Notion", "hidden/background agents", "human-upload"]:
+        assert needle.casefold() in text.casefold()
 
 
 def test_agent_cards_map_to_real_states_or_explicit_manager_scope():
@@ -137,7 +160,27 @@ def test_agent_cards_map_to_real_states_or_explicit_manager_scope():
 
 
 def test_lessons_file_exists_for_the_loop():
-    assert (REPO / "monarch" / "self_improve" / "lessons.md").is_file()
+    lessons = REPO / "monarch" / "self_improve" / "lessons.md"
+    assert lessons.is_file()
+    text = lessons.read_text(encoding="utf-8")
+    assert "robotic_spoken_script_after_operator_tone_feedback" in text
+    assert "timer_effect_without_setup_or_elapsed_time" in text
+
+
+def test_self_improvement_skill_is_routed_and_truthful():
+    skill = SKILLS_DIR / "self-improvement" / "SKILL.md"
+    agent = (REPO / "AGENT.md").read_text(encoding="utf-8")
+    text = skill.read_text(encoding="utf-8")
+    assert skill.is_file()
+    assert "monarch/skills/self-improvement/SKILL.md" in agent
+    assert "same turn" in text
+    assert "two-minute timer cannot ring" in text
+    assert "plausible early progress" in text
+    assert "monarch.core.lessons.record" in text
+    assert "`perfect | improve`" in text
+    assert "never reopen approval for an unchanged artifact already approved" in text
+    assert "model-weight training" in text
+    assert "zero defects" in text
 
 
 def test_gitignore_covers_session_state():

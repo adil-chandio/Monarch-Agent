@@ -10,13 +10,13 @@ This is an **additive layer**. A prompt-level workflow selector in the root wake
 routes the user only after access verification. It offers Monarch Cam or the original overall
 Monarch workflow without rewriting the constitution, the seven original skills, or the five
 state-bound specialist role cards. Separate additive layers now provide Style B, a cross-stage
-Manager, cited knowledge/evaluation, and offline retention-curve import:
+Manager, cited knowledge/evaluation, same-turn feedback correction, and offline retention-curve import:
 
 - `CLAUDE.md` / `BOOT.md` / `AGENT.md` — offer a workflow selector; the overall workflow's
   original four-question intake remains unchanged after it is selected
 - `monarch/constitution/` — the ten law files, unchanged
 - `monarch/skills/` — seven original cards remain unchanged; `premium-2d-motion-edit`,
-  `executive-producer`, and `knowledge-steward` are additive
+  `executive-producer`, `knowledge-steward`, and `self-improvement` are additive
 - `monarch/agents/` — five state-bound specialist cards remain unchanged; the new
   Executive Producer card coordinates across states without replacing them
 - `monarch/knowledge/` — cited evidence rules, capability limits, templates and evaluation cases
@@ -57,9 +57,9 @@ loaded context for the workflow selector to appear.
 ## Why a world is separate from skills and channels
 
 - `monarch/skills/` contains reusable workflow cards. The seven original cards stay
-  unchanged; `premium-2d-motion-edit`, `executive-producer`, and `knowledge-steward`
-  are additive cards. Registry tests pin the intentional set so accidental additions
-  or removals are caught.
+  unchanged; `premium-2d-motion-edit`, `executive-producer`, `knowledge-steward`, and
+  `self-improvement` are additive cards. Registry tests pin the intentional set so
+  accidental additions or removals are caught.
 - `monarch/channels/` already means something narrower: render config only
   (`id, niche, aspect, language, accent_color, vo_mode, character_lock, voice_lock` —
   see `monarch/schemas.py` → `class Channel`). A world is identity + strategy + law,
