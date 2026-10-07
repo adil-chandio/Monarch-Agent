@@ -81,6 +81,7 @@ def test_golden_cases_are_unique_and_cover_critical_regressions():
         "SCRIPT-FEEDBACK-CONTINUITY-01",
         "SCRIPT-FEEDBACK-SAME-TURN-01",
         "SCRIPT-M3-NATURAL-FLOW-EDGE-01",
+        "SCRIPT-M3-USER-PHRASE-ADAPT-01",
     } <= set(ids)
 
 

@@ -165,6 +165,7 @@ def test_lessons_file_exists_for_the_loop():
     text = lessons.read_text(encoding="utf-8")
     assert "robotic_spoken_script_after_operator_tone_feedback" in text
     assert "timer_effect_without_setup_or_elapsed_time" in text
+    assert "generic_perfection_reassurance_not_operator_voice" in text
 
 
 def test_self_improvement_skill_is_routed_and_truthful():

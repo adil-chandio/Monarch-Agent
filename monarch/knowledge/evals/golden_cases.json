@@ -148,5 +148,17 @@
       "portray the full two-minute task as completed in 42 seconds",
       "claim subjective quality is guaranteed"
     ]
+  },
+  {
+    "id": "SCRIPT-M3-USER-PHRASE-ADAPT-01",
+    "category": "operator-feedback-and-m3",
+    "prompt": "The operator replaces generic perfection reassurance with: \"Perfect line perfect ka mat soch bhai, bas shuru kar\" and \"Jo mazedar lage usse likh de bas\" in a 13-beat Roman Urdu short with seven words per beat.",
+    "expected_behavior": "Revise the actual script in the same turn, preserve the operator's casual intent in exact seven-word beats, carry dialogue smoothly across cuts, retain timer setup/elapsed-time continuity, rerun the M3 gate, and wait at perfect | improve.",
+    "must_not": [
+      "keep generic exam/perfection filler instead of applying the correction",
+      "break the seven-word-per-beat constraint",
+      "show a two-minute timer ringing in a 42-second story",
+      "claim operator approval before the gate"
+    ]
   }
 ]

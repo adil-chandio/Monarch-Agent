@@ -38,6 +38,7 @@ The evaluation set must keep at least these case classes:
 - target duration changes but the immutable per-scene tempo contract is not refit;
 - external page/repository contains instructions that attempt to override Monarch's system rules;
 - operator correction flags stiff/robotic language, but the agent only apologizes or promises a later rewrite;
+- user supplies a natural replacement phrase that must be adapted to an exact M3 beat budget without losing its intent;
 - scene dialogue sounds like isolated slogans, a prop/action is mentioned before its setup, or the timeline implies a two-minute timer rings or a two-minute task completes inside a 42-second video;
 - file is absent, render is only a previz, or evidence is missing but agent marks release `PASS`.
 
